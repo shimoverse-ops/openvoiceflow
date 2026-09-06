@@ -4,7 +4,7 @@
 
 ## TL;DR
 
-OpenVoiceFlow is a free, MIT-licensed, single-developer macOS dictation tool. It is a **self-managed personal-productivity utility**, not a SaaS. It is **not certified** for any compliance regime (SOC 2, ISO 27001, HIPAA, FedRAMP, PCI-DSS, etc.) and is **not designed for regulated environments**. It uses a **bring-your-own-key (BYOK)** model: when you pick a cloud LLM backend, *you* contract directly with that provider — OpenVoiceFlow is not a controller, processor, or sub-processor on your behalf. If you need a vendor with auditable controls and a real contractual layer, this is not that vendor.
+OpenVoiceFlow is a source-available, single-developer macOS dictation tool. Personal use only is available under the OpenVoiceFlow Personal and Reciprocal Source License 1.0; a Covered Work that is distributed or offered over a network must publish corresponding source under the same license, while every Integration must retain the required attribution. Commercial or organizational use requires separate written permission or a separate written license even when source is published. It is a **self-managed personal-productivity utility**, not a SaaS. It is **not certified** for any compliance regime (SOC 2, ISO 27001, HIPAA, FedRAMP, PCI-DSS, etc.) and is **not designed for regulated environments**. It uses a **bring-your-own-key (BYOK)** model: when you pick a cloud LLM backend, *you* contract directly with that provider — OpenVoiceFlow is not a controller, processor, or sub-processor on your behalf. If you need a vendor with auditable controls and a real contractual layer, this is not that vendor.
 
 ---
 
@@ -12,22 +12,22 @@ OpenVoiceFlow is a free, MIT-licensed, single-developer macOS dictation tool. It
 
 | Regime | What it would mean | Why we don't qualify |
 |---|---|---|
-| **SOC 2 Type I / Type II** | An independent auditor attests that the vendor's controls are designed (Type I) and operated over time (Type II) against the AICPA Trust Services Criteria. | No vendor-side service exists, no controls program, no auditor engagement. |
+| **SOC 2 Type I / Type II** | An independent auditor attests that the vendor's controls are designed (Type I) and operated over time (Type II) against the AICPA Trust Services Criteria. | A small opt-out analytics/leaderboard API exists, but there is no managed dictation service, controls program, or auditor engagement. |
 | **ISO 27001 / 27701** | Certified information-security (27001) or privacy (27701) management system, with documented risk treatment, internal audits, and management review. | No ISMS, no certification body engagement, no defined scope statement. |
-| **HIPAA-covered** | The vendor has signed a Business Associate Agreement (BAA) and meets the HIPAA Security and Privacy Rules for handling Protected Health Information (PHI). | We do not sign BAAs. The project earns $0 and cannot take on PHI liability. |
+| **HIPAA-covered** | The vendor has signed a Business Associate Agreement (BAA) and meets the HIPAA Security and Privacy Rules for handling Protected Health Information (PHI). | We do not sign BAAs, offer a HIPAA service, or assume PHI liability. |
 | **FedRAMP** | Authorization to operate within US federal cloud environments at Low / Moderate / High impact levels. | Not a hosted service; no ATO; no agency sponsor. |
 | **PCI-DSS** | Controls for handling cardholder data. | We never see, store, or transmit cardholder data — and you should not dictate it into any LLM. |
-| **GDPR controller / processor (on your behalf)** | A formal Article 28 processor relationship with a DPA, sub-processor list, and breach-notification commitments. | We hold no personal data on a server (there is no server). Your dictated data flows from your Mac to the LLM provider you chose; we are not in that path. |
+| **GDPR processor (on your behalf)** | A formal Article 28 processor relationship with a DPA, sub-processor list, and breach-notification commitments. | We do not offer a processor service or DPA. Dictated text flows directly from your Mac to the LLM provider you choose. A separate opt-out analytics API receives limited aggregate metrics described in `PRIVACY.md` §7; it never receives audio or dictated text. |
 
 ---
 
 ## What we ARE
 
-- **Open source, MIT-licensed.** Every line is auditable on GitHub: <https://github.com/shimoverse/openvoiceflow>.
-- **Transparent.** Build scripts, install scripts, and CI workflows are in-tree. There is no hidden server-side component.
+- **Source available for audit.** The source is public on GitHub: <https://github.com/shimoverse/openvoiceflow>. Personal use only follows the repository license; a distributed or network-offered Covered Work must publish corresponding source under the same license, every Integration must retain required attribution, and commercial or organizational use requires separate written permission or a separate written license from Shimoverse Studios.
+- **Transparent.** Build scripts, install scripts, and CI workflows are in-tree. The small analytics/leaderboard API is explicitly disclosed in `PRIVACY.md` §7; it never receives audio or dictated text.
 - **BYOK.** You bring your own key for whichever LLM provider you choose; the contract is between you and that provider.
-- **Local-first transcription.** Audio is processed on-device by `whisper.cpp`. The audio never leaves your Mac.
-- **User-owned data, on user-owned hardware.** Profile, dictionary, snippets, optional logs — all live under `~/.openvoiceflow/`. We don't sync, mirror, back up, or telemeter.
+- **Local-first transcription.** Audio is processed on-device by WhisperKit. The audio never leaves your Mac.
+- **User-owned content, on user-owned hardware.** Profile, dictionary, snippets, history, and optional logs live in the app's Application Support folder. We do not sync, mirror, or back up that content. If anonymous usage sharing is enabled (the default since v0.5.7), the app sends only the aggregate counters and pseudonymous fields listed in `PRIVACY.md` §7; never audio, dictated text, dictionary, snippets, or profile content.
 
 ---
 
@@ -37,7 +37,7 @@ When you choose a cloud LLM backend (OpenRouter, OpenAI, Anthropic, Groq), the c
 
 - **You are the data controller.** You decide why and how the data is processed.
 - **Your chosen LLM provider is the data processor.** They run the inference and retain (or don't retain) data per their terms.
-- **OpenVoiceFlow is neither.** We hand the request from your Mac to the API you configured and stay out of the path.
+- **OpenVoiceFlow is not in the dictated-content path.** We hand the request from your Mac to the API you configured. Separately, our opt-out analytics API handles only the limited aggregate metrics described in `PRIVACY.md` §7.
 
 The lawful basis for processing is yours to determine. The three most likely to apply for personal/professional dictation:
 
@@ -52,7 +52,7 @@ If you need a Data Processing Addendum, sign one **with the LLM provider you cho
 - OpenRouter: <https://openrouter.ai/terms>
 - Groq: contact Groq for their current DPA.
 
-If your situation makes any external processor unacceptable (legal, contractual, or policy reasons), use the **Ollama** backend or the **`none`** backend — both keep transcripts on the Mac. That is the only way to take *every* third party out of the path.
+If your situation makes any external processor unacceptable (legal, contractual, or policy reasons), use the **Ollama** backend or leave cleanup **Off** — both keep transcripts on the Mac. To eliminate the app's other routine runtime egress, also disable anonymous usage sharing and automatic update checks in Settings. Initial model download and app installation still require their documented network sources.
 
 ---
 
@@ -92,7 +92,7 @@ If any of the above is a deal-breaker, OpenVoiceFlow is not the right fit and yo
 
 ## Audit trail / observability
 
-There is **no central server**, so there is **nothing to audit centrally**. We cannot produce per-user activity logs, access reports, or admin audit trails because we don't see any of it.
+There is **no central dictation-content or admin-audit service**. The analytics/leaderboard API receives aggregate counters and pseudonymous fields when sharing is enabled, but it does not receive per-dictation content or provide organizational access reports or admin audit trails.
 
 Per-machine, when `log_transcripts: true` is set by the user, daily transcript logs are written to `~/.openvoiceflow/logs/YYYY-MM-DD.{md,jsonl}` as **local plaintext files (mode 600)**. They live on the user's Mac and can be inspected, exported, or deleted by the user (or by an admin with filesystem access on a managed Mac).
 
@@ -100,7 +100,7 @@ Per-machine, when `log_transcripts: true` is set by the user, daily transcript l
 
 ## Records / retention
 
-We do not have a retention policy because we do not retain anything centrally. On-device:
+We do not centrally retain audio, dictated text, profile content, dictionary entries, snippets, or local history. The analytics/leaderboard service separately retains the limited aggregate fields described in `PRIVACY.md` §7 while sharing is enabled. On-device:
 
 - Configuration, profile, dictionary, snippets, stats, and logs **exist until the user deletes them**.
 - We do not sync, mirror, or back up any of these files. You delete a file, it's gone.

@@ -10,7 +10,7 @@
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>CFBundleShortVersionString</key><string>0.5.24</string>
     <key>CFBundleVersion</key><string>29</string>
-    <key>NSHumanReadableCopyright</key><string>© Shimoverse Studios and contributors. MIT License.</string>
+    <key>NSHumanReadableCopyright</key><string>© Shimoverse Studios. Personal + reciprocal source license; commercial or organizational use requires separate written permission or a separate written license.</string>
     <key>LSMinimumSystemVersion</key><string>14.0</string>
     <!-- Launch as an accessory so the dashboard Window scene stays dormant (a
          regular app would auto-present it at every launch, on top of first-run

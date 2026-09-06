@@ -98,8 +98,8 @@
         <h2>Cleanup backends and what leaves the Mac</h2>
         <p>The optional cleanup step is where any text can leave your Mac — and only if you choose it:</p>
         <ul class="check-list">
-          <li><strong>Off (default)</strong> — no cleanup call is made. The raw on-device transcript is pasted directly. Nothing leaves your Mac.</li>
-          <li><strong>Ollama (on-device)</strong> — cleanup runs on your machine through a local model. Nothing leaves your Mac.</li>
+          <li><strong>Off (default)</strong> — no cleanup call is made. The raw on-device transcript is pasted directly. No dictation content leaves your Mac.</li>
+          <li><strong>Ollama (on-device)</strong> — cleanup runs on your machine through a local model. No dictation content leaves your Mac.</li>
           <li><strong>OpenRouter (cloud gateway, recommended)</strong> — one key routes cleanup to any model OpenRouter hosts. When enabled, the transcript text <em>plus your personal Know-Me profile, dictionary, and snippet context</em> is sent to OpenRouter under your own key. You contract directly with OpenRouter under its terms; OpenVoiceFlow is not in the middle. Your audio is still never sent.</li>
           <li><strong>OpenAI, Anthropic, or Groq (direct cloud)</strong> — if you prefer a provider directly, cleanup can point at it instead. The same transcript-plus-context is sent to whichever provider you select, under your own key and its terms. Audio is still never sent.</li>
         </ul>
@@ -121,8 +121,8 @@
       </section>
 
       <section class="content-card">
-        <h2>Open source</h2>
-        <p>OpenVoiceFlow is MIT-licensed and fully open source, so every claim on this page is checkable against the code itself. If anything here does not match what the app actually does, that is a bug we want fixed.</p>
+        <h2>Public source</h2>
+        <p>OpenVoiceFlow publishes its source, so every claim on this page is checkable against the code itself. Use is free for personal purposes only under the OpenVoiceFlow Personal and Reciprocal Source License 1.0; a Covered Work that is distributed or offered over a network must publish source under the same license, while every Integration must retain the required attribution. Commercial or organizational use requires separate written permission or a separate written license from Shimoverse Studios. If anything here does not match what the app actually does, that is a bug we want fixed.</p>
       </section>
     </div></section>
   </main>
@@ -130,7 +130,7 @@
   <footer class="footer">
     <div class="container footer-inner">
       <canvas class="footer-glyph" data-wf="glyph" aria-hidden="true"></canvas>
-      <p class="footer-copy">© 2026 OpenVoiceFlow contributors. MIT License.</p>
+      <p class="footer-copy">© 2026 Shimoverse Studios. Personal + reciprocal source license.</p>
       <nav class="footer-links" aria-label="Footer">
         <a href="index.html">Home</a>
         <a href="download.html">Download</a>

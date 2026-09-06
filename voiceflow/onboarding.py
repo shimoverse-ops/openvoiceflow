@@ -98,7 +98,7 @@ BACKENDS = {
     },
     "ollama": {
         "name": "Ollama (Fully Local)",
-        "cost": "$0 forever",
+        "cost": "No provider fee",
         "speed": "Moderate",
         "privacy": "100% Local — nothing leaves your Mac",
         "url": "https://ollama.com",
@@ -217,7 +217,7 @@ class OnboardingWizard:
 
         self._title("OpenVoiceFlow")
         self._subtitle(
-            "Free, open-source voice dictation for macOS.\n"
+            "Free for personal use only on macOS.\n"
             "Hold a key → speak → release → clean text appears at your cursor."
         )
 
@@ -372,7 +372,7 @@ class OnboardingWizard:
     def _show_ollama_setup(self, info):
         """Special setup screen for Ollama (no API key needed)."""
         self._title("Set Up Ollama")
-        self._subtitle("Fully local — your data never leaves your Mac. $0 forever.")
+        self._subtitle("Fully local — your data never leaves your Mac. No provider fee.")
 
         instr_frame = tk.Frame(self.container, bg=BG_CARD)
         instr_frame.pack(fill="x", pady=10, ipady=10, ipadx=15)

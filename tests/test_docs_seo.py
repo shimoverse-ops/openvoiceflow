@@ -98,6 +98,17 @@ def test_every_public_page_has_social_cards_and_analytics():
         assert "/_vercel/speed-insights/script.js" in html, f"{rel}: missing speed insights"
 
 
+def test_every_public_json_ld_block_is_valid_json():
+    """A malformed schema block renders invisibly but disables rich-result data."""
+    for rel in ALL_PAGES:
+        html = read(rel)
+        blobs = re.findall(
+            r'<script type="application/ld\+json">\s*(\{.*?\})\s*</script>', html, re.S
+        )
+        for blob in blobs:
+            json.loads(blob)
+
+
 def test_sitemap_lists_exactly_the_public_pages():
     sitemap = read("sitemap.xml")
     listed = set(re.findall(r"<loc>([^<]+)</loc>", sitemap))
@@ -267,7 +278,7 @@ def test_llms_txt_covers_the_blog_and_never_links_a_404():
 
 
 def test_the_product_film_ships_with_its_plumbing():
-    """The homepage embeds a 52s product film. A missing poster means a black
+    """The homepage embeds a 45s product film. A missing poster means a black
     rectangle above the fold; a missing captions track fails accessibility;
     a VideoObject whose contentUrl 404s becomes a broken rich result."""
     film = DOCS / "assets" / "openvoiceflow-demo.mp4"
@@ -278,12 +289,24 @@ def test_the_product_film_ships_with_its_plumbing():
     assert vtt.exists() and vtt.read_text(encoding="utf-8").startswith("WEBVTT")
 
     home = read("index.html")
+    assert "Forty-five seconds. The whole idea." in home
+    assert "Fifty-two seconds" not in home
     assert '<video data-film' in home
     assert 'poster="assets/demo-poster.jpg"' in home
     assert 'src="assets/openvoiceflow-demo.mp4"' in home
     assert '<track kind="captions" src="assets/openvoiceflow-demo.en.vtt"' in home
     assert '"@type": "VideoObject"' in home
     assert '"contentUrl": "https://openvoiceflow.com/assets/openvoiceflow-demo.mp4"' in home
+    blocks = [
+        json.loads(raw)
+        for raw in re.findall(
+            r'<script type="application/ld\+json">(.*?)</script>',
+            home,
+            flags=re.DOTALL,
+        )
+    ]
+    video = next(block for block in blocks if block.get("@type") == "VideoObject")
+    assert video["duration"] == "PT45S"
 
     site_js = read("site.js")
     assert "demo_play" in site_js, "film plays must be visible in analytics"
@@ -358,7 +381,7 @@ def test_homepage_structured_data_links_the_project_to_its_repository():
     organization = next(block for block in blocks if block.get("@type") == "Organization")
     repository = "https://github.com/shimoverse/openvoiceflow"
 
-    assert software["license"] == "https://opensource.org/licenses/MIT"
+    assert software["license"] == "https://github.com/shimoverse/openvoiceflow/blob/main/LICENSE"
     assert "codeRepository" not in software
     assert software["sameAs"] == repository
     assert organization["sameAs"] == [repository, "https://github.com/shimoverse"]
@@ -412,14 +435,19 @@ def test_favicon_is_a_real_file_not_a_data_uri():
         "apple-touch-icon.png must be 180x180 per Apple's convention"
 
 
-def test_homepage_search_copy_leads_with_free_and_private():
+def test_homepage_search_copy_qualifies_free_use_and_leads_with_privacy():
     html = read("index.html")
-    assert "<title>OpenVoiceFlow — Free, Private Voice Dictation for macOS</title>" in html
+    assert "<title>OpenVoiceFlow — Free Only for Personal Use, Private Voice Dictation for macOS</title>" in html
     assert (
-        '<meta name="description" content="Free, private voice dictation for macOS. '
-        'Your audio is transcribed locally on your Mac, with optional cleanup through '
-        'the backend you choose." />'
+        '<meta name="description" content="Private voice dictation for macOS, '
+        'free for personal use only. Audio is transcribed '
+        'locally, with optional cleanup through your chosen backend." />'
     ) in html
+    normalized = html.casefold()
+    assert "free forever" not in normalized
+    assert re.search(r"\$0\s*[,/]\s*forever", normalized) is None
+    assert "USP 01 · FREE FOR PERSONAL USE ONLY" in html
+    assert "commercial or organizational use requires separate written permission or a separate written license" in html
 
 
 def test_homepage_publishes_the_verified_app_rating_visibly_and_in_schema():

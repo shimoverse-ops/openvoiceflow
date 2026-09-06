@@ -6,7 +6,7 @@
 
 This is a **fill-in-the-blanks template** small businesses can use to document an OpenVoiceFlow deployment inside their own data-flow inventory, vendor register, or DPIA workpapers. It captures who does what, what data flows where, and which third parties are in the path.
 
-**It is not a contract with the OpenVoiceFlow project.** OpenVoiceFlow is a free, MIT-licensed, single-developer open-source tool. We are not a counterparty, not a controller, not a processor, and not a sub-processor. There is nothing for us to sign — when you choose a cloud LLM backend, the contractual relationship is between **your organization** and **the LLM provider you chose** (see [`../COMPLIANCE.md`](../COMPLIANCE.md) for links to each provider's DPA).
+**It is not a contract with the OpenVoiceFlow project.** OpenVoiceFlow is a source-available, single-developer tool. Commercial or organizational use requires separate written permission or a separate written license from Shimoverse Studios, but that authorization does not make the project your privacy counterparty, controller, processor, or sub-processor. When you choose a cloud LLM backend, the data-processing relationship is between **your organization** and **the LLM provider you chose** (see [`../COMPLIANCE.md`](../COMPLIANCE.md) for links to each provider's DPA).
 
 Treat this as your record, not ours. Replace each italicized placeholder, then keep it with your other vendor documentation. Have your lawyer sanity-check it before relying on it.
 
@@ -20,7 +20,7 @@ Treat this as your record, not ours. Replace each italicized placeholder, then k
 | **End users** (whose dictation flows through the tool) | *e.g. Acme employees on macOS workstations* |
 | **Chosen LLM provider** (data processor for cleaned transcripts) | *e.g. Anthropic / OpenAI / Google / Groq / Ollama (local) / none* |
 | **Region of LLM-provider processing** | *e.g. US / EU / on-device* |
-| **Tool** | OpenVoiceFlow `<version>` (MIT-licensed open source; not a counterparty) |
+| **Tool** | OpenVoiceFlow `<version>` (record the applicable separate written permission or a separate written license; the public personal-use-only license does not authorize organizational use; not a data-processing counterparty) |
 | **Date of this record** | *YYYY-MM-DD* |
 | **Owner of this record** | *Name, role* |
 
@@ -82,7 +82,7 @@ In v0.3, OpenVoiceFlow ships with the following on each Mac:
 - **Update check is opt-out-able** via `update_check: false`.
 - **Audio never leaves the Mac.** Whisper.cpp processes locally; temp WAV is deleted in the `finally` block of each dictation.
 - **No central server.** There is nothing for the maintainer to compromise that would expose your data.
-- **MIT-licensed source** is auditable at <https://github.com/shimoverse/openvoiceflow>.
+- **Public source** is auditable at <https://github.com/shimoverse/openvoiceflow>; see [`../../LICENSING.md`](../../LICENSING.md) for the applicable use rights.
 
 Your organization adds (fill in):
 

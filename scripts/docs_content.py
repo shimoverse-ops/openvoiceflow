@@ -16,10 +16,10 @@ PAGES: dict[str, dict] = {}
 PAGES["index"] = {
     "head_title": "OpenVoiceFlow Documentation — Setup, Features, Troubleshooting",
     "title": "OpenVoiceFlow documentation",
-    "description": "The complete manual for OpenVoiceFlow, the free on-device voice dictation app for macOS: install, permissions, Whisper models, personalization, AI cleanup, and troubleshooting.",
+    "description": "OpenVoiceFlow's manual for the on-device macOS dictation app, free for personal use only: install, permissions, models, personalization, cleanup, and troubleshooting.",
     "lede": "Everything about running OpenVoiceFlow on your Mac — from first launch to the exact bytes that do and don't leave your machine. Written against the shipping app, version 0.5.24.",
     "body": """
-        <p>OpenVoiceFlow is a free, MIT-licensed push-to-talk dictation app for macOS. You hold a key, speak, release, and cleaned text lands at your cursor in whatever app you were using. Whisper runs on your Mac, so your audio never leaves it.</p>
+        <p>OpenVoiceFlow is a source-available push-to-talk dictation app for macOS, free for personal use only. You hold a key, speak, release, and cleaned text lands at your cursor in whatever app you were using. Whisper runs on your Mac, so your audio never leaves it. Commercial or organizational use requires separate written permission or a separate written license from Shimoverse Studios.</p>
 
         <div class="callout tip">
           <span class="callout-label">New here?</span>
@@ -75,7 +75,7 @@ PAGES["quickstart"] = {
     "lede": "From a fresh Mac to your first dictated sentence. The only slow part is the one-time model download, and the app tells you how long that will take.",
     "howto": (
         "Set up OpenVoiceFlow and dictate for the first time",
-        "Install the free OpenVoiceFlow dictation app on macOS, grant the three required permissions, download an on-device Whisper model, and dictate a first sentence.",
+        "Install OpenVoiceFlow for personal use only on macOS, grant the three required permissions, download an on-device Whisper model, and dictate a first sentence.",
         "PT5M",
         [
             ("Download and install", "Download the universal DMG from openvoiceflow.com, open it, and drag OpenVoiceFlow into your Applications folder."),
@@ -1101,7 +1101,7 @@ PAGES["privacy-architecture"] = {
           <li><strong>Airplane mode.</strong> Turn off Wi-Fi with cleanup set to None and dictate. It works, because dictation itself never needs a network — the usage sync above is fire-and-forget and never blocks it.</li>
           <li><strong>Network monitor.</strong> Run Little Snitch or similar and watch. With cleanup off and usage sharing off, dictation generates no connections at all. With usage sharing on (the default), you'll see the occasional request described in the table above, and nothing else.</li>
         </ul>
-        <p>OpenVoiceFlow is MIT-licensed open source, so every claim here is checkable in the code itself rather than taken on trust. If anything on this page does not match what the app does, that is a bug — tell us at <a href="mailto:shimoverse@gmail.com">shimoverse@gmail.com</a>.</p>
+        <p>OpenVoiceFlow's source is public, so every claim here is checkable in the code itself rather than taken on trust. If anything on this page does not match what the app does, that is a bug — tell us at <a href="mailto:shimoverse@gmail.com">shimoverse@gmail.com</a>.</p>
 """,
 }
 
@@ -1169,7 +1169,7 @@ PAGES["uninstall"] = {
         <p>If you leave the Application Support folder in place, reinstalling picks up exactly where you left off — same settings, same history, same dictionary. Remove that folder first if you want a genuinely clean start.</p>
 
         <h2 id="feedback">Before you go</h2>
-        <p>If something drove you to uninstall, we would genuinely like to know which thing it was — <a href="mailto:shimoverse@gmail.com">shimoverse@gmail.com</a>. The project is free and has no retention metrics, so an email is the only way that signal reaches anyone.</p>
+        <p>If something drove you to uninstall, we would genuinely like to know which thing it was — <a href="mailto:shimoverse@gmail.com">shimoverse@gmail.com</a>. The project has no individual retention analytics, so an email is the only way that detailed signal reaches anyone.</p>
 """,
 }
 
@@ -1372,7 +1372,7 @@ PAGES["faq"] = {
     "lede": "Short answers to what we get asked most. Longer versions link through to the relevant page.",
     "faq": [
         ("Is OpenVoiceFlow really free?",
-         "Yes. It is MIT-licensed, has no paid tier, no account, and no trial period. Your Mac provides the compute, so there is nothing to charge you for. If you enable optional cloud cleanup you pay your chosen AI provider directly for tokens — typically cents per month — and nothing to us."),
+         "Use is free for personal purposes only, with no account or trial period. Commercial or organizational use requires separate written permission or a separate written license from Shimoverse Studios; contact shimoverse@gmail.com. If you enable optional cloud cleanup you pay your chosen AI provider directly for tokens."),
         ("Does my voice leave my Mac?",
          "No. Audio is transcribed on-device by Whisper and discarded once text exists. There is no code path that uploads audio. If you turn on cloud AI cleanup, the resulting text is sent to the provider you chose under your own key; choosing Ollama or leaving cleanup off keeps everything local."),
         ("Does it work offline?",
@@ -1396,9 +1396,9 @@ PAGES["faq"] = {
         ("How do I get support?",
          "Use the Feedback item in the dashboard sidebar, or email shimoverse@gmail.com. Include your macOS version, your Mac's chip, your OpenVoiceFlow version, and what you saw versus what you expected — the usage summary is aggregate counts, not diagnostics, so your description is still what gets things fixed."),
         ("Can I use OpenVoiceFlow at work with confidential material?",
-         "The architecture is designed for exactly that case: audio never leaves the machine, and with cleanup off or pointed at local Ollama, neither does text. Your organization's own policy still applies, and the source being open means your security team can verify the claims rather than trust them."),
+         "The architecture supports that case: audio never leaves the machine, and with cleanup off or pointed at local Ollama, neither does text. Your organization's own policy still applies, and the public source lets your security team verify the claims. Workplace or other organizational use requires separate written permission or a separate written license from Shimoverse Studios."),
         ("Can I use the code in my own project?",
-         "Yes — it is MIT-licensed and free for any use. Keep the credit visible, and we would genuinely like to hear about it at shimoverse@gmail.com."),
+         "For personal purposes only, yes, under the OpenVoiceFlow Personal and Reciprocal Source License 1.0. Every integration, derivative, fork, or modified build must keep the required notices and visibly state ‘Based on OpenVoiceFlow by Shimoverse Studios’ with a working link to https://github.com/shimoverse/openvoiceflow, even if it stays private or merely connects through a documented interface. If it is a Covered Work and you distribute it or let others use it over a network, publish its complete corresponding source under the same license and rebrand where required. Commercial or organizational use requires separate written permission or a separate written license even when the source is published."),
     ],
     "body": """
         <p>If your question is not here, the <a href="troubleshooting.html">troubleshooting guide</a> covers specific symptoms, and <a href="privacy-architecture.html">privacy architecture</a> answers data questions in far more depth. Anything still unanswered: <a href="mailto:shimoverse@gmail.com">shimoverse@gmail.com</a>.</p>

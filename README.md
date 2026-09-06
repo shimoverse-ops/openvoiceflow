@@ -2,10 +2,10 @@
 
 # OpenVoiceFlow
 
-**Free, open-source voice dictation for macOS. Hold a key, talk, release — polished text lands in whatever app you're in. Your audio never leaves your Mac.**
+**Free for personal use only: source-available voice dictation for macOS. Hold a key, talk, release — polished text lands in whatever app you're in. Your audio never leaves your Mac.**
 
 [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-black)](https://openvoiceflow.com/download.html)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![License](https://img.shields.io/badge/license-Personal%20%26%20Reciprocal%201.0-amber.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/shimoverse/openvoiceflow?filter=native-v*&label=release)](https://github.com/shimoverse/openvoiceflow/releases)
 
 People speak at roughly 150 words a minute and type at roughly 40. OpenVoiceFlow exists because closing that gap shouldn't cost $144 a year or require streaming your voice to someone's cloud. We think voice input should eventually be a default feature of every operating system; until it is, this is our contribution — and contributions are welcome.
@@ -25,7 +25,7 @@ Requires macOS 14 (Sonoma) or newer. On macOS 12–13, the download page offers 
 - **Personal dictionary, snippets, per-app styles** — teach it names and jargon once; spoken shortcuts expand to full text; casual in Slack, formal in Mail.
 - **Auto-updates** — signed Sparkle updates from [openvoiceflow.com](https://openvoiceflow.com), verified with an EdDSA key pinned in the app.
 
-No account. No paid tier — see [the mission](https://openvoiceflow.com/#mission). Anonymous aggregate usage sharing is on by default and takes one switch to turn off; it never includes dictation text (see [PRIVACY.md](PRIVACY.md) §7).
+No account or consumer subscription — see [the mission](https://openvoiceflow.com/#mission). Anonymous aggregate usage sharing is on by default and takes one switch to turn off; it never includes dictation text (see [PRIVACY.md](PRIVACY.md) §7).
 
 ## Build from source
 
@@ -68,4 +68,22 @@ The one-page version: audio on-device always; text to a cloud only if you enable
 
 ## License
 
-[MIT](LICENSE) © Shimoverse Studios and contributors — free for any use, forever; the copyright notice must travel with every copy. **If you use or build on OpenVoiceFlow, credit the project visibly — and email shimoverse@gmail.com to tell us about it.** The **name and logo** are governed separately by the [brand policy](TRADEMARKS.md): derivatives must rebrand and credit the original. Third-party notices: [docs/legal/THIRD_PARTY_NOTICES.md](docs/legal/THIRD_PARTY_NOTICES.md).
+OpenVoiceFlow is source-available under the **[OpenVoiceFlow Personal and
+Reciprocal Source License 1.0](LICENSE)**. Personal use only is free under those
+terms. Every integration, fork, derivative, or modified version must visibly
+credit OpenVoiceFlow and link to the original source code. If you distribute a
+derivative or let others use a modified version over a network, you must publish
+its complete source under the same license; the free license does not allow
+closed-source derivatives. Commercial or organizational use requires separate
+written permission or a separate written license from Shimoverse Studios even when the
+source is published. Contact **shimoverse@gmail.com** before commercial or organizational
+use.
+
+Copyright © 2025–2026 **Shimoverse Studios**. Keep the required notices with every
+copy. The source license does not grant rights to the OpenVoiceFlow name or
+logo; derivative distributions and integrations must rebrand where applicable
+and state **"Based on OpenVoiceFlow by Shimoverse Studios"** with a working link
+to the [original source code](https://github.com/shimoverse/openvoiceflow).
+See [LICENSING.md](LICENSING.md), [TRADEMARKS.md](TRADEMARKS.md),
+[docs/legal/LEGACY_MIT_PORTIONS.md](docs/legal/LEGACY_MIT_PORTIONS.md), and
+[docs/legal/THIRD_PARTY_NOTICES.md](docs/legal/THIRD_PARTY_NOTICES.md).

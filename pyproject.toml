@@ -1,15 +1,16 @@
 [build-system]
-# license = "MIT" (PEP 639 SPDX string) requires setuptools >= 77; a lower
-# floor only works by luck of build isolation grabbing the latest.
+# PEP 639 license-file metadata requires setuptools >= 77; a lower floor only
+# works by luck of build isolation grabbing the latest.
 requires = ["setuptools>=77.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "openvoiceflow"
 version = "0.3.6"
-description = "Free voice dictation for macOS — local transcription + optional LLM cleanup"
+description = "Private, local voice dictation for macOS — free for personal use only"
 readme = "README.md"
-license = "MIT"
+license = "LicenseRef-OpenVoiceFlow-Personal-Reciprocal-1.0"
+license-files = ["LICENSE", "docs/legal/LEGACY_MIT_PORTIONS.md"]
 authors = [{name = "Shimoverse Studios"}]
 requires-python = ">=3.9"
 keywords = ["voice", "dictation", "speech-to-text", "whisper", "macos", "openvoiceflow"]

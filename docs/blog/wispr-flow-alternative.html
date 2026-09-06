@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wispr Flow Alternative: Free, Open Source, On-Device — OpenVoiceFlow</title>
-  <meta name="description" content="Looking for a Wispr Flow alternative that doesn't cost $144 a year? OpenVoiceFlow is free, MIT-licensed, and transcribes on your Mac. An honest comparison." />
-  <meta property="og:title" content="The free Wispr Flow alternative that keeps your voice on your Mac" />
+  <title>Wispr Flow Alternative: Free Personal Use Only, On-Device — OpenVoiceFlow</title>
+  <meta name="description" content="Looking for a Wispr Flow alternative? OpenVoiceFlow is free for personal use only, source-available, and transcribes on your Mac." />
+  <meta property="og:title" content="The source-available Wispr Flow alternative that keeps your voice on your Mac" />
   <meta property="og:description" content="What you get, what you give up, and how to switch in ten minutes. An honest comparison from the OpenVoiceFlow maintainers." />
   <meta property="og:url" content="https://openvoiceflow.com/blog/wispr-flow-alternative.html" />
   <meta property="og:type" content="article" />
@@ -24,7 +24,7 @@
   {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    "headline": "The free Wispr Flow alternative that keeps your voice on your Mac",
+    "headline": "The source-available Wispr Flow alternative that keeps your voice on your Mac",
     "description": "An honest comparison of Wispr Flow and OpenVoiceFlow: pricing, privacy, where audio goes, and what you give up by switching.",
     "url": "https://openvoiceflow.com/blog/wispr-flow-alternative.html",
     "author": {"@type": "Organization", "name": "OpenVoiceFlow maintainers", "url": "https://openvoiceflow.com/"},
@@ -39,13 +39,13 @@
     "@type": "FAQPage",
     "mainEntity": [
       {"@type": "Question", "name": "Is there a free alternative to Wispr Flow?",
-       "acceptedAnswer": {"@type": "Answer", "text": "Yes. OpenVoiceFlow is a free, MIT-licensed push-to-talk dictation app for macOS. Transcription runs on-device with WhisperKit, so audio never leaves the Mac, and there is no subscription, account, or paid tier."}},
+       "acceptedAnswer": {"@type": "Answer", "text": "Yes. OpenVoiceFlow is a source-available push-to-talk dictation app, free for personal use only on macOS. Transcription runs on-device with WhisperKit, so audio never leaves the Mac, and there is no consumer subscription or account. Commercial or organizational use requires separate written permission or a separate written license."}},
       {"@type": "Question", "name": "Does OpenVoiceFlow work offline like Wispr Flow?",
        "acceptedAnswer": {"@type": "Answer", "text": "OpenVoiceFlow works offline out of the box because transcription happens on your Mac. Wispr Flow transcribes in the cloud, so it needs a connection. With cleanup Off (the default) or local Ollama cleanup, OpenVoiceFlow needs no internet at all after the one-time model download."}},
       {"@type": "Question", "name": "What does OpenVoiceFlow not do that Wispr Flow does?",
        "acceptedAnswer": {"@type": "Answer", "text": "As of July 2026 OpenVoiceFlow is macOS-only — no Windows app, and the iOS version is still in development. AI cleanup is bring-your-own-key rather than bundled, and support is community-based rather than a paid support team."}},
       {"@type": "Question", "name": "Is OpenVoiceFlow affiliated with Wispr Flow?",
-       "acceptedAnswer": {"@type": "Answer", "text": "No. OpenVoiceFlow is an independent open-source project by Shimoverse Studios and contributors, with no affiliation to Wispr Flow. Comparison details come from Wispr Flow's published pricing and documentation as of July 2026."}}
+       "acceptedAnswer": {"@type": "Answer", "text": "No. OpenVoiceFlow is an independent source-available project by Shimoverse Studios and contributors, with no affiliation to Wispr Flow. Comparison details come from Wispr Flow's published pricing and documentation as of July 2026."}}
     ]
   }
   </script>
@@ -98,7 +98,7 @@
     <section class="page-hero"><div class="container article-page">
       <article class="article">
         <span class="mono-kicker">Blog · Comparisons</span>
-        <h1 class="hero-title">The free Wispr Flow alternative that keeps your voice on your Mac</h1>
+        <h1 class="hero-title">The source-available Wispr Flow alternative that keeps your voice on your Mac</h1>
         <div class="article-meta"><span>By the OpenVoiceFlow maintainers</span><span class="dot"></span><span>7 min read</span></div>
 
         <span class="post-cover article-cover" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 18a14 14 0 0 1 24-8"/><path d="M34 6v8h-8"/><path d="M38 30a14 14 0 0 1-24 8"/><path d="M14 42v-8h8"/></svg></span>
@@ -106,7 +106,7 @@
         <div class="article-body">
           <div class="article-answer">
             <span class="mono-kicker">The short answer</span>
-            If you like Wispr Flow but not the $144-a-year subscription or the cloud transcription, <strong>OpenVoiceFlow</strong> is a free, MIT-licensed push-to-talk dictation app for macOS. Whisper runs on your Mac, your audio never leaves it, and there is no account. You give up Windows and mobile apps (for now) and a bundled cleanup service — cleanup here is optional and bring-your-own-key.
+            If you like Wispr Flow but not the $144-a-year subscription or the cloud transcription, <strong>OpenVoiceFlow</strong> is a source-available push-to-talk dictation app, free for personal use only on macOS. Whisper runs on your Mac, your audio never leaves it, and there is no account. You give up Windows and mobile apps (for now) and a bundled cleanup service — cleanup here is optional and bring-your-own-key.
           </div>
 
           <p>Let's get the disclosure out of the way: we build OpenVoiceFlow, so you know exactly which way this comparison leans. What we can promise is that we'll be straight about the trade-offs, because a switcher who discovers a dealbreaker two days in helps nobody. Everything we say about Wispr Flow below comes from their published pricing and documentation as of July 2026 — check their site for current details.</p>
@@ -122,8 +122,8 @@
 
           <h2>What OpenVoiceFlow does differently</h2>
           <p>OpenVoiceFlow keeps the interaction Wispr Flow got right — hold a key, talk, release, text appears at your cursor — and moves everything underneath it onto your own machine.</p>
-          <p><strong>Transcription is local, always.</strong> WhisperKit runs OpenAI's Whisper models directly on your Mac, from <code>tiny</code> to <code>large-v3-turbo</code>. Audio is processed in memory and discarded the moment text exists. There is no server to upload to — we don't run any. Airplane mode works fine. (More on picking a model in <a href="whisper-models-for-dictation.html">our Whisper model guide</a>.)</p>
-          <p><strong>It's free because there's nothing to sell.</strong> No account, no telemetry, no trial that expires. The code is MIT-licensed and public, so "your audio never leaves your Mac" isn't a marketing claim you have to trust — it's a code path anyone can read.</p>
+          <p><strong>Transcription is local, always.</strong> WhisperKit runs OpenAI's Whisper models directly on your Mac, from <code>tiny</code> to <code>large-v3-turbo</code>. Audio is processed in memory and discarded the moment text exists. The app has no audio-upload path. Airplane mode works fine. (More on picking a model in <a href="whisper-models-for-dictation.html">our Whisper model guide</a>.)</p>
+          <p><strong>Use is free for personal purposes only.</strong> There is no account or expiring trial. Anonymous aggregate usage counters are on by default, exclude dictated text, and can be turned off in one switch. The source is public, so "your audio never leaves your Mac" is a code path anyone can inspect rather than a claim you must take on trust.</p>
           <p><strong>AI cleanup is optional and yours.</strong> Out of the box you get the raw on-device transcript. Flip on cleanup and it polishes grammar and drops the "um"s using a backend <em>you</em> choose: OpenRouter, OpenAI, Anthropic, or Groq with your own API key — or a fully local model through Ollama. You pay the model provider cents for tokens, not a middleman a flat monthly fee. Only cleaned <em>text</em> ever touches an API; audio never does.</p>
           <p><strong>The details that make dictation stick are here too.</strong> A personal dictionary so it stops mangling your coworkers' names. Spoken snippets that expand to full text. Per-app styles, so you sound casual in Slack and buttoned-up in Mail. A live HUD so you can see it hearing you.</p>
 
@@ -132,12 +132,12 @@
             <table>
               <thead><tr><th scope="col"></th><th scope="col">OpenVoiceFlow</th><th scope="col">Wispr Flow</th></tr></thead>
               <tbody>
-                <tr><td>Price</td><td>$0, forever</td><td>$12/mo — $144/yr</td></tr>
+                <tr><td>Price</td><td>$0 personal use only; commercial or organizational use requires separate written permission or a separate written license</td><td>$12/mo — $144/yr</td></tr>
                 <tr><td>Transcription</td><td>On your Mac (WhisperKit)</td><td>Their cloud</td></tr>
                 <tr><td>Works offline</td><td>Yes</td><td>No</td></tr>
                 <tr><td>Audio leaves the machine</td><td>Never</td><td>Uploaded for processing</td></tr>
                 <tr><td>Account required</td><td>No</td><td>Yes</td></tr>
-                <tr><td>Source code</td><td>Open — MIT</td><td>Closed</td></tr>
+                <tr><td>Source code</td><td>Public — OpenVoiceFlow Personal and Reciprocal Source License 1.0</td><td>Closed</td></tr>
                 <tr><td>AI cleanup</td><td>Optional, your key or local Ollama</td><td>Bundled, their pipeline</td></tr>
                 <tr><td>Platforms</td><td>macOS 14+ (Apple Silicon &amp; Intel)</td><td>macOS, Windows, iOS</td></tr>
                 <tr><td>Support</td><td>Community</td><td>Paid product support</td></tr>
@@ -165,8 +165,8 @@
           <p>Cancel your subscription whenever you're convinced. There's no import to run and no account to create — the app starts working the first time you hold the key.</p>
 
           <h2>FAQ</h2>
-          <h3>Is there really no paid tier?</h3>
-          <p>None. The app is MIT-licensed and everything in it is free. If you enable cloud cleanup you pay your chosen model provider directly for tokens — typically cents per month — and nothing to us, ever.</p>
+          <h3>Is there a consumer subscription?</h3>
+          <p>No. Use is free for personal purposes only. Commercial or organizational use requires separate written permission or a separate written license from Shimoverse Studios. If you enable cloud cleanup, you also pay your chosen model provider directly for tokens — typically cents per month.</p>
           <h3>Does OpenVoiceFlow work offline?</h3>
           <p>Yes. Transcription is on-device, so dictation works with Wi-Fi off. Leave cleanup Off (the default) or use Ollama and the whole pipeline is offline. Details in <a href="offline-dictation-mac.html">our offline dictation guide</a>.</p>
           <h3>How does accuracy compare?</h3>
@@ -175,10 +175,10 @@
           <p>No. Independent project, no affiliation. We compare against their published pricing and docs because switchers keep asking us to.</p>
 
           <div class="article-cta">
-            <h2>Try the free alternative</h2>
-            <p>One universal DMG. No account, no trial clock, no cloud. If it's not for you, drag it to the Trash and you've lost ten minutes.</p>
+            <h2>Try the personal-use-only alternative</h2>
+            <p>One universal DMG. No account or trial clock, with on-device transcription. If it's not for you, drag it to the Trash and you've lost ten minutes.</p>
             <div class="hero-cta-row">
-              <a class="btn btn-primary btn-lg" href="../download.html">Download for Mac — free</a>
+              <a class="btn btn-primary btn-lg" href="../download.html">Download for Mac</a>
               <a class="btn btn-outline btn-lg" href="../how-it-works.html">See how it works</a>
             </div>
           </div>
@@ -199,7 +199,7 @@
   <footer class="footer">
     <div class="container footer-inner">
       <canvas class="footer-glyph" data-wf="glyph" aria-hidden="true"></canvas>
-      <p class="footer-copy">© 2026 OpenVoiceFlow contributors. MIT License.</p>
+      <p class="footer-copy">© 2026 Shimoverse Studios. Personal + reciprocal source license.</p>
       <nav class="footer-links" aria-label="Footer">
         <a href="../index.html">Home</a>
         <a href="../download.html">Download</a>

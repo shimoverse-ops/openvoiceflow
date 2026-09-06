@@ -1,6 +1,13 @@
 # Support
 
-OpenVoiceFlow is a single-maintainer open-source project. Response time is best-effort. The fastest way to make progress on something is usually to debug it yourself and send a small PR with a failing test.
+OpenVoiceFlow is a single-maintainer source-available project. Response time is best-effort. The fastest way to make progress on something is usually to debug it yourself and send a small PR with a failing test.
+
+Personal use only is covered by the
+[OpenVoiceFlow Personal and Reciprocal Source License 1.0](LICENSE). Distributed
+derivatives and modified network versions must publish their complete source
+under the same license. For commercial or organizational use, contact **shimoverse@gmail.com** for
+separate written permission or a separate written license; see
+[LICENSING.md](LICENSING.md).
 
 ## Found a bug?
 

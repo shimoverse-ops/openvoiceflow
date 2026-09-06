@@ -2,7 +2,14 @@
 
 This file enumerates the third-party software OpenVoiceFlow depends on at runtime, along with each component's license. It is intended for procurement, legal, and security reviewers verifying that OpenVoiceFlow's dependency tree is compatible with their organisation's licensing posture.
 
-OpenVoiceFlow itself is licensed under MIT. See [`LICENSE`](../../LICENSE).
+OpenVoiceFlow itself is source-available under the OpenVoiceFlow Personal and
+Reciprocal Source License 1.0; a Covered Work that is distributed or offered
+over a network must publish corresponding source under the same license, while
+every Integration must retain the required attribution. Commercial or
+organizational use requires separate written permission or a separate written
+license. See
+[`LICENSE`](../../LICENSE) and [`LICENSING.md`](../../LICENSING.md). Third-party
+components remain governed by their own licenses below.
 
 Repository: <https://github.com/shimoverse/openvoiceflow>
 Sources of truth for runtime dependencies: [`pyproject.toml`](../../pyproject.toml), [`Package.swift`](../../native/Package.swift), and [`package.json`](../../package.json).
@@ -21,7 +28,7 @@ These are the packages declared in `[project].dependencies` and `[project.option
 | `numpy`        | BSD-3-Clause   | `>=1.20`           | Audio buffer math.                    | <https://github.com/numpy/numpy/blob/main/LICENSE.txt>   |
 | `pynput`       | LGPL-3.0       | `>=1.7`            | Global hotkey listener.               | <https://github.com/moses-palmer/pynput/blob/master/COPYING.LGPL> |
 
-**LGPL note for procurement.** `pynput` is the only LGPL-3.0 component. We consume it as a normal Python import — i.e. it is dynamically loaded at runtime, not statically linked into a derivative work. LGPL-3.0 explicitly permits this usage pattern: the consuming program (OpenVoiceFlow) does not become a derivative work of the library, and the obligations are limited to (a) preserving copyright/licence notices and (b) allowing the user to substitute a modified version of `pynput` if they wish. Both are satisfied by our MIT-licensed pip-installable distribution. No copyleft obligation propagates to OpenVoiceFlow itself or to consumers of OpenVoiceFlow.
+**LGPL note for procurement.** `pynput` is the only LGPL-3.0 component. We consume it as a normal Python import — i.e. it is dynamically loaded at runtime, not statically linked into a derivative work. LGPL-3.0 explicitly permits this usage pattern: the consuming program (OpenVoiceFlow) does not become a derivative work of the library, and the obligations are limited to (a) preserving copyright/licence notices and (b) allowing the user to substitute a modified version of `pynput` if they wish. Both are satisfied by our pip-installable distribution. No copyleft obligation propagates to OpenVoiceFlow itself or to consumers of OpenVoiceFlow.
 
 ### Optional extras
 
@@ -108,7 +115,9 @@ For completeness — these appear in `[project.optional-dependencies].dev` and n
 
 The runtime-shipped license set is:
 
-- **MIT** — `sounddevice`, `pyobjc-framework-Cocoa` (+ all pyobjc-* siblings), `pyobjc-core`, `cffi`, `whisper.cpp`, `whisper-stream`, `ggml-*` model files, **WhisperKit**, **Sparkle**, OpenVoiceFlow itself.
+- **OpenVoiceFlow Personal and Reciprocal Source License 1.0** — current OpenVoiceFlow material owned or licensable by Shimoverse Studios; reciprocal source sharing applies to Covered Works and commercial or organizational use requires separate written permission or a separate written license.
+- **MIT (legacy contributor portions)** — material identified in [`LEGACY_MIT_PORTIONS.md`](LEGACY_MIT_PORTIONS.md), accepted before the license change.
+- **MIT** — `sounddevice`, `pyobjc-framework-Cocoa` (+ all pyobjc-* siblings), `pyobjc-core`, `cffi`, `whisper.cpp`, `whisper-stream`, `ggml-*` model files, **WhisperKit**, and **Sparkle**.
 - **BSD-3-Clause** — `numpy`, `rumps`, `pycparser`.
 - **Apache-2.0** — **swift-crypto** (bundled in the native macOS app), `@neondatabase/serverless` (website API runtime).
 - **CC0-1.0 / MIT / vendor-provided marks** — bundled app-identification fallbacks, itemized in `native/Resources/BrandIcons/README.md`.

@@ -121,14 +121,14 @@
           <p>This is where "on-device" claims most often turn out to be partial. The honest version of this check is a request-by-request table, not a paragraph of reassurance. OpenVoiceFlow makes exactly three kinds of outbound request: a one-time model download the first time you pick a given Whisper size (a public file fetch, nothing about you in it), a daily update check against a signed appcast if automatic updates are on, and a cleanup request per dictation — but only if you've turned on a cloud AI backend, and even then it carries transcript text and your dictionary/profile context, never audio. Set cleanup to <strong>None</strong> or to a local <strong>Ollama</strong> backend, and that third row simply never fires. Turn off automatic updates and the second stops too. Two settings away from zero dictation-related network traffic.</p>
 
           <h2>Check four: what runs regardless of your settings?</h2>
-          <p>The trickiest privacy leaks are the ones that aren't a feature you'd think to check — background telemetry, crash reporters, usage pings that fire whether or not you opted into "cloud" anything. Ask specifically: is there an SDK phoning home in the background, independent of the settings you configured? The app itself ships with none: no telemetry, no crash reports, no feature counters, and no account to sign up for, which also means there's no account to correlate your usage against. (This website, openvoiceflow.com, separately uses privacy-friendly, cookie-free analytics for page views — a website measurement question, entirely apart from what the app does.)</p>
+          <p>The trickiest privacy leaks are the ones that aren't a feature you'd think to check — background telemetry, crash reporters, and usage pings that fire independently of cloud transcription settings. Ask specifically what is sent and whether it can be disabled. OpenVoiceFlow has no account or crash reporter. Anonymous aggregate usage counters are on by default, exclude dictated text, and can be turned off in Settings ▸ Privacy.</p>
 
           <h2>Verifying it yourself instead of taking our word for it</h2>
           <p>Every claim above is checkable, and you don't need to trust a blog post to confirm it:</p>
           <ul>
             <li><strong>Airplane mode.</strong> Turn off Wi-Fi with cleanup set to None and dictate normally. It works, because nothing in that path needs a network — that's the fastest gut check there is.</li>
             <li><strong>A network monitor.</strong> Run Little Snitch or an equivalent and watch connections while you dictate. With cleanup off, you should see nothing at all.</li>
-            <li><strong>The source.</strong> OpenVoiceFlow is MIT-licensed and open source specifically so the audio-handling and network code aren't a black box — anyone can read the exact path from microphone to cursor.</li>
+            <li><strong>The source.</strong> OpenVoiceFlow publishes its source specifically so the audio-handling and network code aren't a black box — anyone can read the exact path from microphone to cursor.</li>
           </ul>
           <p>Run the same three checks against any tool claiming to be private, ours included. A claim that survives a network monitor is worth more than a claim that only survives a privacy policy.</p>
 
@@ -144,7 +144,7 @@
 
           <div class="article-cta">
             <h2>Check it against the source, not the sales page</h2>
-            <p>OpenVoiceFlow is free and MIT-licensed. Read the privacy architecture in full, or install it and watch your own network monitor stay quiet.</p>
+            <p>OpenVoiceFlow is free for personal use only under its source-available license. Read the privacy architecture in full, or install it and verify its documented traffic with your own network monitor.</p>
             <div class="hero-cta-row">
               <a class="btn btn-primary btn-lg" href="../download.html">Download for Mac — free</a>
               <a class="btn btn-outline btn-lg" href="../docs/privacy-architecture.html">Read the full privacy architecture</a>
@@ -167,7 +167,7 @@
   <footer class="footer">
     <div class="container footer-inner">
       <canvas class="footer-glyph" data-wf="glyph" aria-hidden="true"></canvas>
-      <p class="footer-copy">© 2026 OpenVoiceFlow contributors. MIT License.</p>
+      <p class="footer-copy">© 2026 Shimoverse Studios. Personal + reciprocal source license.</p>
       <nav class="footer-links" aria-label="Footer">
         <a href="../index.html">Home</a>
         <a href="../download.html">Download</a>

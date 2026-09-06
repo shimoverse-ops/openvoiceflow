@@ -130,7 +130,7 @@ Threats we **do not** try to defend against, because either the threat is the us
 
 3. **Compromised HuggingFace model.** The `ggml-*.bin` files are downloaded over HTTPS from HuggingFace. We do not pin checksums. A successful TLS-MITM attack against HuggingFace could substitute a backdoored model. **Checksum verification is a v0.4 ask. (TODO-v0.4-C)**
 
-4. **State-level attackers.** TLS-breaking adversaries, hardware implants, supply-chain attacks against Apple's signing infrastructure, etc. Out of scope for a single-developer MIT-licensed personal tool.
+4. **State-level attackers.** TLS-breaking adversaries, hardware implants, supply-chain attacks against Apple's signing infrastructure, etc. Out of scope for a single-developer source-available personal tool.
 
 5. **Side-channel attacks on `whisper.cpp` inference.** Power analysis, timing attacks, or acoustic side channels against the local Whisper inference. Not a meaningful threat model for a desktop dictation tool.
 
