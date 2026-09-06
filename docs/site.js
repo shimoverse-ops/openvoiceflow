@@ -274,21 +274,119 @@
 })();
 
 (() => {
-  function track(name, data = {}) {
-    if (typeof window.va !== 'function') return;
-    window.va('event', { name, data });
+  const endpoint = '/api/analytics/event';
+  const sessionKey = 'ovf_analytics_visit';
+  const sessionTimeoutMs = 30 * 60 * 1000;
+
+  function privacyOptedOut() {
+    return navigator.globalPrivacyControl === true || navigator.doNotTrack === '1';
+  }
+
+  function uuid() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID();
+    const bytes = window.crypto.getRandomValues(new Uint8Array(16));
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    return [...bytes].map((byte, index) => `${index === 4 || index === 6 || index === 8 || index === 10 ? '-' : ''}${byte.toString(16).padStart(2, '0')}`).join('');
   }
 
   function pathname() {
     return window.location.pathname || '/';
   }
 
-  document.querySelectorAll('a[href]').forEach(link => {
-    const initialHref = link.getAttribute('href') || '';
-    if (!initialHref.includes('/downloads/') && !initialHref.startsWith('downloads/')) return;
+  function classifyAcquisitionSource() {
+    const params = new URLSearchParams(window.location.search || '');
+    const taggedSource = String(params.get('utm_source') || '').toLowerCase();
+    const taggedMedium = String(params.get('utm_medium') || '').toLowerCase();
+    if (params.has('gclid') || (taggedSource === 'google' && /^(cpc|ppc|paid|paid_search)$/.test(taggedMedium))) {
+      return 'google_paid';
+    }
 
-    link.addEventListener('click', () => {
-      const href = link.getAttribute('href') || '';
+    const knownTag = {
+      google: 'google_organic', bing: 'bing_organic', github: 'github', reddit: 'reddit',
+      linkedin: 'linkedin', x: 'x', twitter: 'x', youtube: 'youtube', newsletter: 'newsletter',
+      chatgpt: 'chatgpt', openai: 'chatgpt', perplexity: 'perplexity', claude: 'claude',
+      anthropic: 'claude', gemini: 'gemini', copilot: 'copilot',
+    }[taggedSource];
+    if (knownTag) return knownTag;
+    if (taggedSource) return taggedMedium.includes('ai') ? 'other_ai' : 'other';
+
+    let host = '';
+    try { host = new URL(document.referrer).hostname.toLowerCase(); } catch {}
+    if (!host) return 'direct';
+    if (host === 'google.com' || host.endsWith('.google.com') || host.includes('.google.')) return 'google_organic';
+    if (host === 'bing.com' || host.endsWith('.bing.com')) return 'bing_organic';
+    if (host === 'github.com' || host.endsWith('.github.com')) return 'github';
+    if (host === 'reddit.com' || host.endsWith('.reddit.com')) return 'reddit';
+    if (host === 'linkedin.com' || host.endsWith('.linkedin.com')) return 'linkedin';
+    if (host === 'x.com' || host.endsWith('.x.com') || host === 'twitter.com' || host.endsWith('.twitter.com')) return 'x';
+    if (host === 'youtube.com' || host.endsWith('.youtube.com') || host === 'youtu.be') return 'youtube';
+    if (host === 'chatgpt.com' || host.endsWith('.chatgpt.com')) return 'chatgpt';
+    if (host === 'perplexity.ai' || host.endsWith('.perplexity.ai')) return 'perplexity';
+    if (host === 'claude.ai' || host.endsWith('.claude.ai')) return 'claude';
+    if (host === 'gemini.google.com') return 'gemini';
+    if (host.includes('copilot.microsoft.com')) return 'copilot';
+    return 'other';
+  }
+
+  function currentVisit() {
+    const now = Date.now();
+    try {
+      const existing = JSON.parse(window.sessionStorage.getItem(sessionKey) || 'null');
+      if (existing && /^[0-9a-f-]{36}$/i.test(existing.id || '')
+          && Number.isFinite(existing.lastSeen)
+          && now - existing.lastSeen < sessionTimeoutMs) {
+        existing.lastSeen = now;
+        window.sessionStorage.setItem(sessionKey, JSON.stringify(existing));
+        return existing;
+      }
+      const visit = { id: uuid(), source: classifyAcquisitionSource(), lastSeen: now };
+      window.sessionStorage.setItem(sessionKey, JSON.stringify(visit));
+      return visit;
+    } catch {
+      return { id: uuid(), source: classifyAcquisitionSource(), lastSeen: now };
+    }
+  }
+
+  function firstPartyTarget(data) {
+    return data.filename || data.destination || data.target || null;
+  }
+
+  function sendFirstParty(name, data) {
+    if (privacyOptedOut()) return;
+    const visit = currentVisit();
+    const payload = JSON.stringify({
+      eventId: uuid(),
+      sessionId: visit.id,
+      eventName: name,
+      path: pathname(),
+      target: firstPartyTarget(data),
+      acquisitionSource: visit.source,
+    });
+    const blob = new Blob([payload], { type: 'application/json' });
+    if (typeof navigator.sendBeacon === 'function' && navigator.sendBeacon(endpoint, blob)) return;
+    fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: payload,
+      keepalive: true,
+      credentials: 'omit',
+    }).catch(() => {});
+  }
+
+  function track(name, data = {}) {
+    sendFirstParty(name, data);
+    if (!privacyOptedOut() && typeof window.va === 'function') window.va('event', { name, data });
+  }
+
+  track('page_view');
+
+  document.addEventListener('click', event => {
+    const link = event.target.closest && event.target.closest('a[href]');
+    if (!link) return;
+    const href = link.getAttribute('href') || '';
+
+    if (href.includes('/downloads/') || href.startsWith('downloads/')) {
       const filename = href.split('/').pop() || href;
       const arch = filename.includes('arm64') ? 'arm64' : filename.includes('x86_64') ? 'x86_64' : 'unknown';
       const versionMatch = filename.match(/OpenVoiceFlow-([0-9]+\.[0-9]+\.[0-9]+)/);
@@ -298,52 +396,32 @@
         filename,
         source_path: pathname(),
       });
-    });
-  });
+      return;
+    }
 
-  document.querySelectorAll('a[href="install.html"], a[href="/install.html"], a[href="../install.html"]').forEach(link => {
-    link.addEventListener('click', () => {
+    if (['install.html', '/install.html', '../install.html'].includes(href)) {
       track('install_guide_click', { source_path: pathname() });
-    });
-  });
-
-  document.querySelectorAll('.nav a[href]').forEach(link => {
-    link.addEventListener('click', () => {
-      track('navigation_click', {
-        destination: link.getAttribute('href') || '',
-        source_path: pathname(),
-      });
-    });
-  });
-
-  document.querySelectorAll('.hero-cta-row a[href]').forEach(link => {
-    link.addEventListener('click', () => {
-      track('hero_cta_click', {
-        destination: link.getAttribute('href') || '',
-        source_path: pathname(),
-      });
-    });
-  });
-
-  document.querySelectorAll('a[href*="github.com/shimoverse/openvoiceflow"]').forEach(link => {
-    link.addEventListener('click', () => {
+      return;
+    }
+    if (link.closest('.docs-sidebar')) {
+      track('docs_nav_click', { destination: href, source_path: pathname() });
+      return;
+    }
+    if (link.closest('.hero-cta-row')) {
+      track('hero_cta_click', { destination: href, source_path: pathname() });
+      return;
+    }
+    if (href.includes('github.com/shimoverse/openvoiceflow')) {
       track('github_click', { source_path: pathname() });
-    });
+      return;
+    }
+    if (link.closest('.nav')) {
+      track('navigation_click', { destination: href, source_path: pathname() });
+    }
   });
 
   document.querySelectorAll('video[data-film]').forEach(video => {
-    video.addEventListener('play', () => {
-      track('demo_play', { source_path: pathname() });
-    }, { once: true });
-  });
-
-  document.querySelectorAll('.docs-sidebar a').forEach(link => {
-    link.addEventListener('click', () => {
-      track('docs_nav_click', {
-        destination: link.getAttribute('href') || '',
-        source_path: pathname(),
-      });
-    });
+    video.addEventListener('play', () => track('demo_play', { source_path: pathname() }), { once: true });
   });
 
   document.querySelectorAll('.footer-links a[href]').forEach(link => {
@@ -366,7 +444,7 @@
   // Which release notes and which FAQ answers people actually open. `label` is
   // the visible heading, which is authored copy on our own pages — never
   // anything a visitor typed.
-  document.querySelectorAll('details > summary').forEach(summary => {
+  document.querySelectorAll('details > summary').forEach((summary, index) => {
     summary.addEventListener('click', () => {
       const details = summary.parentElement;
       // Fires before the toggle applies, so `open` is still the old state.
@@ -374,6 +452,7 @@
       track('disclosure_open', {
         label: (summary.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 60),
         anchor: (details && details.id) || '',
+        target: details && details.id ? `#${details.id}` : `disclosure-${index + 1}`,
         source_path: pathname(),
       });
     });

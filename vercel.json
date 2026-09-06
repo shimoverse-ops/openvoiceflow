@@ -2,6 +2,12 @@
   "buildCommand": "npm run vercel-build",
   "outputDirectory": "public",
   "installCommand": "npm install --ignore-scripts",
+  "crons": [
+    {
+      "path": "/api/cron/analytics-retention",
+      "schedule": "17 3 * * *"
+    }
+  ],
   "redirects": [
     {
       "source": "/(.*)",
