@@ -1,7 +1,7 @@
 """Content for the OpenVoiceFlow manual. Rendered by build_docs.py.
 
 Ground rules, from AGENTS.md: every claim here must be true of the shipped
-app (v0.5.23). Where behaviour is surprising, say so plainly rather than
+app (v0.5.24). Where behaviour is surprising, say so plainly rather than
 describing the version we wish we shipped. When in doubt, understate.
 """
 from __future__ import annotations
@@ -17,7 +17,7 @@ PAGES["index"] = {
     "head_title": "OpenVoiceFlow Documentation — Setup, Features, Troubleshooting",
     "title": "OpenVoiceFlow documentation",
     "description": "The complete manual for OpenVoiceFlow, the free on-device voice dictation app for macOS: install, permissions, Whisper models, personalization, AI cleanup, and troubleshooting.",
-    "lede": "Everything about running OpenVoiceFlow on your Mac — from first launch to the exact bytes that do and don't leave your machine. Written against the shipping app, version 0.5.23.",
+    "lede": "Everything about running OpenVoiceFlow on your Mac — from first launch to the exact bytes that do and don't leave your machine. Written against the shipping app, version 0.5.24.",
     "body": """
         <p>OpenVoiceFlow is a free, MIT-licensed push-to-talk dictation app for macOS. You hold a key, speak, release, and cleaned text lands at your cursor in whatever app you were using. Whisper runs on your Mac, so your audio never leaves it.</p>
 
@@ -48,7 +48,7 @@ PAGES["index"] = {
         </table>
 
         <h2 id="honest">What it does not do</h2>
-        <p>An honest manual saves you the trouble of looking for something that isn't there. As of 0.5.23:</p>
+        <p>An honest manual saves you the trouble of looking for something that isn't there. As of 0.5.24:</p>
         <ul>
           <li><strong>macOS only.</strong> macOS 14 (Sonoma) or newer, Apple Silicon and Intel. There is no Windows or Linux build. iOS and Android are in development and cannot be downloaded today.</li>
           <li><strong>No spoken punctuation commands.</strong> Saying &ldquo;comma&rdquo; types the word &ldquo;comma&rdquo;. Whisper punctuates from sentence structure on its own, and <a href="ai-cleanup.html">AI cleanup</a> handles the rest if you turn it on.</li>
@@ -287,7 +287,7 @@ PAGES["dictation-basics"] = {
         </div>
 
         <h2 id="punctuation">Punctuation</h2>
-        <p>Whisper adds punctuation from sentence structure — you generally do not need to do anything. Note that OpenVoiceFlow 0.5.23 has <strong>no spoken-punctuation commands</strong>: saying &ldquo;comma&rdquo; produces the word &ldquo;comma&rdquo;, not the mark. If you want filler words removed and grammar tidied, that is what <a href="ai-cleanup.html">AI cleanup</a> is for.</p>
+        <p>Whisper adds punctuation from sentence structure — you generally do not need to do anything. Note that OpenVoiceFlow 0.5.24 has <strong>no spoken-punctuation commands</strong>: saying &ldquo;comma&rdquo; produces the word &ldquo;comma&rdquo;, not the mark. If you want filler words removed and grammar tidied, that is what <a href="ai-cleanup.html">AI cleanup</a> is for.</p>
 """,
 }
 
@@ -1075,7 +1075,7 @@ PAGES["privacy-architecture"] = {
         <ul>
           <li>A random device ID generated for this installation (not tied to your Apple ID, email, or any account — there is no account) and a display name you can change, shown to other users on the leaderboard. Installations remain separate even when they use the same nickname, so three computers produce three independent rows.</li>
           <li>Aggregate counters already shown on your Home pane: total words dictated, total time back, your streak, and which features are on (cleanup enabled, snippet/dictionary counts, whether you've run Know-Me) — counts only, never contents.</li>
-          <li><strong>Which parts of the app you use (since 0.5.23).</strong> A running count per screen (Home, History, Personalize and its tabs, Settings, Leaderboard) and per feature you press (finished a dictation, added a dictionary word or a snippet, started the Know-Me interview, changed the cleanup backend, checked for updates, opened Feedback, and similar). Each one is a fixed name and a number &mdash; <code>pane.history</code>, 12 &mdash; with <strong>no timestamps and no ordering</strong>, so it can show that a feature gets used and never when you used it or what you did around it. The list of names is compiled into the app and the server discards anything not already on its matching list, which is what keeps text you type or dictate out of it entirely.</li>
+          <li><strong>Which parts of the app you use (since 0.5.22).</strong> A running count per screen (Home, History, Personalize and its tabs, Settings, Leaderboard) and per feature you press (finished a dictation, added a dictionary word or a snippet, started the Know-Me interview, changed the cleanup backend, checked for updates, opened Feedback, and similar). Each one is a fixed name and a number &mdash; <code>pane.history</code>, 12 &mdash; with <strong>no timestamps and no ordering</strong>, so it can show that a feature gets used and never when you used it or what you did around it. The list of names is compiled into the app and the server discards anything not already on its matching list, which is what keeps text you type or dictate out of it entirely.</li>
           <li>Your country, derived server-side from the request at the moment it arrives. Your IP address itself is never logged or stored.</li>
         </ul>
         <p>Aggregate totals sync periodically during active dictation. Opening Leaderboard sends the same aggregate snapshot before fetching standings, so saved local totals can restore that installation's row. Changing a nickname also sends the snapshot once when you press Return or leave the field; individual keystrokes are not uploaded.</p>
@@ -1133,7 +1133,7 @@ PAGES["updates"] = {
         </div>
 
         <h2 id="version">Checking your version</h2>
-        <p>The dashboard sidebar footer shows your version and whether it is current: <em>Up to date</em> when the latest release is the one you are running, or an <em>Update</em> link that installs the new version when there is one. <strong>Settings</strong> shows the version too, alongside the manual check button. This documentation describes <strong>0.5.23</strong>.</p>
+        <p>The dashboard sidebar footer shows your version and whether it is current: <em>Up to date</em> when the latest release is the one you are running, or an <em>Update</em> link that installs the new version when there is one. <strong>Settings</strong> shows the version too, alongside the manual check button. This documentation describes <strong>0.5.24</strong>.</p>
 
         <h2 id="downgrade">Reinstalling or going back</h2>
         <p>To reinstall, download the current DMG from the <a href="%s">download page</a> and replace the copy in Applications; your settings, history, and personalization are stored separately and survive. There is no supported downgrade path — older builds are not hosted, and installing one would disable the fixes that came after it.</p>
@@ -1384,7 +1384,7 @@ PAGES["faq"] = {
         ("How accurate is it?",
          "That depends on your microphone, accent, vocabulary, and model choice far more than on anything we could benchmark. Whisper's larger models are widely regarded as excellent. The honest test takes a minute: dictate a real paragraph of your own work and judge the result."),
         ("Can I say punctuation out loud?",
-         "Not in version 0.5.23 — saying 'comma' produces the word 'comma'. Whisper punctuates from sentence structure automatically, and optional AI cleanup fixes grammar and removes filler words if you want more."),
+         "Not in version 0.5.24 — saying 'comma' produces the word 'comma'. Whisper punctuates from sentence structure automatically, and optional AI cleanup fixes grammar and removes filler words if you want more."),
         ("Why is my dictionary not working?",
          "The personal dictionary, Know-Me profile, and per-app styles are all applied during AI cleanup. With cleanup set to None, which is the default, they have no effect. Turn cleanup on, or use local Ollama if you want that behaviour without sending text to a cloud."),
         ("Which languages does it support?",

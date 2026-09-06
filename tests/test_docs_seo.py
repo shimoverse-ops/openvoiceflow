@@ -310,7 +310,7 @@ def test_releases_page_lists_recent_versions_with_notes():
     notes (not just link out to GitHub) so visitors can see the project is
     actively maintained without leaving the site."""
     html = read("releases.html")
-    for version in ["0.5.23", "0.5.22", "0.5.8"]:
+    for version in ["0.5.24", "0.5.23", "0.5.8"]:
         assert f"v{version}" in html, f"releases.html missing v{version}"
     assert html.count('<details class="content-card"') >= 20, (
         "releases.html should list a substantial version history"
@@ -335,7 +335,7 @@ def test_per_version_release_notes_pages_are_self_contained_and_unindexed():
     """These pages exist for the WebView Sparkle embeds in its update sheet:
     no nav, no external stylesheet (nothing else is loaded yet), and noindex +
     canonical so they don't compete with releases.html in search."""
-    for version in ["0.5.23", "0.5.22"]:
+    for version in ["0.5.24", "0.5.23"]:
         page = DOCS / "release-notes" / f"{version}.html"
         assert page.exists(), f"missing release notes page for {version}"
         html = page.read_text(encoding="utf-8")
