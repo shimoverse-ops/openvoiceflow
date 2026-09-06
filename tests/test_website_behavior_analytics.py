@@ -38,7 +38,7 @@ def test_every_interactive_site_page_loads_analytics_but_embedded_release_notes_
     missing = []
     for page in (ROOT / "docs").rglob("*.html"):
         html = page.read_text(encoding="utf-8")
-        if "release-notes" in page.parts:
+        if "release-notes" in page.parts or html.strip().startswith("google-site-verification:"):
             assert "site.js" not in html
             continue
         if "site.js" not in html:
