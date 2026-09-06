@@ -10,6 +10,7 @@ import Sparkle
 private final class UpdaterProbe: NSObject, SPUUpdaterDelegate {
     var onFound: ((SUAppcastItem) -> Void)?
     var onNotFound: (() -> Void)?
+    var onAborted: (() -> Void)?
 
     func updater(_ updater: SPUUpdater, didFindValidUpdate item: SUAppcastItem) {
         onFound?(item)
@@ -17,6 +18,15 @@ private final class UpdaterProbe: NSObject, SPUUpdaterDelegate {
 
     func updaterDidNotFindUpdate(_ updater: SPUUpdater) {
         onNotFound?()
+    }
+
+    /// Every ended check lands here, including the ones that ended badly — an
+    /// appcast that wouldn't load or parse reports neither found nor
+    /// not-found, so this is the only signal that the check told us nothing.
+    /// "No update found" aborts through here too; the controller tells the
+    /// cases apart by whether a result already arrived.
+    func updater(_ updater: SPUUpdater, didAbortWithError error: any Error) {
+        onAborted?()
     }
 }
 
@@ -56,6 +66,11 @@ final class UpdaterController: ObservableObject {
     /// rather than claiming "Up to date" on a version it has not verified.
     @Published private(set) var hasCheckedForUpdates = false
 
+    /// True from the moment a silent probe starts until the appcast answers
+    /// it. A probe that aborts while this is set answered nothing, so the
+    /// status it was meant to refresh is dropped rather than left to go stale.
+    private var probeAwaitingResult = false
+
     private init() {
         let probe = UpdaterProbe()
         self.probe = probe
@@ -66,14 +81,26 @@ final class UpdaterController: ObservableObject {
             userDriverDelegate: nil
         )
         probe.onFound = { [weak self] item in
-            self?.hasCheckedForUpdates = true
-            self?.updateAvailable = true
-            self?.availableVersion = item.displayVersionString
+            guard let self else { return }
+            self.probeAwaitingResult = false
+            self.hasCheckedForUpdates = true
+            self.updateAvailable = true
+            self.availableVersion = item.displayVersionString
         }
         probe.onNotFound = { [weak self] in
-            self?.hasCheckedForUpdates = true
-            self?.updateAvailable = false
-            self?.availableVersion = nil
+            guard let self else { return }
+            self.probeAwaitingResult = false
+            self.hasCheckedForUpdates = true
+            self.updateAvailable = false
+            self.availableVersion = nil
+        }
+        probe.onAborted = { [weak self] in
+            // A result already in hand means this is the abort that follows
+            // "no update found" — the status stands. Otherwise the check
+            // failed, and an unverified status is worse than none.
+            guard let self, self.probeAwaitingResult else { return }
+            self.probeAwaitingResult = false
+            self.clearVerifiedStatus()
         }
         // Honor the user's saved preference for automatic updates.
         apply(automatic: Settings.load().automaticUpdates)
@@ -105,6 +132,7 @@ final class UpdaterController: ObservableObject {
     func refreshUpdateStatus() {
         guard controller.updater.automaticallyChecksForUpdates,
               !controller.updater.sessionInProgress else { return }
+        probeAwaitingResult = true
         controller.updater.checkForUpdateInformation()
     }
 
@@ -126,10 +154,17 @@ final class UpdaterController: ObservableObject {
         } else {
             // The status was learned from a check the user has now opted out
             // of; stop asserting it rather than letting it go stale.
-            hasCheckedForUpdates = false
-            updateAvailable = false
-            availableVersion = nil
+            probeAwaitingResult = false
+            clearVerifiedStatus()
         }
+    }
+
+    /// Drop what the last check established, so the footer falls back to the
+    /// bare version instead of vouching for a build nothing verified.
+    private func clearVerifiedStatus() {
+        hasCheckedForUpdates = false
+        updateAvailable = false
+        availableVersion = nil
     }
 
     /// "Automatic" means check on the schedule AND download+install in the

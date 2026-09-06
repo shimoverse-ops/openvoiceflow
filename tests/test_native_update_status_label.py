@@ -39,6 +39,23 @@ def test_updater_publishes_the_state_the_footer_renders() -> None:
     assert "func installAvailableUpdate()" in updater
 
 
+def test_a_failed_probe_drops_the_status_it_could_not_verify() -> None:
+    """No network (or an unparseable appcast) must not read as "Up to date"."""
+    updater = source("Updater.swift")
+
+    # Sparkle reports a check that ended badly through didAbortWithError —
+    # neither didFindValidUpdate nor updaterDidNotFindUpdate runs.
+    assert "func updater(_ updater: SPUUpdater, didAbortWithError error: any Error)" in updater
+    assert "private var probeAwaitingResult = false" in updater
+    assert "private func clearVerifiedStatus()" in updater
+
+    aborted = updater.split("probe.onAborted = {", 1)[1].split("\n        }", 1)[0]
+    # Only an abort with no result in hand clears — the abort that trails
+    # "no update found" must leave the verified status alone.
+    assert "self.probeAwaitingResult else { return }" in aborted
+    assert "self.clearVerifiedStatus()" in aborted
+
+
 def test_probe_respects_the_automatic_updates_opt_out() -> None:
     """The switch is an opt-out of background checks, not just of installs."""
     updater = source("Updater.swift")
