@@ -72,4 +72,5 @@ ignore = []
 # the output is HTML, where line length means nothing.
 "scripts/docs_content.py" = ["E501"]
 "scripts/build_docs.py" = ["E501"]  # page chrome (nav, analytics tags) verbatim
+"scripts/build_releases.py" = ["E501"]  # releases.html chrome (nav, analytics tags) verbatim
 "scripts/analytics_dashboard.py" = ["E501"]  # self-contained private dashboard HTML/CSS template
