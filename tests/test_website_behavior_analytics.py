@@ -34,6 +34,13 @@ def test_site_tracks_visits_pages_and_allowlisted_actions_without_persistent_bro
     assert "navigator.doNotTrack" in site
 
 
+def test_analytics_fetch_fallback_sends_first_party_owner_exclusion_cookie() -> None:
+    site = read("docs/site.js")
+
+    assert "credentials: 'same-origin'" in site
+    assert "credentials: 'omit'" not in site
+
+
 def test_every_interactive_site_page_loads_analytics_but_embedded_release_notes_do_not() -> None:
     missing = []
     for page in (ROOT / "docs").rglob("*.html"):

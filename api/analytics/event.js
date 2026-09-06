@@ -1,5 +1,6 @@
 import * as productionDatabase from "../_db.js";
 import {
+  hasOwnerExclusionCookie,
   isAutomatedRequest,
   isSameSiteRequest,
   normalizeWebsiteEvent,
@@ -21,6 +22,9 @@ export function createWebsiteEventHandler(database = productionDatabase) {
     }
     if (!isSameSiteRequest(req.headers)) {
       return res.status(403).json({ error: "forbidden" });
+    }
+    if (hasOwnerExclusionCookie(req.headers)) {
+      return res.status(202).json({ ok: true, ignored: true });
     }
     if (isAutomatedRequest(req.headers)) {
       return res.status(202).json({ ok: true, ignored: true });
