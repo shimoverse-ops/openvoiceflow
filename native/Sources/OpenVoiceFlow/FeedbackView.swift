@@ -112,6 +112,7 @@ struct FeedbackView: View {
         if let url = components.url {
             NSWorkspace.shared.open(url)
         }
+        controller.usageCounters.record(.feedbackSent)
         onDismiss()
     }
 

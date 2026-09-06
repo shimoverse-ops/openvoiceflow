@@ -143,6 +143,26 @@ def test_install_counts_come_from_app_telemetry_when_it_is_available():
     assert "intentionally sends no telemetry" not in html
 
 
+def test_hero_does_not_contradict_the_install_metric():
+    """The hero asserted "Actual users are not [visible]" unconditionally, right
+    above a card showing a real install count. A page that argues with its own
+    headline number is worse than one that claims less."""
+    with_app = render_dashboard(
+        build_snapshot(github_fixture(), vercel_fixture(), now=NOW,
+                       owner_logins={"shimoverse"}, app=app_fixture())
+    )
+    assert "Actual users are not" not in with_app
+    assert "No verified install data" not in with_app
+    assert "Installs are visible" in with_app
+    # Still refuses to call devices people.
+    assert "devices, not people" in with_app
+
+    without_app = render_dashboard(
+        build_snapshot(github_fixture(), vercel_fixture(), now=NOW, owner_logins={"shimoverse"})
+    )
+    assert "Actual users are not" in without_app
+
+
 def test_app_section_reports_screens_and_features_separately():
     snapshot = build_snapshot(
         github_fixture(), vercel_fixture(), now=NOW, owner_logins={"shimoverse"}, app=app_fixture()
