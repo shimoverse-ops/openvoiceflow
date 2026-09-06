@@ -103,6 +103,9 @@ struct DashboardView: View {
                 .background(dark ? DT.winDark : DT.winLight)
         }
         .frame(minWidth: 1000, minHeight: 768)
+        // Re-probe the appcast whenever the window comes back, so the footer
+        // reflects a release published since the app launched.
+        .onAppear { updater.refreshUpdateStatus() }
     }
 
     // MARK: sidebar (212 pt, dot + label rows)
@@ -178,18 +181,47 @@ struct DashboardView: View {
 
             Spacer()
 
-            HStack(spacing: 6) {
-                Circle().fill(DT.moss).frame(width: 6, height: 6)
-                Text(controller.settings.automaticUpdates
-                     ? "v\(updater.appVersion) · auto-updating"
-                     : "v\(updater.appVersion)")
-                    .font(.system(size: 11)).foregroundStyle(ink2)
-            }
-            .padding(.bottom, 12)
+            versionFooter
+                .padding(.bottom, 12)
         }
         .padding(.horizontal, 10)
         .frame(width: 212)
         .background(dark ? DT.sideDark : DT.sideLight)
+    }
+
+    // MARK: sidebar footer (version + update state)
+    //
+    // Three states, and only one of them is clickable: a new version to
+    // install offers "Update"; a verified-current build says "Up to date" and
+    // asks nothing of the user; before any check has finished (or with
+    // automatic checks off) the version stands alone rather than claiming a
+    // freshness nobody confirmed.
+
+    @ViewBuilder private var versionFooter: some View {
+        HStack(spacing: 6) {
+            Circle()
+                .fill(updater.updateAvailable ? accent : DT.moss)
+                .frame(width: 6, height: 6)
+            if updater.updateAvailable {
+                Text("v\(updater.appVersion) ·")
+                    .font(.system(size: 11)).foregroundStyle(ink2)
+                Button { updater.installAvailableUpdate() } label: {
+                    Text("Update")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(dark ? DT.emberDark : DT.emberLight)
+                }
+                .buttonStyle(.plain)
+                .disabled(!updater.canCheckForUpdates)
+                .help(updater.availableVersion.map { "Update to v\($0)" } ?? "Update")
+            } else if updater.hasCheckedForUpdates {
+                Text("v\(updater.appVersion) · Up to date")
+                    .font(.system(size: 11)).foregroundStyle(ink2)
+            } else {
+                Text("v\(updater.appVersion)")
+                    .font(.system(size: 11)).foregroundStyle(ink2)
+            }
+            Spacer(minLength: 0)
+        }
     }
 
     // MARK: content router

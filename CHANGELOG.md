@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- The dashboard sidebar footer now says whether the running build is current instead of always reading "auto-updating". When the appcast offers a newer version it shows an **Update** action that installs it; when the build is the latest, it reads "Up to date" with nothing to click. Before a check has finished — including when automatic updates are off, which stays an opt-out of background checks — the footer shows the version alone rather than claiming a freshness nothing verified.
+
 ## [0.5.20] — 2026-09-02
 
 ### Changed
