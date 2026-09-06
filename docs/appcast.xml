@@ -6,14 +6,14 @@
     <description>OpenVoiceFlow native app updates.</description>
     <language>en</language>
     <item>
-      <title>Version 0.5.20</title>
-      <sparkle:releaseNotesLink>https://openvoiceflow.com/release-notes/0.5.20.html</sparkle:releaseNotesLink>
+      <title>Version 0.5.21</title>
+      <sparkle:releaseNotesLink>https://openvoiceflow.com/release-notes/0.5.21.html</sparkle:releaseNotesLink>
       <sparkle:fullReleaseNotesLink>https://openvoiceflow.com/releases.html</sparkle:fullReleaseNotesLink>
-      <pubDate>Wed, 02 Sep 2026 04:40:31 +0000</pubDate>
-      <sparkle:version>25</sparkle:version>
-      <sparkle:shortVersionString>0.5.20</sparkle:shortVersionString>
+      <pubDate>Sun, 06 Sep 2026 06:27:37 +0000</pubDate>
+      <sparkle:version>26</sparkle:version>
+      <sparkle:shortVersionString>0.5.21</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <enclosure url="https://openvoiceflow.com/downloads/OpenVoiceFlow-0.5.20.dmg" sparkle:edSignature="dBxD/Z0rDcufkGGcyrEVQPINwdSOlFkAIGrwKKo0ZcvNX8IVakn3QJ9hoKRed/AwZ57JHo8IkiSCoKbn8z5oCg==" length="5839207" type="application/octet-stream" />
+      <enclosure url="https://openvoiceflow.com/downloads/OpenVoiceFlow-0.5.21.dmg" sparkle:edSignature="YRPDpZx0VSVB2XUq0NV6FQXIBLAn9mJeyoYCSeHWpAMnSOCPq3Pe1jxhLLi4huuRZ8/9S69ulie1Wk/DbnUzCA==" length="5857115" type="application/octet-stream" />
     </item>
   </channel>
 </rss>
