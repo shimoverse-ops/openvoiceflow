@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, follow" />
+  <title>OpenVoiceFlow 0.3.6 release notes</title>
+  <link rel="canonical" href="https://openvoiceflow.com/releases.html#v0.3.6" />
+  <style>
+    :root { color-scheme: light dark; --ink: #16130f; --ink2: #5d564d; --rule: #e4ded4; --ember: #b4531d; --bg: #fffdfa; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f4efe7; --ink2: #a49a8c; --rule: #322d27; --ember: #e2854a; --bg: #17140f; }
+    }
+    html, body { background: var(--bg); }
+    body {
+      margin: 0; padding: 16px 20px 22px;
+      font: 13px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+    }
+    h1 { margin: 0 0 2px; font-size: 17px; letter-spacing: -0.2px; }
+    .date { margin: 0 0 14px; color: var(--ink2); font-size: 12px; }
+    h2 { margin: 16px 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.7px; color: var(--ink2); }
+    ul { margin: 0; padding-left: 18px; }
+    li { margin: 0 0 5px; }
+    code { font-family: "SF Mono", ui-monospace, Menlo, monospace; font-size: 12px; background: color-mix(in srgb, var(--ink) 8%, transparent); padding: 1px 4px; border-radius: 4px; }
+    a { color: var(--ember); }
+    footer { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--ink2); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>OpenVoiceFlow 0.3.6</h1>
+    <p class="date">July 18, 2026</p>
+    <h2>Fixed — Fn / 🌐 Globe key no longer fails silently</h2>
+    <ul>
+      <li><strong>Fn was never a working hotkey.</strong> macOS doesn't deliver the Fn/Globe key to <code>pynput</code>, so selecting it left dictation permanently dead with no feedback. Choosing Fn now surfaces an immediate modal explaining the limitation and pointing at Right Command (the default), the menu-bar picker hides Fn unless it's the current (legacy) selection, and onboarding no longer offers it.</li>
+    </ul>
+    <h2>Fixed — production-hardening pass (end-to-end audit follow-up)</h2>
+    <ul>
+      <li><strong>Hotkey can't be wedged by a consent dialog.</strong> The microphone is now armed on the event-tap thread and the ~150 ms of <code>osascript</code> context capture runs on a worker, so a stalled Automation/Accessibility dialog can no longer block (and let macOS disable) the global hotkey.</li>
+      <li><strong>Runaway recordings self-terminate.</strong> A max-duration watchdog force-stops a dictation whose key-release was lost, instead of leaving the mic and <code>whisper-stream</code> running indefinitely.</li>
+      <li><strong>No PortAudio stream leak.</strong> <code>recorder.stop()</code> always releases the audio stream even when the input device is unplugged mid-recording; that failure is now surfaced instead of silently freezing the overlay.</li>
+      <li><strong>Clipboard data-loss fixed.</strong> Selected-text capture no longer overwrites a non-text clipboard (image/file) and never restores empty text over the selection.</li>
+      <li><strong>Security defense-in-depth.</strong> Secrets are written with <code>O_EXCL|O_NOFOLLOW</code> (symlink-swap safe); <code>~/.openvoiceflow/logs/</code> is <code>0700</code>; LLM/Ollama responses are read with a 16 MB cap; <code>ollama_url</code> rejects non-HTTP schemes and warns when it points off-box. Hung <code>pbcopy</code> children are reaped, not orphaned.</li>
+      <li><strong>Upgrades actually reinstall dependencies.</strong> The DMG venv marker is now version-stamped, so a release that adds or bumps a dependency reinstalls for existing upgraders instead of breaking on import.</li>
+      <li><strong>Overlay polish.</strong> HUD timers run in the common run-loop mode (no freeze during menu tracking), fades honor Reduce Motion, and the window is ordered out after fading so it doesn't linger in every Space.</li>
+      <li><strong>Know-Me interview no longer self-destructs</strong> when Escape is pressed while a text field is focused.</li>
+    </ul>
+  </main>
+  <footer>
+    <a href="https://openvoiceflow.com/releases.html">See the full version history</a>
+  </footer>
+</body>
+</html>

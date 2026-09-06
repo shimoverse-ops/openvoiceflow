@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.21] — 2026-09-06
+
+### Fixed
+- The **Version History** button on the "You're up to date!" update alert now opens the [Releases page](https://openvoiceflow.com/releases.html) instead of the "How it works" marketing page, which listed no versions at all. Sparkle fills that button from the appcast's `fullReleaseNotesLink`, which the feed never set, so it fell back to a `releaseNotesLink` that pointed at marketing copy. The appcast now sets both, and this fix reaches every installed build the moment the site deploys — the button reads the website's feed, not the app.
+- The release notes shown inside the update sheet are now that version's actual notes, generated from this changelog, rather than the same marketing page.
+
+### Added
+- Settings ▸ "You're on vX.Y.Z" now has a **Version history** link that opens the Releases page at the running version, so the notes no longer sit behind an update check that reports there is nothing to install.
+- Every release on the Releases page is individually linkable (`releases.html#v0.5.21`), and opening such a link expands that release rather than landing on a collapsed card.
+
 ### Changed
 - The dashboard sidebar footer now says whether the running build is current instead of always reading "auto-updating". When the appcast offers a newer version it shows an **Update** action that installs it; when the build is the latest, it reads "Up to date" with nothing to click. Before a check has finished — including when automatic updates are off, which stays an opt-out of background checks — the footer shows the version alone rather than claiming a freshness nothing verified.
 

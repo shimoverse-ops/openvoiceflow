@@ -7,7 +7,8 @@
     <language>en</language>
     <item>
       <title>Version 0.5.20</title>
-      <sparkle:releaseNotesLink>https://openvoiceflow.com/how-it-works.html</sparkle:releaseNotesLink>
+      <sparkle:releaseNotesLink>https://openvoiceflow.com/release-notes/0.5.20.html</sparkle:releaseNotesLink>
+      <sparkle:fullReleaseNotesLink>https://openvoiceflow.com/releases.html</sparkle:fullReleaseNotesLink>
       <pubDate>Wed, 02 Sep 2026 04:40:31 +0000</pubDate>
       <sparkle:version>25</sparkle:version>
       <sparkle:shortVersionString>0.5.20</sparkle:shortVersionString>

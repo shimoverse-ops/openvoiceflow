@@ -12,6 +12,8 @@
 #   SPARKLE_ED_PRIVATE_KEY the exported EdDSA private key string   [REQUIRED — fails if unset]
 #   OVF_DOWNLOAD_BASE      URL prefix the DMG will be served from
 #                          [default https://openvoiceflow.com/downloads]
+#   OVF_SITE_BASE          website root the release-notes links point at
+#                          [default https://openvoiceflow.com]
 #   SPARKLE_VERSION        Sparkle release to pull sign_update from [default 2.9.4]
 #
 # REQUIRED for a release: fails loudly if SPARKLE_ED_PRIVATE_KEY is unset, since
@@ -35,6 +37,14 @@ BUILD="${OVF_BUILD:-$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' Info.p
 DOWNLOAD_BASE="${OVF_DOWNLOAD_BASE:-https://openvoiceflow.com/downloads}"
 # The feed's own URL — must match Info.plist SUFeedURL (served at the site root).
 FEED_URL="${OVF_APPCAST_URL:-https://openvoiceflow.com/appcast.xml}"
+# Where the website is served from. Sparkle reads two release-notes links off
+# the item: releaseNotesLink fills the WebView in the update sheet, and
+# fullReleaseNotesLink is what the "Version History" button opens — including
+# on the "You're up to date!" alert, which is the only place a current user
+# ever sees it. Both must be real pages; scripts/build_releases.py generates
+# them from CHANGELOG.md, so the changelog entry has to land before this
+# appcast goes live (RELEASE.md).
+SITE_BASE="${OVF_SITE_BASE:-https://openvoiceflow.com}"
 SPARKLE_VERSION="${SPARKLE_VERSION:-2.9.4}"
 
 DMG="dist/OpenVoiceFlow-$OVF_VERSION.dmg"
@@ -73,7 +83,8 @@ cat > dist/appcast.xml <<XML
     <language>en</language>
     <item>
       <title>Version $OVF_VERSION</title>
-      <sparkle:releaseNotesLink>https://openvoiceflow.com/how-it-works.html</sparkle:releaseNotesLink>
+      <sparkle:releaseNotesLink>$SITE_BASE/release-notes/$OVF_VERSION.html</sparkle:releaseNotesLink>
+      <sparkle:fullReleaseNotesLink>$SITE_BASE/releases.html</sparkle:fullReleaseNotesLink>
       <pubDate>$PUBDATE</pubDate>
       <sparkle:version>$BUILD</sparkle:version>
       <sparkle:shortVersionString>$OVF_VERSION</sparkle:shortVersionString>

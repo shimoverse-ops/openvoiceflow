@@ -318,6 +318,33 @@ def test_releases_page_lists_recent_versions_with_notes():
     assert "https://github.com/shimoverse/openvoiceflow/releases" in html
 
 
+def test_every_release_card_is_deep_linkable():
+    """Each release renders as a collapsed-by-default <details>, and a browser
+    will not scroll to — or reveal — a fragment inside a closed one. The app's
+    Settings link and the appcast both address versions as releases.html#vX.Y.Z,
+    so every card carries that id and the page opens the targeted one."""
+    html = read("releases.html")
+    versions = re.findall(r'<summary><h2>v([0-9.]+)', html)
+    assert len(versions) >= 20
+    for version in versions:
+        assert f'id="v{version}"' in html, f"releases.html: v{version} has no anchor"
+    assert "hashchange" in html, "releases.html must open the release named by the URL fragment"
+
+
+def test_per_version_release_notes_pages_are_self_contained_and_unindexed():
+    """These pages exist for the WebView Sparkle embeds in its update sheet:
+    no nav, no external stylesheet (nothing else is loaded yet), and noindex +
+    canonical so they don't compete with releases.html in search."""
+    for version in ["0.5.20", "0.5.19"]:
+        page = DOCS / "release-notes" / f"{version}.html"
+        assert page.exists(), f"missing release notes page for {version}"
+        html = page.read_text(encoding="utf-8")
+        assert 'name="robots" content="noindex' in html
+        assert f'<link rel="canonical" href="{CANONICAL}/releases.html#v{version}" />' in html
+        assert 'rel="stylesheet"' not in html
+        assert f"{CANONICAL}/releases.html" in html, "must link back to the full history"
+
+
 def test_homepage_structured_data_links_the_project_to_its_repository():
     blocks = [
         json.loads(raw)

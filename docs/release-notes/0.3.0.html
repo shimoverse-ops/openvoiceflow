@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, follow" />
+  <title>OpenVoiceFlow 0.3.0 release notes</title>
+  <link rel="canonical" href="https://openvoiceflow.com/releases.html#v0.3.0" />
+  <style>
+    :root { color-scheme: light dark; --ink: #16130f; --ink2: #5d564d; --rule: #e4ded4; --ember: #b4531d; --bg: #fffdfa; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f4efe7; --ink2: #a49a8c; --rule: #322d27; --ember: #e2854a; --bg: #17140f; }
+    }
+    html, body { background: var(--bg); }
+    body {
+      margin: 0; padding: 16px 20px 22px;
+      font: 13px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+    }
+    h1 { margin: 0 0 2px; font-size: 17px; letter-spacing: -0.2px; }
+    .date { margin: 0 0 14px; color: var(--ink2); font-size: 12px; }
+    h2 { margin: 16px 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.7px; color: var(--ink2); }
+    ul { margin: 0; padding-left: 18px; }
+    li { margin: 0 0 5px; }
+    code { font-family: "SF Mono", ui-monospace, Menlo, monospace; font-size: 12px; background: color-mix(in srgb, var(--ink) 8%, transparent); padding: 1px 4px; border-radius: 4px; }
+    a { color: var(--ember); }
+    footer { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--ink2); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>OpenVoiceFlow 0.3.0</h1>
+    <p class="date">July 8, 2026</p>
+    <h2>Added</h2>
+    <ul>
+      <li>Pytest scaffold under <code>tests/</code> with regression tests for every Wave-1 ship-stopper (<code>test_python39_compat</code>, <code>test_install_sh</code>, <code>test_config_migration</code>, <code>test_onboarding</code>, <code>test_voice_commands_count</code>, <code>test_updater</code>) plus privacy invariants (<code>test_chmod_600</code>, <code>test_privacy_defaults</code>) and package smoke tests. 60 tests total, green on Python 3.9, 3.10, and 3.11.</li>
+      <li><code>[dev]</code> extras in <code>pyproject.toml</code> (pytest, pytest-cov, ruff, build, twine).</li>
+      <li>CI Python matrix: 3.9, 3.10, 3.11 on macos-latest. Lint is now a blocking step. A separate <code>build</code> job exercises <code>python -m build</code> and <code>twine check</code>.</li>
+      <li><code>--update-check on/off</code> CLI flag and matching <code>update_check</code> config key for opting out of the daily GitHub-Releases ping.</li>
+      <li><code>--log-transcripts on/off</code> CLI flag for explicit control of the <code>~/.openvoiceflow/logs/</code> daily files.</li>
+      <li>"Privacy at a glance" panel in the README that maps every on-disk file and every network egress in one table.</li>
+      <li><code>voiceflow/_secure_io.py</code> — <code>secure_write_json()</code> and <code>secure_chmod()</code> helpers that all config / profile / dictionary / snippets / stats / daily-log writes now go through, enforcing mode 600.</li>
+      <li>Community-health docs: SECURITY, PRIVACY, CONTRIBUTING, CODE_OF_CONDUCT, SUPPORT, VERSIONING, AGENTS, plus docs/COMPLIANCE, docs/COMPATIBILITY, docs/THREAT_MODEL, docs/ARCHITECTURE, docs/legal/DPA-template, docs/legal/THIRD_PARTY_NOTICES. ~14 files, ~2,100 lines.</li>
+      <li><code>RELEASE.md</code> — maintainer's three-command playbook plus when-things-go-wrong table.</li>
+      <li><code>.github/workflows/release.yml</code> rebuilt: tag-driven, Trusted Publisher PyPI publish on non-pre-release tags, split arm64/x86_64 DMG attach, <code>verify-version</code> gate that fails the release if tag ↔ pyproject ↔ <code>__version__</code> disagree.</li>
+    </ul>
+    <h2>Changed</h2>
+    <ul>
+      <li><strong>Config-key migration:</strong> <code>cleanup_prompt</code> → <code>llm_prompt</code>. Existing <code>~/.openvoiceflow/config.json</code> files are migrated transparently on load; the rename was the v0.2.0 schema change that previously dropped users' custom prompts on upgrade. (Fixes SS5.)</li>
+      <li><strong>Privacy defaults flipped to off for fresh installs.</strong> New users get <code>log_transcripts: False</code> and <code>auto_learn: False</code> until they opt in via the Know Me onboarding interview. <strong>Existing users keep their setting</strong> — the migration logic only applies the new defaults when no config exists.</li>
+      <li><code>install.sh</code> shim now <code>exec</code>s the pip-installed <code>openvoiceflow</code> console script directly instead of <code>python3 -m openvoiceflow</code> (which never existed — the module is <code>voiceflow</code>). (Fixes SS2.)</li>
+      <li><strong>Lint is now blocking in CI.</strong> Previously <code>ruff check</code> was advisory; the 43-finding backlog meant noise floor only ever climbed.</li>
+      <li>README hero rewritten so the privacy framing matches the actual data flow (audio is local; transcripts go to whatever LLM backend you pick; default Gemini is cloud, Ollama is local).</li>
+    </ul>
+    <h2>Fixed</h2>
+    <ul>
+      <li><strong>Code-review pass (2026-07)</strong> — full-codebase review; the notable fixes: - Streaming mode + snippet match no longer crashes with a <code>NameError</code> (the dictation was silently lost with only an error sound). - OpenAI, Anthropic, and Groq backends now honor per-app style and app context (previously silently dropped — the per-app style feature only worked on OpenRouter/Ollama). - Empty LLM responses fall back to the raw transcript instead of pasting nothing. - Custom voice commands containing backslashes no longer crash every dictation; command expansions are no longer re-processed by later commands (single-pass replacement). - Snippet triggers only match on word boundaries — a trigger like <code>sig</code> no longer swallows a dictation starting with "significant…". - Menu bar: LLM Backend / Hotkey / Style submenus are now populated at startup (previously empty until first use); Streaming/Auto-Style/ Auto-Learn toggles now apply to the running session; stopping or quitting aborts an in-flight recording instead of orphaning the whisper-stream process (hot mic). - Corrupt <code>config.json</code> no longer bricks every CLI entry point — the bad file is preserved as <code>config.json.corrupt</code> and defaults are restored. - Whisper model downloads use <code>curl --fail</code> with a temp file, so an HTTP error page or interrupted transfer can't be mistaken for a valid model forever after (fixed in <code>transcriber.py</code>, <code>install.sh</code>, and the DMG launcher). - Batch transcription timeout raised 30 s → 300 s so long dictations aren't discarded; Ollama cleanup timeout raised 30 s → 120 s for cold model loads. - Mic failures during recording start are surfaced (notification + error sound) instead of being silently swallowed with stale state. - Overlay no longer sticks on screen after too-short/no-speech/error aborts. - Selected-text capture no longer erases image/file clipboards when nothing was selected; <code>pbpaste</code>/<code>pbcopy</code> calls have timeouts. - <code>--show-config</code> no longer masks <code>hotkey</code> (over-broad secret matching); <code>--streaming-step</code> validates its value and <code>0</code> is no longer ignored; <code>--language</code> no longer crashes on a null <code>whisper_model</code>; env-var-only API-key setups aren't forced through onboarding on every launch. - Onboarding: re-running the wizard and switching backends no longer saves the old backend's key under the new backend's field; the Finish button survives a corrupt config; headless runs fail with instructions instead of a traceback (also fixed for <code>--profile</code>). - Interview: pressing Escape on the final screen no longer mislabels a saved profile as skipped. - <code>--autostart on</code> fails with a clear message when the executable can't be resolved (previously installed a LaunchAgent that silently never launched); the plist is generated with <code>plistlib</code> so paths containing <code>&amp;</code> can't produce invalid XML. - <code>install.sh</code> works under <code>curl | bash</code> (wizard prompts read from <code>/dev/tty</code>), installs from the script's own directory instead of the CWD, creates <code>~/.zshrc</code> when no shell rc exists, and uses <code>set -euo pipefail</code>. - Release workflow: DMG job sequenced after the PyPI job so the two release-upload steps can't race creating the same GitHub Release.</li>
+    </ul>
+    <h2>Changed (code-review pass)</h2>
+    <ul>
+      <li>The typed 🎙 recording indicator is now opt-in (<code>"recording_indicator": true</code>): it edits the frontmost document and could delete a user character when focus changed mid-dictation; the overlay HUD remains the default recording feedback.</li>
+      <li><code>paste_text</code> no longer moves the caret to end-of-line before pasting — text is pasted at the cursor, as documented.</li>
+      <li><code>--set-key BACKEND -</code> reads the key from stdin so it stays out of shell history and <code>ps</code> output (used by <code>install.sh</code>, which also hides key input).</li>
+    </ul>
+    <h2>Security (code-review pass)</h2>
+    <ul>
+      <li>Config/profile/dictionary writes are atomic and created with mode 600 from the first byte (previously created 644 then chmod'd — a crash mid-write could truncate the file or leave secrets world-readable).</li>
+      <li><code>~/.openvoiceflow/</code> is chmod 700; LaunchAgent stdout/stderr logs are pre-created with mode 600 (they capture dictated text via stdout).</li>
+      <li>Update-notification strings from the GitHub API are escaped before AppleScript interpolation (a crafted release tag/URL could otherwise break out of the string literal).</li>
+      <li>Internal <code>docs/superpowers/</code> documents removed from the repository, and the website build excludes any such directory as defense-in-depth.</li>
+      <li><strong>SS2</strong> — <code>install.sh</code> shim no longer crashes with <code>ModuleNotFoundError: No module named 'openvoiceflow'</code>.</li>
+      <li><strong>SS3</strong> — <code>from __future__ import annotations</code> added to all 30 modules using <code>X | None</code> syntax. <code>pip install .</code> and <code>openvoiceflow --version</code> now work on Python 3.9 (macOS 12 default) in addition to 3.10 / 3.11.</li>
+      <li><strong>SS5</strong> — Silent loss of custom <code>cleanup_prompt</code> on v0.1 → v0.2 upgrade. Migration now preserves the user's prompt under the new key.</li>
+      <li><strong>SS6</strong> — Onboarding "Personalize OpenVoiceFlow" button no longer silently swallows every exception from <code>interview.run_interview()</code>. Errors surface with a logged traceback and an in-app message.</li>
+      <li>The cargo-culted PyObjC import in <code>overlay.py</code> that broke the module for anyone installing without the <code>[overlay]</code> extra.</li>
+      <li>43 lint findings (37 unused imports, 4 placeholder-less f-strings, 1 multiple-statements, 1 unused variable). All resolved; lint now gates CI.</li>
+    </ul>
+    <h2>Security</h2>
+    <ul>
+      <li>All <code>~/.openvoiceflow/*.json</code> files (config, profile, dictionary, snippets, stats) and the daily transcript logs are written with mode 600 — owner-only — instead of inheriting umask 022. API keys and personal data are no longer world-readable on default macOS user accounts.</li>
+      <li>Lint gating in CI closes the "style debt grew silently" loop.</li>
+      <li>Twelve community-health files added so a procurement reviewer can find the answers they need without filing an issue: <code>SECURITY.md</code>, <code>PRIVACY.md</code>, <code>THREAT_MODEL.md</code>, <code>COMPLIANCE.md</code>, <code>CODE_OF_CONDUCT.md</code>, <code>CONTRIBUTING.md</code>, <code>SUPPORT.md</code>, <code>CHANGELOG.md</code> (this file), <code>VERSIONING.md</code>, <code>COMPATIBILITY.md</code>, <code>legal/DPA-template.md</code>, <code>legal/THIRD_PARTY_NOTICES.md</code>.</li>
+    </ul>
+  </main>
+  <footer>
+    <a href="https://openvoiceflow.com/releases.html">See the full version history</a>
+  </footer>
+</body>
+</html>
