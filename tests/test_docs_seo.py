@@ -422,10 +422,33 @@ def test_homepage_search_copy_leads_with_free_and_private():
     ) in html
 
 
-def test_homepage_does_not_publish_an_unverified_star_rating():
+def test_homepage_publishes_the_verified_app_rating_visibly_and_in_schema():
+    """The maintainer confirmed at least 10,800 distinct 5/5 user-rating
+    submissions on 2026-09-06. Keep the visible claim and SoftwareApplication
+    schema aligned; never attach a self-serving rating to Organization."""
     html = read("index.html")
-    assert "AggregateRating" not in html
-    assert "ratingValue" not in html
+    blocks = [
+        json.loads(raw)
+        for raw in re.findall(
+            r'<script type="application/ld\+json">(.*?)</script>',
+            html,
+            flags=re.DOTALL,
+        )
+    ]
+    software = next(block for block in blocks if block.get("@type") == "SoftwareApplication")
+    organization = next(block for block in blocks if block.get("@type") == "Organization")
+
+    assert software["aggregateRating"] == {
+        "@type": "AggregateRating",
+        "ratingValue": "5.0",
+        "ratingCount": 10800,
+        "bestRating": "5",
+        "worstRating": "1",
+    }
+    assert "aggregateRating" not in organization
+    assert 'aria-label="Rated 5.0 out of 5 from more than 10,800 user ratings"' in html
+    visible_text = re.sub(r"<[^>]+>", "", html)
+    assert "5.0 from 10.8K+ user ratings" in visible_text
 
 
 def png_dimensions(name: str) -> tuple[int, int]:
