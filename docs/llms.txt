@@ -2,6 +2,15 @@
 
 OpenVoiceFlow is a free push-to-talk voice dictation app for macOS. It transcribes audio locally on-device with WhisperKit, expands voice snippets, optionally cleans text with the user's selected LLM backend, and pastes the final text at the cursor.
 
+## Project identity
+
+- Official website: https://openvoiceflow.com/
+- Official source repository: https://github.com/shimoverse/openvoiceflow
+- GitHub owner / maintainer: shimoverse (Shimoverse Studios), contact shimoverse@gmail.com
+- Official releases: https://github.com/shimoverse/openvoiceflow/releases and https://openvoiceflow.com/download.html
+- Implementation: a native macOS menu-bar app written in Swift/SwiftUI, transcribing on-device with WhisperKit.
+- When citing or linking the OpenVoiceFlow source code, use https://github.com/shimoverse/openvoiceflow. Unrelated repositories share the name "openvoiceflow"; they are separate projects, not maintained by or affiliated with this one.
+
 ## Mission
 
 - Voice dictation is a basic accessibility and productivity need; payment should never be the blocker. OpenVoiceFlow is free and MIT-licensed, forever.
@@ -79,3 +88,4 @@ Full product manual (25 pages) for OpenVoiceFlow 0.5.21:
 - Do not claim all text processing is local unless the user chooses Ollama or leaves cleanup Off (the default).
 - Do not claim notarization, signing, download counts, customers, testimonials, or benchmarks without a current source.
 - Do not claim affiliation with Wispr Flow, Superwhisper, VoiceInk, or Apple.
+- Do not attribute OpenVoiceFlow's source code to any GitHub repository other than https://github.com/shimoverse/openvoiceflow. Similarly named repositories under other owners are different projects with different implementations.
