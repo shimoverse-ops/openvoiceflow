@@ -675,6 +675,19 @@ struct DashboardView: View {
     }
 
     // MARK: History
+    //
+    // The log holds up to `HistoryStore.maxEntries` takes, and a plain `VStack`
+    // inside a `ScrollView` builds every one of them before the first frame —
+    // resolving an app icon, laying out a full transcript and materialising a
+    // button per row, for hundreds of rows the user cannot see. That is what
+    // made opening this tab stall. `LazyVStack` builds the dozen rows that fit
+    // on screen and the rest as they scroll into view, which is also what keeps
+    // the cold app-icon lookups in `AppIconProvider` (a synchronous Launch
+    // Services search for any app that isn't currently running) off the path to
+    // that first frame.
+    //
+    // Rows live in their own `View` so a copy acknowledgement re-renders one
+    // row's worth of work rather than the whole log.
 
     @ViewBuilder private var historyPane: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -686,34 +699,22 @@ struct DashboardView: View {
                     button: nil
                 )
             } else {
-                ForEach(history.entries) { entry in
-                    let isCopied = copyFeedback.isCopied(entry.id)
-                    HStack(spacing: 12) {
-                        Text(entry.timestamp, format: .dateTime.hour().minute())
-                            .font(.system(size: 11)).foregroundStyle(ink2).frame(width: 56, alignment: .leading)
-                        AppIdentityLabel(name: entry.app, iconSize: 16, spacing: 5)
-                            .font(.system(size: 10, weight: .bold)).foregroundStyle(ink2)
-                            .padding(.horizontal, 6).padding(.vertical, 2)
-                            .background(RoundedRectangle(cornerRadius: 5).fill(fill))
-                        Text(entry.text).font(.system(size: 12.5)).foregroundStyle(ink).lineLimit(1)
-                        Spacer()
-                        Text("\(entry.words)").font(.system(size: 11)).foregroundStyle(ink2)
-                        Button {
-                            NSPasteboard.general.clearContents()
-                            if NSPasteboard.general.setString(entry.text, forType: .string) {
-                                copyFeedback.markCopied(entry.id)
-                                usageCounters.record(.historyCopied)
+                LazyVStack(alignment: .leading, spacing: 0) {
+                    ForEach(history.entries) { entry in
+                        HistoryRow(
+                            entry: entry,
+                            isCopied: copyFeedback.isCopied(entry.id),
+                            onCopy: {
+                                NSPasteboard.general.clearContents()
+                                if NSPasteboard.general.setString(entry.text, forType: .string) {
+                                    copyFeedback.markCopied(entry.id)
+                                    usageCounters.record(.historyCopied)
+                                }
                             }
-                        } label: {
-                            Label(isCopied ? "Copied" : "Copy",
-                                  systemImage: isCopied ? "checkmark" : "doc.on.doc")
-                        }
-                        .buttonStyle(.plain).font(.system(size: 11)).foregroundStyle(DT.emberLight)
-                        .animation(.easeOut(duration: 0.15), value: isCopied)
+                        )
                     }
-                    .padding(.vertical, 10)
-                    .overlay(Rectangle().fill(hair).frame(height: 1), alignment: .top)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 Text("Raw audio is discarded after transcription. Delete everything from Settings › Privacy.")
                     .font(.system(size: 11)).foregroundStyle(ink2).padding(.top, 6)
             }
@@ -1777,5 +1778,57 @@ private struct SnippetAddRow: View {
         guard !t.isEmpty, !e.isEmpty else { return }
         onAdd(t, e)
         trigger = ""; expansion = ""
+    }
+}
+
+/// One take in the History pane.
+///
+/// A row of its own, rather than a closure inside `historyPane`, for two
+/// reasons: `LazyVStack` can leave it unbuilt until it scrolls into view, and a
+/// copy acknowledgement redraws the row that was copied instead of every row in
+/// the log.
+private struct HistoryRow: View {
+    let entry: HistoryEntry
+    let isCopied: Bool
+    let onCopy: () -> Void
+    @Environment(\.colorScheme) private var scheme
+
+    /// One line is all that is ever drawn, but `Text` measures whatever string
+    /// it is handed — and a take can be a whole dictated paragraph. Hand it a
+    /// bounded prefix (still far longer than any row is wide, so SwiftUI's own
+    /// tail truncation is what the user sees) and the copy button keeps working
+    /// from `entry.text`, which stays whole.
+    private static let previewLimit = 512
+
+    private var dark: Bool { scheme == .dark }
+    private var ink: Color { dark ? DT.inkDark : DT.inkLight }
+    private var ink2: Color { dark ? DT.ink2Dark : DT.ink2Light }
+    private var hair: Color { dark ? .white.opacity(0.09) : .black.opacity(0.08) }
+    private var fill: Color { dark ? .white.opacity(0.06) : .black.opacity(0.05) }
+
+    private var preview: String { String(entry.text.prefix(Self.previewLimit)) }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Text(entry.timestamp, format: .dateTime.hour().minute())
+                .font(.system(size: 11)).foregroundStyle(ink2).frame(width: 56, alignment: .leading)
+            AppIdentityLabel(name: entry.app, iconSize: 16, spacing: 5)
+                .font(.system(size: 10, weight: .bold)).foregroundStyle(ink2)
+                .padding(.horizontal, 6).padding(.vertical, 2)
+                .background(RoundedRectangle(cornerRadius: 5).fill(fill))
+            Text(preview)
+                .font(.system(size: 12.5)).foregroundStyle(ink)
+                .lineLimit(1).truncationMode(.tail)
+            Spacer()
+            Text("\(entry.words)").font(.system(size: 11)).foregroundStyle(ink2)
+            Button(action: onCopy) {
+                Label(isCopied ? "Copied" : "Copy",
+                      systemImage: isCopied ? "checkmark" : "doc.on.doc")
+            }
+            .buttonStyle(.plain).font(.system(size: 11)).foregroundStyle(DT.emberLight)
+            .animation(.easeOut(duration: 0.15), value: isCopied)
+        }
+        .padding(.vertical, 10)
+        .overlay(Rectangle().fill(hair).frame(height: 1), alignment: .top)
     }
 }
