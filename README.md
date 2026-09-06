@@ -25,7 +25,7 @@ Requires macOS 14 (Sonoma) or newer. On macOS 12–13, the download page offers 
 - **Personal dictionary, snippets, per-app styles** — teach it names and jargon once; spoken shortcuts expand to full text; casual in Slack, formal in Mail.
 - **Auto-updates** — signed Sparkle updates from [openvoiceflow.com](https://openvoiceflow.com), verified with an EdDSA key pinned in the app.
 
-No account. No telemetry. No paid tier — see [the mission](https://openvoiceflow.com/#mission).
+No account. No paid tier — see [the mission](https://openvoiceflow.com/#mission). Anonymous aggregate usage sharing is on by default and takes one switch to turn off; it never includes dictation text (see [PRIVACY.md](PRIVACY.md) §7).
 
 ## Build from source
 
@@ -64,7 +64,7 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md). The short version: pull requests 
 
 ## Privacy and security
 
-The one-page version: audio on-device always; text to a cloud only if you enable cleanup; keys in the Keychain; no telemetry. Full statements: [PRIVACY.md](PRIVACY.md) · [SECURITY.md](SECURITY.md) · [threat model](docs/THREAT_MODEL.md). To report a vulnerability, see [SECURITY.md](SECURITY.md).
+The one-page version: audio on-device always; text to a cloud only if you enable cleanup; keys in the Keychain; anonymous aggregate usage sharing on by default, one switch to turn off, never dictation text. Full statements: [PRIVACY.md](PRIVACY.md) · [SECURITY.md](SECURITY.md) · [threat model](docs/THREAT_MODEL.md). To report a vulnerability, see [SECURITY.md](SECURITY.md).
 
 ## License
 

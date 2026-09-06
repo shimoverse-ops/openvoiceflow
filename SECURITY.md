@@ -136,7 +136,8 @@ OpenVoiceFlow holds three strong privileges on the user's Mac:
 Together those mean a compromise of OpenVoiceFlow is roughly equivalent to a
 compromise of the user's interactive desktop session. The threat model documents how
 we limit blast radius (local-only audio, default-off transcript logging, default-off
-auto-learner, mode-600 config files, no telemetry) and what we explicitly don't
+auto-learner, mode-600 config files, no dictation content in the Mac app's opt-out usage
+sharing) and what we explicitly don't
 defend against (a malicious operator who already has shell access as the user; a user
 who configures a hostile `llm_prompt`; supply-chain compromise of a chosen LLM
 provider).
@@ -151,7 +152,10 @@ A v0.3.0 fresh install ships with:
 - `auto_learn: false` — the Accessibility-API correction watcher is dormant until you
   opt in via the Know Me interview.
 - `~/.openvoiceflow/*.json` — written with mode `600` (owner read/write only).
-- **No telemetry, ever.** No usage pings, no crash reports, no install beacons.
+- **No telemetry.** No usage pings, no crash reports, no install beacons. This applies to the
+  Python CLI described in this section. The native Mac app *does* share anonymous aggregate
+  usage counters (opt-out, on by default since 0.5.8) — see `PRIVACY.md` §7 for exactly what
+  it sends and how to turn it off.
 - `update_check: true` — the only outbound request we make on your behalf, hitting
   `https://api.github.com/repos/shimoverse/openvoiceflow/releases/latest` once per
   launch. Set `update_check: false` in `~/.openvoiceflow/config.json` to disable.

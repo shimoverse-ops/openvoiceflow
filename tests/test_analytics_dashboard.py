@@ -95,6 +95,91 @@ def vercel_fixture():
     }
 
 
+def app_fixture():
+    return {
+        "available": True,
+        "window": {"activeDays": 30, "recentDays": 7},
+        "totals": {
+            "installs": 128,
+            "active_recent": 61,
+            "active_window": 94,
+            "new_window": 22,
+            "countries": 14,
+        },
+        "versions": [{"key": "0.5.21", "total": 90, "visitors": None}],
+        "countries": [{"key": "US", "total": 70, "visitors": None}],
+        "features": {
+            "cleanupEnabled": 51,
+            "usesSnippets": 30,
+            "usesDictionary": 44,
+            "hasKnowMeProfile": 19,
+        },
+        "events": [
+            {"key": "action.dictation_completed", "total": 15400, "visitors": 118},
+            {"key": "pane.home", "total": 900, "visitors": 120},
+            {"key": "tab.dictionary", "total": 140, "visitors": 47},
+        ],
+    }
+
+
+def test_install_counts_come_from_app_telemetry_when_it_is_available():
+    """The headline card used to read "Unknown / Native app has no telemetry",
+    which stopped being true in 0.5.8 when opt-out usage sharing shipped. The
+    data was in the devices table the whole time; the dashboard just never
+    asked for it."""
+    snapshot = build_snapshot(
+        github_fixture(), vercel_fixture(), now=NOW, owner_logins={"shimoverse"}, app=app_fixture()
+    )
+
+    assert snapshot["adoption"]["verified_installs"] == 128
+    assert snapshot["adoption"]["active_users"] == 94
+    assert "opted out" in snapshot["adoption"]["install_note"]
+    # The GitHub-derived interest figure must stay a separate, unrelated number.
+    assert snapshot["adoption"]["high_confidence_external_interest"] == 1
+
+    html = render_dashboard(snapshot)
+    assert "128" in html
+    assert "Native app has no telemetry" not in html
+    assert "intentionally sends no telemetry" not in html
+
+
+def test_app_section_reports_screens_and_features_separately():
+    snapshot = build_snapshot(
+        github_fixture(), vercel_fixture(), now=NOW, owner_logins={"shimoverse"}, app=app_fixture()
+    )
+    html = render_dashboard(snapshot)
+
+    assert "What people actually open" in html
+    assert "Screens opened" in html
+    assert "Features used" in html
+    assert "pane.home" in html
+    assert "action.dictation_completed" in html
+    # Counters have no timestamps, and the page should say so rather than
+    # letting a reader assume these are time series.
+    assert "no timestamps" in html
+
+
+def test_dashboard_degrades_without_the_telemetry_token():
+    """No token is a missing credential, not evidence that the app is silent —
+    the old copy asserted the latter."""
+    snapshot = build_snapshot(github_fixture(), vercel_fixture(), now=NOW, owner_logins={"shimoverse"})
+    html = render_dashboard(snapshot)
+
+    assert snapshot["adoption"]["verified_installs"] is None
+    assert "App telemetry unavailable" in html
+    assert "OVF_ANALYTICS_STATS_TOKEN" in html
+    assert "not because the app sends nothing" in html
+
+
+def test_app_telemetry_token_never_reaches_the_snapshot_or_page():
+    snapshot = build_snapshot(
+        github_fixture(), vercel_fixture(), now=NOW, owner_logins={"shimoverse"}, app=app_fixture()
+    )
+    serialized = json.dumps(snapshot).lower()
+    for forbidden in ("bearer", "ovf_analytics_stats_token", "authorization"):
+        assert forbidden not in serialized
+
+
 def test_external_interest_is_a_lower_bound_not_an_install_claim():
     estimate = estimate_external_interest(github_fixture(), owner_logins={"shimoverse"}, now=NOW)
 
@@ -136,6 +221,7 @@ def test_dashboard_is_self_contained_private_and_explains_limitations():
     assert "OpenVoiceFlow Analytics" in html
     assert "High-confidence external interest" in html
     assert "Verified installs" in html
+    # No app telemetry passed to build_snapshot, so this stays honestly unknown.
     assert "Unknown" in html
     assert "274" in html
     assert "139" in html

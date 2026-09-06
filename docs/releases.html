@@ -68,6 +68,21 @@
       <h1 class="hero-title">Releases</h1>
       <p class="hero-sub answer-block">OpenVoiceFlow ships often — every release below is real, shipped, and notarized, newest first. Notes come straight from the project's changelog, so this list is exactly as current as the code. Want the raw commit history or to file an issue? <a href="https://github.com/shimoverse/openvoiceflow/releases">See every release on GitHub</a>.</p>
 
+      <details class="content-card" id="v0.5.22" open><summary><h2>v0.5.22 <span class="release-date">· September 6, 2026</span></h2></summary>
+        <h3>Added</h3>
+        <ul class="check-list">
+          <li><strong>Which parts of the app get used.</strong> The app now keeps a running count per screen (Home, History, Personalize and its tabs, Settings, Leaderboard) and per feature you press (finished a dictation, added a dictionary word or snippet, started the Know-Me interview, changed the cleanup backend, checked for updates, opened Feedback, and similar), and includes those counts in the anonymous usage summary it already sends. Each counter is a fixed name and a total — <code>pane.history</code>, 12 — with <strong>no timestamps and no ordering</strong>, so they show that a feature is used and never when you used it or what you did around it. The names are a closed list compiled into the app, and the server discards any name not already on its own matching list, so dictated text cannot reach them. Same single switch as before (Settings ▸ Privacy ▸ "Share anonymous usage &amp; leaderboard rank"), no new network requests, and "Delete my leaderboard data" now clears the local counters too so a later sync can't re-upload what you deleted.</li>
+          <li>The website records anonymous counts for footer links, checksum copies, and opening a release note or FAQ answer, alongside the download/navigation/CTA events it already tracked.</li>
+        </ul>
+        <h3>Fixed</h3>
+        <ul class="check-list">
+          <li>The maintainer analytics dashboard reported <strong>"Verified installs: Unknown — Native app has no telemetry."</strong> That stopped being true in 0.5.8, when opt-out usage sharing shipped: the install data was in the database the whole time and the dashboard never asked for it. It now reports opted-in installs, active installs, app versions, countries, and which screens and features get used, via a new token-gated aggregate endpoint (<code>api/analytics/stats.js</code>). Without the token the dashboard says the source is unavailable rather than asserting the app is silent.</li>
+        </ul>
+        <h3>Changed</h3>
+        <ul class="check-list">
+          <li><code>README.md</code>, <code>SECURITY.md</code>, <code>docs/ARCHITECTURE.md</code>, the DPA template, and the website's "Really free?" answer still carried blanket "no telemetry" claims that 0.5.8 had already made false, or that were true only of the legacy Python CLI. Each now says what the Mac app actually sends and how to turn it off, or names the CLI it applies to.</li>
+        </ul>
+      </details>
       <details class="content-card" id="v0.5.21" open><summary><h2>v0.5.21 <span class="release-date">· September 6, 2026</span></h2></summary>
         <h3>Fixed</h3>
         <ul class="check-list">

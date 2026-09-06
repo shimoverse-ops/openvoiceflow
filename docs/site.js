@@ -345,6 +345,39 @@
       });
     });
   });
+
+  document.querySelectorAll('.footer-links a[href]').forEach(link => {
+    link.addEventListener('click', () => {
+      track('footer_click', {
+        destination: link.getAttribute('href') || '',
+        source_path: pathname(),
+      });
+    });
+  });
+
+  // Copying the checksum is a distinct intent from clicking Download — it is
+  // someone verifying the build before they trust it.
+  document.querySelectorAll('.copy-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      track('copy_click', { source_path: pathname() });
+    });
+  });
+
+  // Which release notes and which FAQ answers people actually open. `label` is
+  // the visible heading, which is authored copy on our own pages — never
+  // anything a visitor typed.
+  document.querySelectorAll('details > summary').forEach(summary => {
+    summary.addEventListener('click', () => {
+      const details = summary.parentElement;
+      // Fires before the toggle applies, so `open` is still the old state.
+      if (details && details.open) return;
+      track('disclosure_open', {
+        label: (summary.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 60),
+        anchor: (details && details.id) || '',
+        source_path: pathname(),
+      });
+    });
+  });
 })();
 
 /* ── Docs sidebar: collapsed on phones, always open on desktop ────────

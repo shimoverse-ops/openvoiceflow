@@ -72,14 +72,23 @@ documents the support question or invariant it protects.
 
 ## Maintainer analytics dashboard
 
-Repository traffic and aggregate website analytics can be combined into a
-private local dashboard:
+Repository traffic, aggregate website analytics, and the app's own aggregate
+install and usage counters can be combined into a private local dashboard:
 
 ```bash
 gh auth status
 vercel whoami
+export OVF_ANALYTICS_STATS_TOKEN=…        # matches ANALYTICS_STATS_TOKEN on the deployment
 python3 scripts/analytics_dashboard.py --open
 ```
+
+`OVF_ANALYTICS_STATS_TOKEN` authenticates against `api/analytics/stats.js`, the
+aggregate install/usage endpoint. It is deliberately private: the public
+leaderboard hides the population size on purpose (`api/leaderboard.js`), and an
+open install counter would give that away. Set `ANALYTICS_STATS_TOKEN` in the
+Vercel project to a long random value and use the same value here; without it
+the endpoint answers 404 and the dashboard's app sections report themselves
+unavailable rather than claiming the app sends nothing.
 
 The generated HTML and normalized snapshot live in `.analytics-dashboard/`,
 use owner-only file permissions, and are ignored by Git. The dashboard never
@@ -89,7 +98,12 @@ website visitors, and verified installs separate: none is a proxy for another.
 
 The GitHub traffic window is short, so rebuild or archive the private snapshot
 regularly if trend history matters. Website data comes from Vercel's documented
-Web Analytics REST API. Add `--no-vercel` to generate the GitHub-only dashboard.
+Web Analytics REST API. `--no-vercel` and `--no-app` each drop one source.
+
+Verified installs count *devices that share anonymous usage* (opt-out, on by
+default — `PRIVACY.md` §7). That makes it a floor, not a headcount: one person
+with two Macs is two, and anyone who opted out is invisible. Say "opted-in
+installs" when quoting it, never "users".
 
 ## Working on the legacy Python app
 

@@ -132,7 +132,13 @@ def test_privacy_friendly_web_observability_is_present_without_native_telemetry(
         assert "/_vercel/speed-insights/script.js" in html
 
     site_js = (DOCS / "site.js").read_text(encoding="utf-8")
-    for event in ["download_click", "install_guide_click", "navigation_click", "hero_cta_click", "github_click"]:
+    for event in [
+        "download_click", "install_guide_click", "navigation_click", "hero_cta_click",
+        "github_click", "demo_play", "docs_nav_click",
+        # Page-level intent beyond navigation: which footer links, who verifies
+        # the checksum, and which release notes / FAQ answers get opened.
+        "footer_click", "copy_click", "disclosure_open",
+    ]:
         assert event in site_js
 
     privacy = (ROOT / "PRIVACY.md").read_text(encoding="utf-8")

@@ -284,7 +284,7 @@ Version lives in two places — `pyproject.toml` (`[project] version`) and `voic
 - **No remote config.** No call-home for prompt updates or model lists.
 - **No async runtime.** Threads + subprocesses, no `asyncio` event loop.
 - **No background daemon.** When the menubar app quits, the process exits; the LaunchAgent only re-launches on next login.
-- **No telemetry.** Stats are local. The single network call the app initiates without a user action is `updater.check_for_updates` against `api.github.com/repos/shimoverse/openvoiceflow/releases/latest`, gated by `update_check: true` in config.
+- **No telemetry** (this document describes the Python CLI; the native Mac app's opt-out usage sharing is documented in `PRIVACY.md` §7). Stats are local. The single network call the app initiates without a user action is `updater.check_for_updates` against `api.github.com/repos/shimoverse/openvoiceflow/releases/latest`, gated by `update_check: true` in config.
 - **No analytics.** No Sentry, no PostHog, no anonymized usage events. The egress surface is exactly: whisper.cpp model download (HuggingFace, on first use), the LLM backend you chose, and the GitHub release check.
 
 ## See also
