@@ -2,7 +2,6 @@
 
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -26,10 +25,28 @@ def test_site_tracks_visits_pages_and_allowlisted_actions_without_persistent_bro
         "github_click",
         "demo_play",
         "docs_nav_click",
+        "footer_click",
+        "copy_click",
+        "disclosure_open",
     ):
         assert event in site
     assert "navigator.globalPrivacyControl" in site
     assert "navigator.doNotTrack" in site
+
+
+def test_every_interactive_site_page_loads_analytics_but_embedded_release_notes_do_not() -> None:
+    missing = []
+    for page in (ROOT / "docs").rglob("*.html"):
+        html = page.read_text(encoding="utf-8")
+        if "release-notes" in page.parts:
+            assert "site.js" not in html
+            continue
+        if "site.js" not in html:
+            missing.append(str(page.relative_to(ROOT)))
+    assert not missing, f"published pages missing site.js: {missing}"
+
+    for content in (read("PRIVACY.md"), read("docs/privacy.html")):
+        assert "release-note embeds" in content
 
 
 def test_public_privacy_copy_matches_collected_fields_and_retention() -> None:

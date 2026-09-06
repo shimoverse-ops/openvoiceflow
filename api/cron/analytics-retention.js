@@ -1,5 +1,5 @@
-import * as productionDatabase from "../../_db.js";
-import { isAuthorizedReportRequest, setPrivateResponseHeaders } from "../../_websiteAnalytics.js";
+import * as productionDatabase from "../_db.js";
+import { isAuthorizedReportRequest, setPrivateResponseHeaders } from "../_websiteAnalytics.js";
 
 export function createAnalyticsRetentionHandler(database = productionDatabase, options = { cronSecret: process.env.CRON_SECRET }) {
   return async function handler(req, res) {

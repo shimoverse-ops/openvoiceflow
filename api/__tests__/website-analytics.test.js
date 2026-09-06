@@ -8,6 +8,7 @@ import {
 } from "../_websiteAnalytics.js";
 import { createWebsiteEventHandler } from "../analytics/event.js";
 import { createAnalyticsReportHandler } from "../analytics/report.js";
+import { createAnalyticsRetentionHandler } from "../cron/analytics-retention.js";
 
 const EVENT_ID = "00000000-0000-4000-8000-000000000001";
 const SESSION_ID = "00000000-0000-4000-8000-000000000002";
@@ -205,4 +206,43 @@ test("report authorization uses exact bearer token matching", () => {
   assert.equal(isAuthorizedReportRequest({ authorization: "Bearer secretx" }, "secret"), false);
   assert.equal(isAuthorizedReportRequest({}, "secret"), false);
   assert.equal(isAuthorizedReportRequest({ authorization: "Bearer secret" }, ""), false);
+});
+
+test("retention endpoint enforces method and exact cron bearer token", async () => {
+  let deleted = false;
+  const database = {
+    async ensureSchema() {},
+    async deleteExpiredWebsiteEvents(days) { deleted = true; assert.equal(days, 90); return 4; },
+  };
+  const handler = createAnalyticsRetentionHandler(database, { cronSecret: "cron-secret" });
+
+  let response = await call(handler, { method: "POST", headers: { authorization: "Bearer cron-secret" } });
+  assert.equal(response.statusCode, 405);
+  assert.equal(deleted, false);
+
+  response = await call(handler, { headers: { authorization: "Bearer wrong" } });
+  assert.equal(response.statusCode, 401);
+  assert.equal(deleted, false);
+
+  response = await call(handler, { headers: { authorization: "Bearer cron-secret" } });
+  assert.equal(response.statusCode, 200);
+  assert.deepEqual(response.body, { ok: true, deleted: 4, retained_days: 90 });
+  assert.equal(deleted, true);
+});
+
+test("retention endpoint fails closed when deletion fails", async () => {
+  const database = {
+    async ensureSchema() {},
+    async deleteExpiredWebsiteEvents() { throw new Error("database unavailable"); },
+  };
+  const handler = createAnalyticsRetentionHandler(database, { cronSecret: "cron-secret" });
+  const originalError = console.error;
+  console.error = () => {};
+  try {
+    const response = await call(handler, { headers: { authorization: "Bearer cron-secret" } });
+    assert.equal(response.statusCode, 503);
+    assert.deepEqual(response.body, { error: "service unavailable" });
+  } finally {
+    console.error = originalError;
+  }
 });
