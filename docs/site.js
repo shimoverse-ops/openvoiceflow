@@ -31,13 +31,13 @@
 
   const builds = {
     arm64: {
-      href: 'downloads/OpenVoiceFlow-0.5.20.dmg',
+      href: 'downloads/OpenVoiceFlow-0.5.21.dmg',
       title: 'Universal macOS DMG',
       subtitle: 'One universal native build for Apple Silicon and Intel Macs running macOS 14 or later.',
       badge: 'Universal macOS',
     },
     x86_64: {
-      href: 'downloads/OpenVoiceFlow-0.5.20.dmg',
+      href: 'downloads/OpenVoiceFlow-0.5.21.dmg',
       title: 'Universal macOS DMG',
       subtitle: 'One universal native build for Apple Silicon and Intel Macs running macOS 14 or later.',
       badge: 'Universal macOS',
