@@ -2,7 +2,7 @@
 
 # OpenVoiceFlow
 
-**Free for personal and qualifying noncommercial use: source-available voice dictation for macOS. Hold a key, talk, release — polished text lands in whatever app you're in. Your audio never leaves your Mac.**
+**Free for personal use only: source-available voice dictation for macOS. Hold a key, talk, release — polished text lands in whatever app you're in. Your audio never leaves your Mac.**
 
 [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-black)](https://openvoiceflow.com/download.html)
 [![License](https://img.shields.io/badge/license-Personal%20%26%20Reciprocal%201.0-amber.svg)](LICENSE)
@@ -69,18 +69,21 @@ The one-page version: audio on-device always; text to a cloud only if you enable
 ## License
 
 OpenVoiceFlow is source-available under the **[OpenVoiceFlow Personal and
-Reciprocal Source License 1.0](LICENSE)**. Personal and qualifying
-noncommercial use is free under those terms. If you distribute a derivative or
-let others use a modified version over a network, you must publish its complete
-source under the same license; the free license does not allow closed-source
-derivatives. Commercial use — including business use, paid products or
-services, bundling, and resale — requires a separate license from Shimoverse
-Studios even when the source is published. Contact **shimoverse@gmail.com**
-before commercial use.
+Reciprocal Source License 1.0](LICENSE)**. Personal use only is free under those
+terms. Every integration, fork, derivative, or modified version must visibly
+credit OpenVoiceFlow and link to the original source code. If you distribute a
+derivative or let others use a modified version over a network, you must publish
+its complete source under the same license; the free license does not allow
+closed-source derivatives. Commercial or organizational use requires separate
+written permission or a separate written license from Shimoverse Studios even when the
+source is published. Contact **shimoverse@gmail.com** before commercial or organizational
+use.
 
 Copyright © 2025–2026 **Shimoverse Studios**. Keep the required notices with every
 copy. The source license does not grant rights to the OpenVoiceFlow name or
-logo; derivative distributions must rebrand and credit the original project.
+logo; derivative distributions and integrations must rebrand where applicable
+and state **"Based on OpenVoiceFlow by Shimoverse Studios"** with a working link
+to the [original source code](https://github.com/shimoverse/openvoiceflow).
 See [LICENSING.md](LICENSING.md), [TRADEMARKS.md](TRADEMARKS.md),
 [docs/legal/LEGACY_MIT_PORTIONS.md](docs/legal/LEGACY_MIT_PORTIONS.md), and
 [docs/legal/THIRD_PARTY_NOTICES.md](docs/legal/THIRD_PARTY_NOTICES.md).

@@ -9,13 +9,13 @@
 
 ## Executive Summary
 
-OpenVoiceFlow is a source-available voice dictation app for macOS, free for personal and qualifying noncommercial use, competing against Wispr Flow ($144/yr), Superwhisper ($85/yr), and VoiceInk. Commercial use requires separate terms from Shimoverse Studios. Current state: functional push-to-talk with whisper.cpp STT, LLM cleanup (6 backends), floating overlay, personal dictionary, snippets, multi-language, style modes, stats, auto-update, launch-at-login, tkinter onboarding wizard, and menu bar app.
+OpenVoiceFlow is a source-available voice dictation app for macOS, free for personal use only, competing against Wispr Flow ($144/yr), Superwhisper ($85/yr), and VoiceInk. Commercial or organizational use requires separate written permission or a separate written license from Shimoverse Studios. Current state: functional push-to-talk with whisper.cpp STT, LLM cleanup (6 backends), floating overlay, personal dictionary, snippets, multi-language, style modes, stats, auto-update, launch-at-login, tkinter onboarding wizard, and menu bar app.
 
 This PRD defines 7 features that close competitive gaps and establish OpenVoiceFlow as a source-available leader in macOS voice dictation. The features are ordered by priority and dependency chain.
 
 **Positioning:**
 - $0-3/yr vs $85-144/yr (40-50x cheaper)
-- Public source, free personal and qualifying noncommercial license, PRs welcome (vs VoiceInk's GPL/no-PRs-accepted)
+- Public source, free personal-use-only license, PRs welcome (vs VoiceInk's GPL/no-PRs-accepted)
 - Python (accessible contributor base) vs Swift (high barrier)
 - 6 LLM backends vs locked ecosystems
 - Local-first audio (whisper.cpp, never leaves machine)
@@ -439,7 +439,7 @@ As a developer, I want to install OpenVoiceFlow via `brew install openvoiceflow`
    - `Formula/openvoiceflow.rb` — Homebrew formula:
      ```ruby
      class Openvoiceflow < Formula
-       desc "Free personal-use, source-available voice dictation for macOS"
+       desc "Free personal-use-only, source-available voice dictation for macOS"
        homepage "https://github.com/shimoverse/openvoiceflow"
        url "https://github.com/shimoverse/openvoiceflow/archive/refs/tags/v#{version}.tar.gz"
        license :cannot_represent
@@ -562,7 +562,7 @@ As a potential user visiting the GitHub repo, I want to see a short demo of Open
 6. **Speaker diarization** — "Speaker 1 said X, Speaker 2 said Y" is interesting but not a dictation feature. Future consideration.
 7. **In-app settings GUI** — the menu bar app + CLI is sufficient. A full preferences window adds complexity for marginal UX gain. The tkinter onboarding wizard handles first-run. Config.json handles the rest.
 8. **Plugin/extension system** — premature abstraction. The codebase is small enough that contributors can modify directly.
-9. **Consumer premium tier** — personal and qualifying noncommercial use remains free; commercial use is licensed separately.
+9. **Consumer premium tier** — personal use only remains free; commercial or organizational use requires separate written permission or a separate written license.
 10. **Audio recording/playback** — we're a dictation tool, not a voice recorder. Logs are text-only (JSONL).
 
 ---

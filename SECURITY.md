@@ -1,10 +1,11 @@
 # Security Policy
 
-OpenVoiceFlow is a source-available macOS voice-dictation app. Personal and
-qualifying noncommercial use is available under the
-[OpenVoiceFlow Personal and Reciprocal Source License 1.0](LICENSE). Commercial or business use,
-including selling or bundling the software, requires a separate license from
-Shimoverse Studios; contact **shimoverse@gmail.com**. This document explains
+OpenVoiceFlow is a source-available macOS voice-dictation app. Personal use only
+is available under the
+[OpenVoiceFlow Personal and Reciprocal Source License 1.0](LICENSE). Commercial
+or organizational use, including selling or bundling the software, requires
+separate written permission or a separate written license from Shimoverse Studios;
+contact **shimoverse@gmail.com**. This document explains
 which versions get security fixes, how to report a vulnerability, what to expect from us,
 and what is in scope.
 
@@ -15,7 +16,8 @@ prior-version, third-party, and brand details.
 
 This is a **single-maintainer project**. Response is best-effort, on a human schedule. We
 do **not** offer an SLA, and the project is **not** SOC 2 / ISO 27001 / HIPAA certified.
-If your organization requires those, OpenVoiceFlow is probably not the right fit.
+If your organization requires those, request separate permission before use;
+OpenVoiceFlow is probably not the right fit.
 
 ---
 

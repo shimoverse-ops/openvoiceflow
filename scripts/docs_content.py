@@ -16,10 +16,10 @@ PAGES: dict[str, dict] = {}
 PAGES["index"] = {
     "head_title": "OpenVoiceFlow Documentation — Setup, Features, Troubleshooting",
     "title": "OpenVoiceFlow documentation",
-    "description": "OpenVoiceFlow's manual for the on-device macOS dictation app, free for personal and qualifying noncommercial use: install, permissions, models, personalization, cleanup, and troubleshooting.",
+    "description": "OpenVoiceFlow's manual for the on-device macOS dictation app, free for personal use only: install, permissions, models, personalization, cleanup, and troubleshooting.",
     "lede": "Everything about running OpenVoiceFlow on your Mac — from first launch to the exact bytes that do and don't leave your machine. Written against the shipping app, version 0.5.24.",
     "body": """
-        <p>OpenVoiceFlow is a source-available push-to-talk dictation app for macOS, free for personal and qualifying noncommercial use. You hold a key, speak, release, and cleaned text lands at your cursor in whatever app you were using. Whisper runs on your Mac, so your audio never leaves it. Business or other commercial use requires a separate license from Shimoverse Studios.</p>
+        <p>OpenVoiceFlow is a source-available push-to-talk dictation app for macOS, free for personal use only. You hold a key, speak, release, and cleaned text lands at your cursor in whatever app you were using. Whisper runs on your Mac, so your audio never leaves it. Commercial or organizational use requires separate written permission or a separate written license from Shimoverse Studios.</p>
 
         <div class="callout tip">
           <span class="callout-label">New here?</span>
@@ -75,7 +75,7 @@ PAGES["quickstart"] = {
     "lede": "From a fresh Mac to your first dictated sentence. The only slow part is the one-time model download, and the app tells you how long that will take.",
     "howto": (
         "Set up OpenVoiceFlow and dictate for the first time",
-        "Install OpenVoiceFlow for personal or qualifying noncommercial use on macOS, grant the three required permissions, download an on-device Whisper model, and dictate a first sentence.",
+        "Install OpenVoiceFlow for personal use only on macOS, grant the three required permissions, download an on-device Whisper model, and dictate a first sentence.",
         "PT5M",
         [
             ("Download and install", "Download the universal DMG from openvoiceflow.com, open it, and drag OpenVoiceFlow into your Applications folder."),
@@ -1372,7 +1372,7 @@ PAGES["faq"] = {
     "lede": "Short answers to what we get asked most. Longer versions link through to the relevant page.",
     "faq": [
         ("Is OpenVoiceFlow really free?",
-         "Personal and qualifying noncommercial use is free, with no account or trial period. Business use, resale, bundling, paid products or services, and other commercial use require a separate license from Shimoverse Studios; contact shimoverse@gmail.com. If you enable optional cloud cleanup you pay your chosen AI provider directly for tokens."),
+         "Use is free for personal purposes only, with no account or trial period. Commercial or organizational use requires separate written permission or a separate written license from Shimoverse Studios; contact shimoverse@gmail.com. If you enable optional cloud cleanup you pay your chosen AI provider directly for tokens."),
         ("Does my voice leave my Mac?",
          "No. Audio is transcribed on-device by Whisper and discarded once text exists. There is no code path that uploads audio. If you turn on cloud AI cleanup, the resulting text is sent to the provider you chose under your own key; choosing Ollama or leaving cleanup off keeps everything local."),
         ("Does it work offline?",
@@ -1396,9 +1396,9 @@ PAGES["faq"] = {
         ("How do I get support?",
          "Use the Feedback item in the dashboard sidebar, or email shimoverse@gmail.com. Include your macOS version, your Mac's chip, your OpenVoiceFlow version, and what you saw versus what you expected — the usage summary is aggregate counts, not diagnostics, so your description is still what gets things fixed."),
         ("Can I use OpenVoiceFlow at work with confidential material?",
-         "The architecture supports that case: audio never leaves the machine, and with cleanup off or pointed at local Ollama, neither does text. Your organization's own policy still applies, and the public source lets your security team verify the claims. Workplace or other business use requires a commercial license from Shimoverse Studios."),
+         "The architecture supports that case: audio never leaves the machine, and with cleanup off or pointed at local Ollama, neither does text. Your organization's own policy still applies, and the public source lets your security team verify the claims. Workplace or other organizational use requires separate written permission or a separate written license from Shimoverse Studios."),
         ("Can I use the code in my own project?",
-         "For personal and qualifying noncommercial purposes, yes, under the OpenVoiceFlow Personal and Reciprocal Source License 1.0. If you distribute a derivative or let others use a modified version over a network, publish its complete corresponding source under the same license, keep the required notices, and rebrand the derivative. Business use, paid products or services, bundling, resale, and other commercial use require a separate license even when source is published; contact shimoverse@gmail.com."),
+         "For personal purposes only, yes, under the OpenVoiceFlow Personal and Reciprocal Source License 1.0. Every integration, derivative, fork, or modified build must keep the required notices and visibly state ‘Based on OpenVoiceFlow by Shimoverse Studios’ with a working link to https://github.com/shimoverse/openvoiceflow, even if it stays private or merely connects through a documented interface. If it is a Covered Work and you distribute it or let others use it over a network, publish its complete corresponding source under the same license and rebrand where required. Commercial or organizational use requires separate written permission or a separate written license even when the source is published."),
     ],
     "body": """
         <p>If your question is not here, the <a href="troubleshooting.html">troubleshooting guide</a> covers specific symptoms, and <a href="privacy-architecture.html">privacy architecture</a> answers data questions in far more depth. Anything still unanswered: <a href="mailto:shimoverse@gmail.com">shimoverse@gmail.com</a>.</p>

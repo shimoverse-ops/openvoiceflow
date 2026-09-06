@@ -5,8 +5,8 @@ out of date, that itself is a bug — please open an issue.
 
 ## What this project is, briefly
 
-OpenVoiceFlow is a macOS-only voice-dictation app, free for personal and
-qualifying noncommercial use: hold a hotkey, speak, and text appears at your
+OpenVoiceFlow is a macOS-only voice-dictation app, free for personal use only:
+hold a hotkey, speak, and text appears at your
 cursor. The **shipping app is native Swift** and lives in
 `native/`. The repo also carries the legacy Python app (`voiceflow/`, ≤ 0.3.6)
 it replaced — end-of-life, no security fixes, kept for reference and the
@@ -138,7 +138,7 @@ Security issues: **don't** open a public issue — see [SECURITY.md](SECURITY.md
 ## License
 
 The project is source-available under the [OpenVoiceFlow Personal and Reciprocal
-Source License 1.0](LICENSE), with separate commercial licenses available from
+Source License 1.0](LICENSE), with separate commercial and organizational licenses available from
 Shimoverse Studios. Distributed derivatives and modified network versions must
 publish complete corresponding source under the same license. See
 [LICENSING.md](LICENSING.md).
@@ -147,6 +147,6 @@ By submitting a contribution, you represent that you have the right to do so
 and grant Shimoverse Studios a perpetual, worldwide, non-exclusive,
 royalty-free, irrevocable copyright and patent license to use, reproduce,
 modify, distribute, sublicense, and relicense that contribution, including as
-part of commercial licenses. You also agree that the contribution may be
+part of commercial and organizational licenses. You also agree that the contribution may be
 distributed under the project's current or future public license. This grant
 does not transfer your copyright ownership.

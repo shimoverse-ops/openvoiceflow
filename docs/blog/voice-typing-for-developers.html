@@ -122,7 +122,7 @@
           <p>Let's not oversell this. Editing code by voice — <code>args?.filter(Boolean).map(f =&gt; f.id)</code> — means speaking punctuation soup, and it's miserable. Dedicated voice-coding systems for hands-free programming exist (Talon is the serious one, built for accessibility needs, and it's impressive); that's a different discipline with a real learning curve. The workflow we're describing needs no learning curve at all: <strong>speak the English, type the symbols.</strong> Push-to-talk makes the split effortless — hold the key when talking to humans or AIs, keep coding when not. No modes to enter, nothing to remember.</p>
 
           <h2>The setup that actually sticks</h2>
-          <p>OpenVoiceFlow is <a href="../index.html">our app</a>, source-available and free for personal and qualifying noncommercial use, so the specifics below use it — but the principles port anywhere.</p>
+          <p>OpenVoiceFlow is <a href="../index.html">our app</a>, source-available and free for personal use only, so the specifics below use it — but the principles port anywhere.</p>
           <ol>
             <li><strong>Push-to-talk on a key you don't fight over.</strong> Default is <code>fn</code>. Hold, talk, release; text lands in whatever has focus — Cursor's chat pane, a code-review comment box, your terminal. It's a <a href="../how-it-works.html">five-stage local pipeline</a> under the hood, but it feels like a longer spacebar.</li>
             <li><strong>Load the dictionary before you judge accuracy.</strong> Whisper has never seen your service names, and no model size fixes that (<a href="whisper-models-for-dictation.html">we explain why</a>). Spend five minutes: <code>kubectl</code>, <code>useEffect</code>, <code>psql</code>, <code>nginx</code>, teammates' names, the staging cluster's cursed codename. Every term is fixed once, forever.</li>
@@ -145,11 +145,11 @@
           <h3>Is it safe for proprietary code?</h3>
           <p>Transcription is on-device; audio never leaves the Mac. With cleanup Off (default) or via Ollama, nothing does. Cloud cleanup, if you opt in, sends text only, under your own key.</p>
           <h3>What does it cost?</h3>
-          <p>Nothing for personal and qualifying noncommercial use. No account. Commercial use requires a separate license from Shimoverse Studios. If you enable cloud cleanup you pay your model provider cents for tokens — a rounding error next to <a href="wispr-flow-alternative.html">$144-a-year subscriptions</a>.</p>
+          <p>No charge for personal use only. No account. Commercial or organizational use requires separate written permission or a separate written license from Shimoverse Studios. If you enable cloud cleanup you pay your model provider cents for tokens — a rounding error next to <a href="wispr-flow-alternative.html">$144-a-year subscriptions</a>.</p>
 
           <div class="article-cta">
             <h2>Your next prompt, spoken</h2>
-            <p>Free for personal and qualifying noncommercial use, with public source. Hold a key, describe the bug properly for once, release. The keyboard keeps the semicolons.</p>
+            <p>Free for personal use only, with public source. Hold a key, describe the bug properly for once, release. The keyboard keeps the semicolons.</p>
             <div class="hero-cta-row">
               <a class="btn btn-primary btn-lg" href="../download.html">Download for Mac — free</a>
               <a class="btn btn-outline btn-lg" href="../how-it-works.html">See how it works</a>

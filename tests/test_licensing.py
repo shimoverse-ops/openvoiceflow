@@ -15,25 +15,69 @@ def one_line(text: str) -> str:
     return " ".join(text.split())
 
 
-def test_root_license_is_personal_reciprocal_and_names_commercial_path():
-    license_text = read(ROOT / "LICENSE")
+def test_root_license_is_personal_only_reciprocal_and_names_permission_path():
+    license_text = one_line(read(ROOT / "LICENSE"))
     assert "# OpenVoiceFlow Personal and Reciprocal Source License 1.0" in license_text
-    assert "## 4. Commercial use is not granted" in license_text
-    assert "## 5. Source-sharing conditions" in license_text
+    assert "## 4. Commercial and organizational use are not granted" in license_text
+    assert "## 5. Attribution and source-sharing conditions" in license_text
     assert "### 5.1 Distribution" in license_text
     assert "### 5.2 Network use" in license_text
     assert "license the entire Covered Work" in license_text
     assert "complete Corresponding Source" in license_text
+    assert "Only personal use as defined in this section is permitted" in license_text
+    assert '"Organization" means' in license_text
+    assert '"Integration" means any software' in license_text
+    assert "If you create a Covered Work or Integration" in license_text
+    assert '"Based on OpenVoiceFlow by Shimoverse Studios"' in license_text
+    assert "https://github.com/shimoverse/openvoiceflow" in license_text
+    assert "or the Integration is a Covered" in license_text
+    assert (
+        "Commercial or organizational rights require separate written permission or a "
+        "separate written license from Shimoverse Studios."
+    ) in license_text
+    assert (
+        "It does not apply to independent works that are not Covered Works, except that "
+        "every Integration remains subject to the attribution requirements in Section 5."
+    ) in license_text
     assert "shimoverse@gmail.com" in license_text
+
+
+def test_permission_path_uses_exact_binding_text_on_primary_license_surfaces():
+    binding = "separate written permission or a separate written license"
+    for rel in [
+        "LICENSE",
+        "LICENSING.md",
+        "README.md",
+        "PRIVACY.md",
+        "SECURITY.md",
+        "SUPPORT.md",
+        "TRADEMARKS.md",
+        "CHANGELOG.md",
+        "docs/COMPLIANCE.md",
+        "docs/legal/DPA-template.md",
+        "docs/llms.txt",
+        "scripts/docs_content.py",
+        "docs/docs/faq.html",
+        "native/Info.plist",
+    ]:
+        assert binding in one_line(read(ROOT / rel)), rel
+
+
+def test_dpa_template_does_not_imply_personal_license_authorizes_organizations():
+    template = one_line(read(DOCS / "legal" / "DPA-template.md"))
+    assert (
+        "the public personal-use-only license does not authorize organizational use"
+        in template
+    )
 
 
 def test_plain_language_licensing_guide_covers_boundaries():
     guide = one_line(read(ROOT / "LICENSING.md"))
     for phrase in [
         "not an open-source license",
-        "Commercial use requires a separate license",
+        "Commercial or organizational use requires separate written permission or a separate written license",
         "Closed-source derivatives are not permitted",
-        "modified version over a network",
+        "Covered Work is distributed or offered over a network",
         "sole proprietorship",
         "paid product",
         "Earlier releases",
@@ -41,15 +85,19 @@ def test_plain_language_licensing_guide_covers_boundaries():
         "LEGACY_MIT_PORTIONS.md",
         "THIRD_PARTY_NOTICES.md",
         "TRADEMARKS.md",
+        "even if it stays private",
+        "independent Integration must still carry the required OpenVoiceFlow credit",
     ]:
         assert phrase in guide
 
 
-def test_primary_policy_surfaces_name_noncommercial_and_commercial_paths():
+def test_primary_policy_surfaces_name_personal_and_permission_paths():
     for rel in ["README.md", "PRIVACY.md", "SECURITY.md", "SUPPORT.md"]:
         text = one_line(read(ROOT / rel))
         assert "OpenVoiceFlow Personal and Reciprocal Source License 1.0" in text, rel
+        assert "personal use only" in text.lower(), rel
         assert "commercial" in text.lower(), rel
+        assert "organizational" in text.lower(), rel
         assert "shimoverse@gmail.com" in text, rel
 
 
@@ -102,7 +150,7 @@ def test_current_public_pages_do_not_claim_mit_or_open_source():
             assert phrase.lower() not in text.lower(), f"{page}: stale {phrase!r}"
 
 
-def test_current_product_copy_uses_qualifying_noncommercial_scope():
+def test_current_product_copy_uses_personal_use_only_scope():
     current_copy = [
         ROOT / "README.md",
         ROOT / "PRD.md",
@@ -122,36 +170,64 @@ def test_current_product_copy_uses_qualifying_noncommercial_scope():
         *(DOCS / "blog").glob("*.html"),
         *(DOCS / "docs").glob("*.html"),
     ]
-    broad_phrases = [
+    forbidden_phrases = [
         "personal and noncommercial use",
         "personal and other noncommercial use",
         "personal/noncommercial",
         "free for noncommercial use",
+        "qualifying noncommercial",
+        "business use requires",
+        "commercial use requires",
+        "commercial license required",
     ]
     for surface in current_copy:
         text = read(surface).casefold()
-        for phrase in broad_phrases:
-            assert phrase not in text, f"{surface}: broad license phrase {phrase!r}"
+        for phrase in forbidden_phrases:
+            assert phrase not in text, f"{surface}: stale license phrase {phrase!r}"
         assert "free forever" not in text, f"{surface}: unqualified forever claim"
         assert re.search(r"\$0\s*[/,]?\s*forever", text) is None, (
             f"{surface}: unqualified forever-cost claim"
         )
+        for match in re.finditer(r"personal use", text):
+            nearby = text[max(0, match.start() - 24) : match.end() + 24]
+            assert "only" in nearby, (
+                f"{surface}: personal use appears without the required only boundary"
+            )
 
 
 def test_package_and_cli_metadata_qualify_free_use():
     pyproject = read(ROOT / "pyproject.toml")
     cli = read(ROOT / "voiceflow" / "__main__.py")
 
-    assert "free for personal and qualifying noncommercial use" in pyproject.lower()
-    assert "free for personal and qualifying noncommercial use" in cli.lower()
+    assert "free for personal use only" in pyproject.lower()
+    assert "free for personal use only" in cli.lower()
     assert 'description = "Free voice dictation' not in pyproject
     assert "— Free voice dictation" not in cli
 
 
-def test_homepage_and_faq_state_the_commercial_boundary():
+def test_homepage_and_faq_state_the_use_and_credit_boundaries():
     home = read(DOCS / "index.html")
     faq = read(DOCS / "docs" / "faq.html")
-    assert "FREE FOR PERSONAL USE" in home
-    assert "commercial use require a separate license" in home
+    assert "FREE FOR PERSONAL USE ONLY" in home
+    assert (
+        "commercial or organizational use requires separate written permission or a separate written license"
+        in home.casefold()
+    )
+    assert "Every integration, derivative, fork, or modified version must visibly credit OpenVoiceFlow" in home
+    assert "Covered Work that is distributed or offered over a network" in home
     assert "OpenVoiceFlow Personal and Reciprocal Source License 1.0" in faq
-    assert "Workplace or other business use requires a commercial license" in faq
+    assert (
+        "Workplace or other organizational use requires separate written permission or a separate written license"
+        in faq
+    )
+    assert "Based on OpenVoiceFlow by Shimoverse Studios" in faq
+    assert "https://github.com/shimoverse/openvoiceflow" in faq
+    assert "even if it stays private" in faq
+    assert "merely connects through a documented interface" in faq
+
+
+def test_primary_attribution_surfaces_require_visible_credit_and_original_link():
+    for rel in ["LICENSE", "LICENSING.md", "README.md", "TRADEMARKS.md"]:
+        text = one_line(read(ROOT / rel))
+        assert "Based on OpenVoiceFlow by Shimoverse Studios" in text, rel
+        assert "https://github.com/shimoverse/openvoiceflow" in text, rel

@@ -5,10 +5,10 @@ OpenVoiceFlow is a native macOS app that runs on your Mac. We wrote this documen
 This policy applies to the native OpenVoiceFlow macOS app (`v0.4.0` and later, including the current `v0.5.x` line). For the older Python CLI (`v0.3.x` and earlier), check `git log PRIVACY.md` or the corresponding tagged release.
 
 Privacy behavior and licensing are separate. The current project is
-source-available for personal and qualifying noncommercial use under the
-[OpenVoiceFlow Personal and Reciprocal Source License 1.0](LICENSE). Commercial use, business use,
-and selling or bundling the software require a separate license from Shimoverse
-Studios; contact **shimoverse@gmail.com**. Distributed derivatives and modified
+source-available for personal use only under the
+[OpenVoiceFlow Personal and Reciprocal Source License 1.0](LICENSE). Commercial or organizational use, including selling or bundling the
+software, requires separate written permission or a separate written license from
+Shimoverse Studios; contact **shimoverse@gmail.com**. Distributed derivatives and modified
 network versions must publish complete corresponding source under the same
 license. See [LICENSING.md](LICENSING.md).
 
@@ -148,7 +148,7 @@ OpenVoiceFlow is a **bring-your-own-key (BYOK), self-managed, personal-productiv
 - **You are the controller** of the data on your Mac. You decide whether to fill out the Know Me interview and whether to enable cloud cleanup.
 - **If you enable OpenRouter cleanup, OpenRouter is an independent controller / processor** for the text you send it. If you need a Data Processing Addendum (DPA), Standard Contractual Clauses, or any other GDPR paperwork, you negotiate that **directly with OpenRouter** under your own account. OpenVoiceFlow cannot sign a DPA on their behalf and does not pretend to.
 - **EU users:** if your dictations contain personal data and you enable cloud cleanup, you are responsible for the lawful basis and the international-transfer story. The simplest way to take every cloud provider out of the picture is to leave cleanup **Off** or use **Ollama**.
-- **Regulated industries (healthcare, legal, financial, government):** OpenVoiceFlow has no SOC 2, no ISO 27001, no HIPAA BAA, and no FedRAMP. Don't use it for regulated data unless you have your own compliance overlay (your own DPA with OpenRouter, your own air-gapped Ollama deployment, your own organizational controls).
+- **Regulated industries (healthcare, legal, financial, government):** OpenVoiceFlow has no SOC 2, no ISO 27001, no HIPAA BAA, and no FedRAMP. Don't use it for regulated data unless you have your own compliance overlay (your own DPA with OpenRouter, your own air-gapped Ollama deployment, your own organizational controls) and have obtained the required separate written permission or a separate written license.
 
 ---
 

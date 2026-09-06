@@ -3,9 +3,11 @@
 This file enumerates the third-party software OpenVoiceFlow depends on at runtime, along with each component's license. It is intended for procurement, legal, and security reviewers verifying that OpenVoiceFlow's dependency tree is compatible with their organisation's licensing posture.
 
 OpenVoiceFlow itself is source-available under the OpenVoiceFlow Personal and
-Reciprocal Source License 1.0; distributed derivatives and modified network
-versions must publish corresponding source under the same license, and
-commercial use requires separate terms. See
+Reciprocal Source License 1.0; a Covered Work that is distributed or offered
+over a network must publish corresponding source under the same license, while
+every Integration must retain the required attribution. Commercial or
+organizational use requires separate written permission or a separate written
+license. See
 [`LICENSE`](../../LICENSE) and [`LICENSING.md`](../../LICENSING.md). Third-party
 components remain governed by their own licenses below.
 
@@ -113,7 +115,7 @@ For completeness — these appear in `[project.optional-dependencies].dev` and n
 
 The runtime-shipped license set is:
 
-- **OpenVoiceFlow Personal and Reciprocal Source License 1.0** — current OpenVoiceFlow material owned or licensable by Shimoverse Studios; reciprocal source sharing applies and commercial use requires separate terms.
+- **OpenVoiceFlow Personal and Reciprocal Source License 1.0** — current OpenVoiceFlow material owned or licensable by Shimoverse Studios; reciprocal source sharing applies to Covered Works and commercial or organizational use requires separate written permission or a separate written license.
 - **MIT (legacy contributor portions)** — material identified in [`LEGACY_MIT_PORTIONS.md`](LEGACY_MIT_PORTIONS.md), accepted before the license change.
 - **MIT** — `sounddevice`, `pyobjc-framework-Cocoa` (+ all pyobjc-* siblings), `pyobjc-core`, `cffi`, `whisper.cpp`, `whisper-stream`, `ggml-*` model files, **WhisperKit**, and **Sparkle**.
 - **BSD-3-Clause** — `numpy`, `rumps`, `pycparser`.

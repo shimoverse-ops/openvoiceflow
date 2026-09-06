@@ -3,7 +3,7 @@
 Copyright 2025–2026 Shimoverse Studios.
 
 This license is a custom source-available license. It is not an Open Source
-Initiative-approved open-source license because it limits commercial use. The
+Initiative-approved open-source license because it permits personal use only. The
 plain-language guide in `LICENSING.md` does not replace these terms.
 
 ## 1. Acceptance
@@ -24,34 +24,43 @@ Software through a documented operating-system or network interface, without
 incorporating or modifying the Software, does not by itself create a Covered
 Work.
 
+"Integration" means any software, configuration, plugin, adapter, workflow, or
+service intentionally designed to connect to, control, extend, or exchange data
+with the Software. An Integration may be an independent work and may not be a
+Covered Work when it merely communicates with an unmodified build through a
+documented interface. Even then, the attribution condition in Section 5 applies
+to the Integration.
+
+"Organization" means any employer, client, business, institution, association,
+organized group, nonprofit, educational or charitable entity, public-interest
+entity, or government entity, whether for-profit or nonprofit and whether paid
+or unpaid.
+
 Each contributor licenses only the material for which that contributor has the
 right to grant a license. Earlier releases and separately identified portions
 remain governed by the license notices that accompany them.
 
-## 3. Permitted purposes
+## 3. Permitted purpose: personal use only
 
-Subject to the source-sharing conditions below, you may use, copy, modify, and
-distribute the Software only for these permitted purposes:
+Subject to the source-sharing conditions below, a natural person may use, copy,
+modify, and distribute the Software solely for that person's own personal use.
+Personal use includes research, experiment, testing, personal study, private
+entertainment, hobby projects, amateur pursuits, or religious observance for
+your own benefit, without anticipated commercial or organizational application.
 
-1. **Personal use.** Research, experiment, testing, personal study, private
-   entertainment, hobby projects, amateur pursuits, or religious observance for
-   your own benefit, without anticipated commercial application.
-2. **Qualifying noncommercial organizations.** Use solely in furtherance of the
-   noncommercial mission of a charitable organization, educational institution,
-   public research organization, public-safety or public-health organization,
-   environmental-protection organization, or government institution.
+Personal use does not include use by, for, or on behalf of any Organization. A
+use is not personal merely because no money changes hands.
+Only personal use as defined in this section is permitted under this public
+license.
 
-A purpose is not permitted merely because no money changes hands. Use for or on
-behalf of a business, employer, client, sole proprietorship, or other commercial
-organization is commercial use.
+## 4. Commercial and organizational use are not granted
 
-## 4. Commercial use is not granted
+This license does not permit commercial or organizational use. Organizational
+use means use by, for, or on behalf of any Organization. Commercial use
+includes, without limitation:
 
-This license does not permit commercial use. Commercial use includes, without
-limitation:
-
-- using the Software or a Covered Work for work, business operations, an
-  employer, a client, or a commercial organization;
+- using the Software, a Covered Work, or an Integration for work, business
+  operations, an employer, a client, or a commercial organization;
 - offering or using it in a paid product, paid service, hosted service,
   monetized workflow, advertising-supported activity, or revenue-generating
   activity;
@@ -60,10 +69,20 @@ limitation:
 - using it where procurement, paid support, warranty, indemnity, or other
   commercial terms are required.
 
-Commercial rights require a separate written license from Shimoverse Studios.
-Contact `shimoverse@gmail.com`.
+Commercial or organizational rights require separate written permission or a
+separate written license from Shimoverse Studios. Contact `shimoverse@gmail.com`.
 
-## 5. Source-sharing conditions
+## 5. Attribution and source-sharing conditions
+
+If you create a Covered Work or Integration—including a fork, derivative, or
+modified version—you must preserve this license and all copyright, attribution,
+and third-party notices. You must also state prominently **"Based on
+OpenVoiceFlow by Shimoverse Studios"** and provide a working link to the original
+source code at <https://github.com/shimoverse/openvoiceflow> in its source README
+and, if it has an About screen, user documentation, or other credits location,
+in that location as well. This attribution requirement applies whether or not
+you distribute it, provide network access to it, or the Integration is a Covered
+Work.
 
 ### 5.1 Distribution
 
@@ -77,8 +96,8 @@ no charge:
    registration, payment, or access restrictions;
 3. license the entire Covered Work and its Corresponding Source under this exact
    license, without additional terms that restrict the rights granted here;
-4. preserve this license, all copyright and attribution notices, and all
-   third-party notices;
+4. preserve and display the notices and attribution required by this Section 5
+   in locations reasonably visible to recipients and users;
 5. state prominently that you changed the Software, identify the material
    changes, and provide the date of each release; and
 6. use a name and branding that do not imply the Covered Work is an official
@@ -95,7 +114,7 @@ you to interact with its functionality over a computer network, you must make
 the complete Corresponding Source publicly available under the conditions in
 Section 5.1 no later than the first day that network access is provided. The
 user interface or service documentation must include a reasonably prominent
-"Source" link to that public source.
+"Source" link to that public source and the attribution required by Section 5.
 
 Using an unmodified official OpenVoiceFlow build solely as a local personal tool
 does not trigger this network-use condition merely because optional text cleanup
@@ -141,7 +160,9 @@ Section 5.1.
 
 This license does not limit rights you may have under fair use, fair dealing, or
 other law. It does not apply to independent works that are not Covered Works,
-or to third-party material governed by separate license terms.
+except that every Integration remains subject to the attribution requirements in
+Section 5. It also does not apply to third-party material governed by separate
+license terms.
 
 ## 9. Patent defense
 

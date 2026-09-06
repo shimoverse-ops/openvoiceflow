@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "openvoiceflow"
 version = "0.3.6"
-description = "Private, local voice dictation for macOS — free for personal and qualifying noncommercial use"
+description = "Private, local voice dictation for macOS — free for personal use only"
 readme = "README.md"
 license = "LicenseRef-OpenVoiceFlow-Personal-Reciprocal-1.0"
 license-files = ["LICENSE", "docs/legal/LEGACY_MIT_PORTIONS.md"]

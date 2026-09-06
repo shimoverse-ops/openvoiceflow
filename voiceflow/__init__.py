@@ -1,4 +1,4 @@
-"""OpenVoiceFlow — source-available dictation, free for personal and qualifying noncommercial use."""
+"""OpenVoiceFlow — source-available dictation, free for personal use only."""
 
 from __future__ import annotations
 

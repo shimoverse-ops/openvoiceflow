@@ -4,7 +4,7 @@
 
 ## TL;DR
 
-OpenVoiceFlow is a source-available, single-developer macOS dictation tool. Personal and qualifying noncommercial use is available under the OpenVoiceFlow Personal and Reciprocal Source License 1.0; distributed derivatives and modified network versions must publish corresponding source under the same license, and organizational business use requires a separate commercial license even when source is published. It is a **self-managed personal-productivity utility**, not a SaaS. It is **not certified** for any compliance regime (SOC 2, ISO 27001, HIPAA, FedRAMP, PCI-DSS, etc.) and is **not designed for regulated environments**. It uses a **bring-your-own-key (BYOK)** model: when you pick a cloud LLM backend, *you* contract directly with that provider — OpenVoiceFlow is not a controller, processor, or sub-processor on your behalf. If you need a vendor with auditable controls and a real contractual layer, this is not that vendor.
+OpenVoiceFlow is a source-available, single-developer macOS dictation tool. Personal use only is available under the OpenVoiceFlow Personal and Reciprocal Source License 1.0; a Covered Work that is distributed or offered over a network must publish corresponding source under the same license, while every Integration must retain the required attribution. Commercial or organizational use requires separate written permission or a separate written license even when source is published. It is a **self-managed personal-productivity utility**, not a SaaS. It is **not certified** for any compliance regime (SOC 2, ISO 27001, HIPAA, FedRAMP, PCI-DSS, etc.) and is **not designed for regulated environments**. It uses a **bring-your-own-key (BYOK)** model: when you pick a cloud LLM backend, *you* contract directly with that provider — OpenVoiceFlow is not a controller, processor, or sub-processor on your behalf. If you need a vendor with auditable controls and a real contractual layer, this is not that vendor.
 
 ---
 
@@ -23,7 +23,7 @@ OpenVoiceFlow is a source-available, single-developer macOS dictation tool. Pers
 
 ## What we ARE
 
-- **Source available for audit.** The source is public on GitHub: <https://github.com/shimoverse/openvoiceflow>. Personal and qualifying noncommercial use follows the repository license; distributed derivatives and modified network versions must publish corresponding source under the same license, and business or other commercial use requires separate terms from Shimoverse Studios.
+- **Source available for audit.** The source is public on GitHub: <https://github.com/shimoverse/openvoiceflow>. Personal use only follows the repository license; a distributed or network-offered Covered Work must publish corresponding source under the same license, every Integration must retain required attribution, and commercial or organizational use requires separate written permission or a separate written license from Shimoverse Studios.
 - **Transparent.** Build scripts, install scripts, and CI workflows are in-tree. The small analytics/leaderboard API is explicitly disclosed in `PRIVACY.md` §7; it never receives audio or dictated text.
 - **BYOK.** You bring your own key for whichever LLM provider you choose; the contract is between you and that provider.
 - **Local-first transcription.** Audio is processed on-device by WhisperKit. The audio never leaves your Mac.

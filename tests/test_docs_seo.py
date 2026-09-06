@@ -437,17 +437,17 @@ def test_favicon_is_a_real_file_not_a_data_uri():
 
 def test_homepage_search_copy_qualifies_free_use_and_leads_with_privacy():
     html = read("index.html")
-    assert "<title>OpenVoiceFlow — Free Personal-Use, Private Voice Dictation for macOS</title>" in html
+    assert "<title>OpenVoiceFlow — Free Only for Personal Use, Private Voice Dictation for macOS</title>" in html
     assert (
         '<meta name="description" content="Private voice dictation for macOS, '
-        'free for personal and qualifying noncommercial use. Audio is transcribed '
+        'free for personal use only. Audio is transcribed '
         'locally, with optional cleanup through your chosen backend." />'
     ) in html
     normalized = html.casefold()
     assert "free forever" not in normalized
     assert re.search(r"\$0\s*[,/]\s*forever", normalized) is None
-    assert "USP 01 · FREE FOR PERSONAL USE" in html
-    assert "commercial license required" in html
+    assert "USP 01 · FREE FOR PERSONAL USE ONLY" in html
+    assert "commercial or organizational use requires separate written permission or a separate written license" in html
 
 
 def test_homepage_publishes_the_verified_app_rating_visibly_and_in_schema():
