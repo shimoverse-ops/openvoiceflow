@@ -374,6 +374,21 @@ def test_articles_keep_the_competitor_claims_hedged():
         assert "affiliation" in html.lower(), f"{name}: missing no-affiliation note"
 
 
+def test_every_page_declares_the_canonical_brand_icon():
+    # Google Search uses the homepage's declared favicon. Keep every indexed
+    # page on the square amber-on-dark brand mark rather than the transparent
+    # ring that can disappear into Google's white result background.
+    expected = (
+        '<link rel="icon" href="/assets/openvoiceflow-logo-512.png" '
+        'sizes="512x512" type="image/png" />'
+    )
+    for rel in ALL_PAGES:
+        html = read(rel)
+        icons = re.findall(r'<link rel="icon"[^>]+>', html)
+        assert icons == [expected], f"{rel}: declared favicons are {icons}"
+        assert "favicon.svg" not in html, f"{rel}: still declares the transparent ring favicon"
+
+
 def test_favicon_is_a_real_file_not_a_data_uri():
     # Google's favicon-in-search pipeline fetches the icon as its own
     # crawlable resource and falls back to a generic globe when it can't —
@@ -384,15 +399,33 @@ def test_favicon_is_a_real_file_not_a_data_uri():
         assert "data:image/svg+xml" not in html, f"{rel}: favicon reverted to a data: URI"
         assert 'rel="icon" href="' in html, f"{rel}: missing a real <link rel=\"icon\">"
 
-    for asset in ["favicon.svg", "favicon.ico", "favicon-48.png", "favicon-192.png", "apple-touch-icon.png"]:
+    for asset in ["favicon.ico", "favicon-48.png", "favicon-192.png", "apple-touch-icon.png"]:
         path = DOCS / asset
         assert path.is_file(), f"missing {asset} at the site root"
         assert path.stat().st_size > 0, f"{asset} is empty"
 
+    assert png_dimensions("assets/openvoiceflow-logo-512.png") == (512, 512), \
+        "the canonical search favicon must remain a square 512px PNG"
     assert png_dimensions("favicon-48.png") == (48, 48), \
         "favicon-48.png must be exactly 48x48 (square, per Google's guidance)"
     assert png_dimensions("apple-touch-icon.png") == (180, 180), \
         "apple-touch-icon.png must be 180x180 per Apple's convention"
+
+
+def test_homepage_search_copy_leads_with_free_and_private():
+    html = read("index.html")
+    assert "<title>OpenVoiceFlow — Free, Private Voice Dictation for macOS</title>" in html
+    assert (
+        '<meta name="description" content="Free, private voice dictation for macOS. '
+        'Your audio is transcribed locally on your Mac, with optional cleanup through '
+        'the backend you choose." />'
+    ) in html
+
+
+def test_homepage_does_not_publish_an_unverified_star_rating():
+    html = read("index.html")
+    assert "AggregateRating" not in html
+    assert "ratingValue" not in html
 
 
 def png_dimensions(name: str) -> tuple[int, int]:

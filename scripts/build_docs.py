@@ -73,10 +73,8 @@ ORDER = [slug for _, items in NAV for slug, _ in items]
 # back to a generic globe when it can't (data: URIs aren't a stable,
 # separately-fetchable URL, which is exactly the failure mode this fixes).
 FAVICON = (
-    '  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />\n'
-    '  <link rel="icon" href="../favicon-48.png" sizes="48x48" type="image/png" />\n'
-    '  <link rel="icon" href="../favicon.ico" sizes="any" />\n'
-    '  <link rel="apple-touch-icon" href="../apple-touch-icon.png" />'
+    '  <link rel="icon" href="/assets/openvoiceflow-logo-512.png" sizes="512x512" type="image/png" />\n'
+    '  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />'
 )
 
 # Mobile-only controls are hidden by style.css, which is a separate request.
