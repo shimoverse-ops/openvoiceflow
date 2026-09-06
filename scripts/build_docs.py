@@ -18,7 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "docs" / "docs"
 CANONICAL = "https://openvoiceflow.com"
-VERSION = "0.5.21"
+VERSION = "0.5.22"
 UPDATED = "2026-09-02"
 
 # ── sidebar / page order ────────────────────────────────────────────────
