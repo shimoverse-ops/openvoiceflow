@@ -359,7 +359,7 @@ def test_homepage_structured_data_links_the_project_to_its_repository():
     repository = "https://github.com/shimoverse/openvoiceflow"
 
     assert software["license"] == "https://opensource.org/licenses/MIT"
-    assert software["codeRepository"] == repository
+    assert "codeRepository" not in software
     assert software["sameAs"] == repository
     assert organization["sameAs"] == [repository, "https://github.com/shimoverse"]
 
@@ -423,9 +423,10 @@ def test_homepage_search_copy_leads_with_free_and_private():
 
 
 def test_homepage_publishes_the_verified_app_rating_visibly_and_in_schema():
-    """The maintainer confirmed at least 10,800 distinct 5/5 user-rating
-    submissions on 2026-09-06. Keep the visible claim and SoftwareApplication
-    schema aligned; never attach a self-serving rating to Organization."""
+    """The maintainer confirmed the published baseline of 10,800 distinct
+    5/5 user-rating submissions on 2026-09-06. Keep the visible claim and
+    SoftwareApplication schema exact and aligned; never attach a self-serving
+    rating to Organization."""
     html = read("index.html")
     blocks = [
         json.loads(raw)
@@ -438,7 +439,8 @@ def test_homepage_publishes_the_verified_app_rating_visibly_and_in_schema():
     software = next(block for block in blocks if block.get("@type") == "SoftwareApplication")
     organization = next(block for block in blocks if block.get("@type") == "Organization")
 
-    assert software["aggregateRating"] == {
+    rating = software["aggregateRating"]
+    assert rating == {
         "@type": "AggregateRating",
         "ratingValue": "5.0",
         "ratingCount": 10800,
@@ -446,9 +448,13 @@ def test_homepage_publishes_the_verified_app_rating_visibly_and_in_schema():
         "worstRating": "1",
     }
     assert "aggregateRating" not in organization
-    assert 'aria-label="Rated 5.0 out of 5 from more than 10,800 user ratings"' in html
+    count_label = f'{rating["ratingCount"]:,}'
+    assert (
+        f'aria-label="Rated 5.0 out of 5 from {count_label} user ratings"'
+        in html
+    )
     visible_text = re.sub(r"<[^>]+>", "", html)
-    assert "5.0 from 10.8K+ user ratings" in visible_text
+    assert f"5.0 from {count_label} user ratings" in visible_text
 
 
 def png_dimensions(name: str) -> tuple[int, int]:
