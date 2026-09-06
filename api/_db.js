@@ -65,6 +65,32 @@ export async function ensureSchema() {
       await query`
         CREATE INDEX IF NOT EXISTS devices_last_seen_idx ON devices (last_seen DESC)
       `;
+      await query`
+        CREATE TABLE IF NOT EXISTS website_events (
+          event_id           UUID PRIMARY KEY,
+          session_id         UUID NOT NULL,
+          event_name         TEXT NOT NULL,
+          path               TEXT NOT NULL,
+          target             TEXT,
+          acquisition_source TEXT NOT NULL,
+          country            TEXT,
+          region             TEXT,
+          city               TEXT,
+          created_at         TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await query`
+        CREATE INDEX IF NOT EXISTS website_events_created_idx
+        ON website_events (created_at DESC)
+      `;
+      await query`
+        CREATE INDEX IF NOT EXISTS website_events_session_created_idx
+        ON website_events (session_id, created_at DESC)
+      `;
+      await query`
+        CREATE INDEX IF NOT EXISTS website_events_name_created_idx
+        ON website_events (event_name, created_at DESC)
+      `;
     })();
   }
   try {
@@ -237,5 +263,171 @@ export async function readInstallStats({ activeDays = 30, recentDays = 7, limit 
       total: Number(row.total),
       devices: Number(row.devices),
     })),
+  };
+}
+
+export async function insertWebsiteEvent(event) {
+  const query = sql();
+  await query`
+    INSERT INTO website_events (
+      event_id, session_id, event_name, path, target, acquisition_source,
+      country, region, city, created_at
+    ) VALUES (
+      ${event.eventId}, ${event.sessionId}, ${event.eventName}, ${event.path},
+      ${event.target}, ${event.acquisitionSource}, ${event.location.country},
+      ${event.location.region}, ${event.location.city}, now()
+    )
+    ON CONFLICT (event_id) DO NOTHING
+  `;
+}
+
+export async function deleteExpiredWebsiteEvents(retainedDays = 90) {
+  const query = sql();
+  const result = await query`
+    DELETE FROM website_events
+    WHERE created_at < NOW() - (${retainedDays} * INTERVAL '1 day')
+    RETURNING event_id
+  `;
+  return result.length;
+}
+
+function normalizeReportRows(rows) {
+  const numericFields = new Set([
+    "sessions", "pageviews", "clicks", "downloads", "events", "pages_per_session",
+    "bounce_rate", "reporting_installations", "total_items",
+  ]);
+  return rows.map((row) => Object.fromEntries(Object.entries(row).map(([key, value]) => {
+    if (typeof value === "bigint") return [key, Number(value)];
+    if (numericFields.has(key) && typeof value === "string" && value !== "") return [key, Number(value)];
+    return [key, value];
+  })));
+}
+
+export async function readAnalyticsReport(days = 30) {
+  const query = sql();
+  const [
+    websiteSummary,
+    websitePaths,
+    websiteClicks,
+    websiteEvents,
+    websiteLocations,
+    websiteSources,
+    websiteDaily,
+    appLastSync,
+    installStats,
+  ] = await Promise.all([
+    query`
+      WITH per_session AS (
+        SELECT session_id,
+               COUNT(*) FILTER (WHERE event_name = 'page_view')::int AS pageviews,
+               COUNT(*) FILTER (WHERE event_name <> 'page_view')::int AS clicks
+        FROM website_events
+        WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')
+        GROUP BY session_id
+      )
+      SELECT COUNT(*)::int AS sessions,
+             COALESCE(SUM(pageviews), 0)::int AS pageviews,
+             COALESCE(SUM(clicks), 0)::int AS clicks,
+             COALESCE(ROUND(AVG(pageviews), 2), 0) AS pages_per_session,
+             COALESCE(ROUND(100.0 * COUNT(*) FILTER (WHERE pageviews = 1) / NULLIF(COUNT(*), 0), 1), 0) AS bounce_rate,
+             (SELECT COUNT(*)::int FROM website_events
+              WHERE event_name = 'download_click'
+                AND created_at >= NOW() - (${days} * INTERVAL '1 day')) AS downloads,
+             (SELECT MAX(created_at)::text FROM website_events
+              WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')) AS last_event_at
+      FROM per_session
+    `,
+    query`
+      SELECT path, COUNT(*)::int AS pageviews,
+             COUNT(DISTINCT session_id)::int AS sessions
+      FROM website_events
+      WHERE event_name = 'page_view'
+        AND created_at >= NOW() - (${days} * INTERVAL '1 day')
+      GROUP BY path ORDER BY pageviews DESC, sessions DESC LIMIT 100
+    `,
+    query`
+      SELECT event_name, path, target, COUNT(*)::int AS clicks,
+             COUNT(DISTINCT session_id)::int AS sessions
+      FROM website_events
+      WHERE event_name <> 'page_view'
+        AND created_at >= NOW() - (${days} * INTERVAL '1 day')
+      GROUP BY event_name, path, target
+      ORDER BY clicks DESC, sessions DESC LIMIT 100
+    `,
+    query`
+      SELECT event_name, COUNT(*)::int AS events,
+             COUNT(DISTINCT session_id)::int AS sessions
+      FROM website_events
+      WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')
+      GROUP BY event_name ORDER BY events DESC
+    `,
+    query`
+      SELECT COALESCE(country, 'Unknown') AS country,
+             COALESCE(region, 'Unknown') AS region,
+             COALESCE(city, 'Unknown') AS city,
+             COUNT(DISTINCT session_id)::int AS sessions,
+             COUNT(*)::int AS events
+      FROM website_events
+      WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')
+      GROUP BY country, region, city
+      ORDER BY sessions DESC, events DESC LIMIT 100
+    `,
+    query`
+      SELECT acquisition_source, COUNT(DISTINCT session_id)::int AS sessions,
+             COUNT(*) FILTER (WHERE event_name = 'page_view')::int AS pageviews,
+             COUNT(*) FILTER (WHERE event_name <> 'page_view')::int AS clicks
+      FROM website_events
+      WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')
+      GROUP BY acquisition_source ORDER BY sessions DESC, pageviews DESC
+    `,
+    query`
+      SELECT created_at::date::text AS day,
+             COUNT(DISTINCT session_id)::int AS sessions,
+             COUNT(*) FILTER (WHERE event_name = 'page_view')::int AS pageviews,
+             COUNT(*) FILTER (WHERE event_name <> 'page_view')::int AS clicks
+      FROM website_events
+      WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')
+      GROUP BY created_at::date ORDER BY day
+    `,
+    query`SELECT MAX(last_seen)::text AS last_synced_at FROM devices`,
+    readInstallStats({ activeDays: days, recentDays: 7, limit: 100 }),
+  ]);
+
+  return {
+    website: {
+      summary: normalizeReportRows(websiteSummary)[0] || {},
+      paths: normalizeReportRows(websitePaths),
+      clicks: normalizeReportRows(websiteClicks),
+      events: normalizeReportRows(websiteEvents),
+      locations: normalizeReportRows(websiteLocations),
+      sources: normalizeReportRows(websiteSources),
+      daily: normalizeReportRows(websiteDaily),
+    },
+    app: {
+      summary: {
+        reporting_installations: installStats.totals.installs,
+        active_7d: installStats.totals.activeRecent,
+        active_30d: installStats.totals.activeWindow,
+        active_period: installStats.totals.activeWindow,
+        words_total: installStats.totals.wordsTotal,
+        minutes_saved: installStats.totals.minutesSaved,
+        last_synced_at: appLastSync[0]?.last_synced_at || null,
+      },
+      features: [
+        { feature: "AI cleanup", reporting_installations: installStats.features.cleanupEnabled, total_items: null },
+        { feature: "Snippets", reporting_installations: installStats.features.usesSnippets, total_items: null },
+        { feature: "Dictionary", reporting_installations: installStats.features.usesDictionary, total_items: null },
+        { feature: "Know Me profile", reporting_installations: installStats.features.hasKnowMeProfile, total_items: null },
+      ],
+      versions: installStats.versions.map((row) => ({
+        app_version: row.key,
+        reporting_installations: row.total,
+      })),
+      countries: installStats.countries.map((row) => ({
+        country: row.key,
+        reporting_installations: row.total,
+      })),
+      events: installStats.events,
+    },
   };
 }

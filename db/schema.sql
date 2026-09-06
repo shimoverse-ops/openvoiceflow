@@ -1,10 +1,10 @@
--- OpenVoiceFlow analytics + leaderboard schema (Vercel Postgres / any Postgres 14+).
+-- OpenVoiceFlow app analytics, leaderboard, and privacy-safe website behavior schema.
 --
--- One row per anonymous device. No account, no email, no IP address stored —
--- country is derived from Vercel's edge geo header at request time and only
--- the two-letter code is kept. device_id is a client-generated random UUID;
--- it identifies a Mac, not a person, and is never linked to dictation
--- content, snippets, dictionary, or profile data (those never leave the Mac).
+-- App rows are anonymous installation snapshots. Website events use a visit ID
+-- that rotates after 30 minutes of inactivity and is not a persistent person
+-- identifier. Coarse edge-derived location may be stored, but IP addresses,
+-- query strings, typed text, form values, and raw click coordinates are not.
+-- Dictation content, snippets, dictionary entries, and profile data stay local.
 
 CREATE TABLE IF NOT EXISTS devices (
     device_id       UUID PRIMARY KEY,
@@ -30,3 +30,23 @@ CREATE TABLE IF NOT EXISTS devices (
 CREATE INDEX IF NOT EXISTS devices_minutes_saved_idx ON devices (minutes_saved DESC);
 -- Active-install windows in api/analytics/stats.js scan by recency.
 CREATE INDEX IF NOT EXISTS devices_last_seen_idx ON devices (last_seen DESC);
+
+CREATE TABLE IF NOT EXISTS website_events (
+    event_id           UUID PRIMARY KEY,
+    session_id         UUID NOT NULL,
+    event_name         TEXT NOT NULL,
+    path               TEXT NOT NULL,
+    target             TEXT,
+    acquisition_source TEXT NOT NULL,
+    country            TEXT,
+    region             TEXT,
+    city               TEXT,
+    created_at         TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS website_events_created_idx
+    ON website_events (created_at DESC);
+CREATE INDEX IF NOT EXISTS website_events_session_created_idx
+    ON website_events (session_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS website_events_name_created_idx
+    ON website_events (event_name, created_at DESC);

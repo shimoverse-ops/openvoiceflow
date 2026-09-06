@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- The website now records privacy-safe 30-minute visits, page views, acquisition source, allow-listed navigation/product clicks, and coarse city/region/country when Vercel makes it available. Query strings, IP addresses, typed text, raw click coordinates, and persistent cross-visit browser identifiers are not stored; Global Privacy Control and Do Not Track are honored, and raw events expire after 90 days.
+- A bearer-protected analytics report now exposes aggregate website sessions/pages/clicks/locations alongside current opt-in app feature state and usage counters for the private owner dashboard.
+
 ## [0.5.22] — 2026-09-06
 
 ### Added

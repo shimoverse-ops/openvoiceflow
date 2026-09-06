@@ -27,3 +27,4 @@ node_modules/
 .idea/
 .vscode/
 *.swp
+.vercel
