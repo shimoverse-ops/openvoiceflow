@@ -2,11 +2,13 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import {
+  createOwnerExclusionSignature,
   normalizeWebsiteEvent,
   readEdgeLocation,
   isAuthorizedReportRequest,
 } from "../_websiteAnalytics.js";
 import { createWebsiteEventHandler } from "../analytics/event.js";
+import { createOwnerOptOutHandler } from "../analytics/owner-opt-out.js";
 import { createAnalyticsReportHandler } from "../analytics/report.js";
 import { createAnalyticsRetentionHandler } from "../cron/analytics-retention.js";
 
@@ -135,6 +137,71 @@ test("event endpoint records same-site human events with server-derived location
   assert.equal(inserted[0].sessionId, SESSION_ID);
   assert.deepEqual(inserted[0].location, { country: "US", region: "CA", city: "Tracy" });
   assert.match(response.headers["cache-control"], /no-store/);
+});
+
+test("event endpoint ignores an owner browser without storing or comparing IP addresses", async () => {
+  let databaseCalls = 0;
+  const handler = createWebsiteEventHandler({
+    async ensureSchema() { databaseCalls += 1; },
+    async insertWebsiteEvent() { databaseCalls += 1; },
+  });
+  const response = await call(handler, {
+    method: "POST",
+    body: pageView(),
+    headers: {
+      origin: "https://openvoiceflow.com",
+      "sec-fetch-site": "same-origin",
+      cookie: "theme=dark; ovf_owner_analytics_excluded=1",
+      "x-forwarded-for": "203.0.113.10",
+    },
+  });
+
+  assert.equal(response.statusCode, 202);
+  assert.deepEqual(response.body, { ok: true, ignored: true });
+  assert.equal(databaseCalls, 0);
+});
+
+test("owner opt-out requires a fresh dashboard-signed POST and sets a first-party HttpOnly cookie", async () => {
+  const secret = "report-secret";
+  const now = 1_800_000_000_000;
+  const timestamp = String(now);
+  const signature = createOwnerExclusionSignature(timestamp, secret);
+  const handler = createOwnerOptOutHandler({ secret, now: () => now });
+
+  let response = await call(handler, {
+    method: "GET",
+    body: { timestamp, signature },
+    headers: { origin: "https://openvoiceflow-analytics.vercel.app" },
+  });
+  assert.equal(response.statusCode, 405);
+
+  response = await call(handler, {
+    method: "POST",
+    body: { timestamp, signature },
+    headers: { origin: "https://example.com" },
+  });
+  assert.equal(response.statusCode, 403);
+
+  response = await call(handler, {
+    method: "POST",
+    body: { timestamp, signature: `${signature}0` },
+    headers: { origin: "https://openvoiceflow-analytics.vercel.app" },
+  });
+  assert.equal(response.statusCode, 403);
+
+  response = await call(handler, {
+    method: "POST",
+    body: { timestamp, signature },
+    headers: { origin: "https://openvoiceflow-analytics.vercel.app" },
+  });
+  assert.equal(response.statusCode, 303);
+  assert.equal(response.headers.location, "https://openvoiceflow-analytics.vercel.app/?owner_excluded=1");
+  assert.match(response.headers["set-cookie"], /^ovf_owner_analytics_excluded=1;/);
+  assert.match(response.headers["set-cookie"], /Max-Age=31536000/);
+  assert.match(response.headers["set-cookie"], /HttpOnly/);
+  assert.match(response.headers["set-cookie"], /Secure/);
+  assert.match(response.headers["set-cookie"], /SameSite=Lax/);
+  assert.doesNotMatch(response.headers["set-cookie"], /Domain=/);
 });
 
 test("event endpoint rejects cross-site, bot, and malformed events", async () => {

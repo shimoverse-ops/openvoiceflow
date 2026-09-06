@@ -2,6 +2,9 @@ import crypto from "node:crypto";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const SAFE_PATH_RE = /^\/(?:[A-Za-z0-9._~-]+\/?)*$/;
+const OWNER_EXCLUSION_MESSAGE = "openvoiceflow-owner-exclusion:v1";
+export const OWNER_EXCLUSION_COOKIE = "ovf_owner_analytics_excluded";
+export const OWNER_EXCLUSION_MAX_AGE_MS = 5 * 60 * 1000;
 
 export const ALLOWED_WEBSITE_EVENTS = Object.freeze([
   "page_view",
@@ -122,6 +125,40 @@ export function normalizeWebsiteEvent(input) {
 function readHeader(headers, name) {
   const value = headers?.[name] ?? headers?.[name.toLowerCase()];
   return Array.isArray(value) ? value[0] : value;
+}
+
+export function hasOwnerExclusionCookie(headers) {
+  const cookieHeader = String(readHeader(headers, "cookie") || "");
+  return cookieHeader.split(";").some((part) => {
+    const [name, ...valueParts] = part.trim().split("=");
+    return name === OWNER_EXCLUSION_COOKIE && valueParts.join("=") === "1";
+  });
+}
+
+export function createOwnerExclusionSignature(timestamp, secret) {
+  if (!secret || typeof secret !== "string") return "";
+  return crypto
+    .createHmac("sha256", secret)
+    .update(`${OWNER_EXCLUSION_MESSAGE}:${timestamp}`)
+    .digest("hex");
+}
+
+export function isAuthorizedOwnerExclusion(body, secret, now = Date.now()) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) return false;
+  const timestamp = String(body.timestamp || "");
+  const signature = String(body.signature || "");
+  if (!/^\d{13}$/.test(timestamp) || !/^[0-9a-f]{64}$/.test(signature)) return false;
+
+  const issuedAt = Number(timestamp);
+  if (!Number.isSafeInteger(issuedAt) || issuedAt > now + 30_000 || now - issuedAt > OWNER_EXCLUSION_MAX_AGE_MS) {
+    return false;
+  }
+
+  const expected = createOwnerExclusionSignature(timestamp, secret);
+  const actualBuffer = Buffer.from(signature, "hex");
+  const expectedBuffer = Buffer.from(expected, "hex");
+  return actualBuffer.length === expectedBuffer.length
+    && crypto.timingSafeEqual(actualBuffer, expectedBuffer);
 }
 
 function decodeLocation(value, maxLength) {

@@ -370,7 +370,7 @@
       headers: { 'Content-Type': 'application/json' },
       body: payload,
       keepalive: true,
-      credentials: 'omit',
+      credentials: 'same-origin',
     }).catch(() => {});
   }
 
