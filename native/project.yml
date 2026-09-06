@@ -38,8 +38,8 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: app.openvoiceflow
         INFOPLIST_FILE: Info.plist
         CODE_SIGN_ENTITLEMENTS: OpenVoiceFlow.entitlements
-        MARKETING_VERSION: 0.5.23
-        CURRENT_PROJECT_VERSION: 28
+        MARKETING_VERSION: 0.5.24
+        CURRENT_PROJECT_VERSION: 29
         GENERATE_INFOPLIST_FILE: NO
         COMBINE_HIDPI_IMAGES: YES
 schemes:
