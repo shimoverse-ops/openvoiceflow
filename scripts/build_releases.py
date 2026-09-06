@@ -248,7 +248,6 @@ def render_notes(rel: dict) -> str:
     two copies never compete in search.
     """
     version = rel["version"]
-    dated = f" — {format_date(rel['date'])}" if rel["date"] else ""
     body = []
     for title, bullets in rel["sections"]:
         body.append(f"    <h2>{html.escape(title)}</h2>")
