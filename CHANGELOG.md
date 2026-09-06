@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.24] — 2026-09-06
+
+### Fixed
+- **History opens straight away.** The tab drew every take it had stored before it could show the dozen that fit on screen — resolving an app icon, and laying out a whole transcript, for each of up to 500 rows — so the longer your log, the longer the pane sat blank on every visit. It now draws the rows in view and the rest as you scroll to them, and acknowledging a **Copy** redraws that one row instead of the entire log. Nothing about what is kept changes: the same 500 takes, still only on this Mac.
+
 ### Added
 - The website now records privacy-safe 30-minute visits, page views, acquisition source, allow-listed navigation/product clicks, and coarse city/region/country when Vercel makes it available. Query strings, IP addresses, typed text, raw click coordinates, and persistent cross-visit browser identifiers are not stored; Global Privacy Control and Do Not Track are honored, and raw events expire after 90 days.
 - A bearer-protected analytics report now exposes aggregate website sessions/pages/clicks/locations alongside current opt-in app feature state and usage counters for the private owner dashboard.

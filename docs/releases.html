@@ -68,6 +68,17 @@
       <h1 class="hero-title">Releases</h1>
       <p class="hero-sub answer-block">OpenVoiceFlow ships often — every release below is real, shipped, and notarized, newest first. Notes come straight from the project's changelog, so this list is exactly as current as the code. Want the raw commit history or to file an issue? <a href="https://github.com/shimoverse/openvoiceflow/releases">See every release on GitHub</a>.</p>
 
+      <details class="content-card" id="v0.5.24" open><summary><h2>v0.5.24 <span class="release-date">· September 6, 2026</span></h2></summary>
+        <h3>Fixed</h3>
+        <ul class="check-list">
+          <li><strong>History opens straight away.</strong> The tab drew every take it had stored before it could show the dozen that fit on screen — resolving an app icon, and laying out a whole transcript, for each of up to 500 rows — so the longer your log, the longer the pane sat blank on every visit. It now draws the rows in view and the rest as you scroll to them, and acknowledging a <strong>Copy</strong> redraws that one row instead of the entire log. Nothing about what is kept changes: the same 500 takes, still only on this Mac.</li>
+        </ul>
+        <h3>Added</h3>
+        <ul class="check-list">
+          <li>The website now records privacy-safe 30-minute visits, page views, acquisition source, allow-listed navigation/product clicks, and coarse city/region/country when Vercel makes it available. Query strings, IP addresses, typed text, raw click coordinates, and persistent cross-visit browser identifiers are not stored; Global Privacy Control and Do Not Track are honored, and raw events expire after 90 days.</li>
+          <li>A bearer-protected analytics report now exposes aggregate website sessions/pages/clicks/locations alongside current opt-in app feature state and usage counters for the private owner dashboard.</li>
+        </ul>
+      </details>
       <details class="content-card" id="v0.5.23" open><summary><h2>v0.5.23 <span class="release-date">· September 6, 2026</span></h2></summary>
         <h3>Fixed</h3>
         <ul class="check-list">
