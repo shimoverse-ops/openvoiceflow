@@ -68,6 +68,34 @@ def test_every_counter_is_grouped_by_the_dashboard():
         )
 
 
+def test_every_declared_counter_is_actually_recorded_somewhere():
+    """A case in the enum is a promise that the dashboard will have data for it.
+    Five counters shipped in 0.5.22 declared but never wired — history copies,
+    style applications, finished interviews, sent feedback, completed
+    onboarding — so those metrics could only ever render as absent, which reads
+    on the dashboard as "nobody does this" rather than "nobody measured it".
+
+    Panes and tabs are recorded through the `event(for:)` mappings rather than
+    by name, so they are satisfied by that indirection instead."""
+    sources = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in (ROOT / "native" / "Sources" / "OpenVoiceFlow").glob("*.swift")
+    )
+    recorded = set(re.findall(r"record\((?:IfChanged\()?\.(\w+)", sources))
+    mapped = set(re.findall(r"return \.(\w+)", sources))
+    declared = re.findall(r"case (\w+) = \"([^\"]+)\"", SWIFT.read_text(encoding="utf-8"))
+
+    missing = [
+        name for name, raw in declared
+        if name not in recorded
+        and not (raw.startswith(("pane.", "tab.")) and name in mapped)
+    ]
+    assert not missing, (
+        "declared but never recorded, so the dashboard can only show them as "
+        f"absent — wire them to their UI action or drop the case: {missing}"
+    )
+
+
 def test_counters_ride_the_existing_opt_out_switch():
     """No second network path and no second consent: counters go out with the
     payload that Settings ▸ Privacy already gates, and a data deletion clears
