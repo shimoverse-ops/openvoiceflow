@@ -34,7 +34,10 @@ The release workflow's classify step hard-fails on any mismatch.
 5. **Verify live**: the site serves the new appcast build number and the DMG
    sha256 matches the notarized artifact byte-for-byte.
 6. Add a CHANGELOG entry; prune the previous version's DMG from
-   `docs/downloads/` and add its redirect in `vercel.json`.
+   `docs/downloads/` and add its redirect in `vercel.json`. Then regenerate
+   `docs/releases.html` with `python3 scripts/build_releases.py` — it renders
+   straight from CHANGELOG.md, so this is the only way the public Releases
+   page picks up the new entry.
 
 Never regenerate the Sparkle keypair — every shipped app pins the public key,
 and a new pair permanently breaks updates for every existing install.

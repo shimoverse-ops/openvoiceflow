@@ -25,6 +25,7 @@ MAIN_PAGES = [
     "install.html",
     "how-it-works.html",
     "privacy.html",
+    "releases.html",
 ]
 ARTICLES = sorted(
     p.name for p in (DOCS / "blog").glob("*.html") if p.name != "index.html"
@@ -288,29 +289,33 @@ def test_the_product_film_ships_with_its_plumbing():
     assert "demo_play" in site_js, "film plays must be visible in analytics"
 
 
-def test_the_website_ui_carries_no_github_links():
-    """Maintainer decision (July 2026): the website should not send visitors
-    to GitHub — no nav item, no footer Source link, no in-prose repo links,
-    and no fork-promotion copy. The project stays MIT/open-source and the
-    site still says so; only the links and CTAs were removed. site.js keeps
-    its inert github_click handler for the observability contract."""
+def test_every_page_links_the_public_github_repo():
+    """Maintainer decision (September 2026, superseding the July 2026 "no
+    GitHub links" call): every page now carries a clearly-labeled GitHub nav
+    item — logo plus "GitHub" — linking straight to the public repository,
+    alongside the Releases page that surfaces the changelog as version
+    history. site.js's github_click handler, previously inert, now fires for
+    real."""
+    repo = "https://github.com/shimoverse/openvoiceflow"
     for rel in ALL_PAGES:
         html = read(rel)
-        # GitHub remains intentionally absent from rendered UI and copy.
-        # JSON-LD may identify the canonical source repository for search and
-        # answer engines without exposing another user-facing destination.
-        rendered_html = re.sub(
-            r'<script type="application/ld\+json">.*?</script>',
-            "",
-            html,
-            flags=re.DOTALL,
-        )
-        assert "github" not in rendered_html.lower(), f"{rel}: GitHub reference present"
-    llms = read("llms.txt")
-    assert "github" not in llms.lower(), "llms.txt: GitHub reference present"
-    # the credit-and-tell-us ask replaces the repo link as the reuse policy
-    assert "shimoverse@gmail.com" in llms
+        assert 'class="nav-github"' in html, f"{rel}: missing the GitHub nav link"
+        assert html.count(repo) >= 1, f"{rel}: GitHub nav link does not point at {repo}"
     assert "shimoverse@gmail.com" in read("mission.html")
+
+
+def test_releases_page_lists_recent_versions_with_notes():
+    """The Releases page is generated from CHANGELOG.md by
+    scripts/build_releases.py — it must actually list real, dated release
+    notes (not just link out to GitHub) so visitors can see the project is
+    actively maintained without leaving the site."""
+    html = read("releases.html")
+    for version in ["0.5.20", "0.5.19", "0.5.8"]:
+        assert f"v{version}" in html, f"releases.html missing v{version}"
+    assert html.count('<details class="content-card"') >= 20, (
+        "releases.html should list a substantial version history"
+    )
+    assert "https://github.com/shimoverse/openvoiceflow/releases" in html
 
 
 def test_homepage_structured_data_links_the_project_to_its_repository():

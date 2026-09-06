@@ -405,6 +405,16 @@ PAGES["dashboard"] = {
           </tbody>
         </table>
 
+        <h2 id="feedback-leaderboard">Feedback and Leaderboard</h2>
+        <p>Two more rows sit below Settings in the sidebar:</p>
+        <table>
+          <thead><tr><th scope="col">Pane</th><th scope="col">What it is for</th></tr></thead>
+          <tbody>
+            <tr><td>Feedback</td><td>A short form (bug, idea, praise, or other, plus an optional reply email) that opens a <code>mailto:</code> on Send with a small aggregate usage snapshot attached — never dictation text.</td></tr>
+            <tr><td>Leaderboard</td><td>Your rank by <strong>time back</strong> against other installations sharing usage, with a display name you can change. Sharing is on by default since 0.5.7 — see <a href="privacy-architecture.html#analytics">Analytics &amp; leaderboard</a> for exactly what that sends and how to turn it off.</td></tr>
+          </tbody>
+        </table>
+
         <h2 id="menubar">The menu-bar menu</h2>
         <p>The waveform icon at the top right gives you the fast controls without opening the dashboard: pause listening for an hour, change the hotkey, change the cleanup backend, open permission settings, and check for updates.</p>
         <div class="callout tip">
@@ -1002,6 +1012,8 @@ PAGES["settings"] = {
             <tr><td>Reveal in Finder</td><td>—</td><td>Opens the folder holding your settings, history, and personalization files.</td></tr>
             <tr><td>Delete history…</td><td>—</td><td>Clears dictation history, with the option to keep your first-ever transcript.</td></tr>
             <tr><td>Show what was typed in the HUD</td><td>On</td><td>Echoes the tail of inserted text. Turn off when dictating sensitive material — the HUD shows a word count instead.</td></tr>
+            <tr><td>Share anonymous usage &amp; leaderboard rank</td><td>On</td><td>Powers the in-app Leaderboard. On by default since 0.5.7 — full detail in <a href="privacy-architecture.html#analytics">Analytics &amp; leaderboard</a>.</td></tr>
+            <tr><td>Delete my leaderboard data</td><td>—</td><td>Removes a past leaderboard submission outright; does not itself turn off future sharing.</td></tr>
             <tr><td>Automatic updates</td><td>On</td><td>Checks for signed updates in the background daily and installs them on next launch — see <a href="updates.html">Updates</a>.</td></tr>
           </tbody>
         </table>

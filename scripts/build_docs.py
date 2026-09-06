@@ -93,13 +93,28 @@ ANALYTICS = """  <script>
   <script defer src="https://va.vercel-scripts.com/v1/script.js" data-view-endpoint="https://vitals.vercel-analytics.com/v1/view?dsn=hbQ2mG8dCYsBmC0cvPE6eVdkD" data-event-endpoint="https://vitals.vercel-analytics.com/v1/event?dsn=hbQ2mG8dCYsBmC0cvPE6eVdkD"></script>
   <script defer src="/_vercel/speed-insights/script.js"></script>"""
 
-NAVBAR = """  <nav class="nav" id="nav" aria-label="Main">
+GITHUB_ICON = ('<svg class="nav-github-icon" viewBox="0 0 16 16" width="16" height="16" '
+               'aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.64 0 8.13c0 3.59 '
+               '2.29 6.63 5.47 7.71.4.08.55-.18.55-.4 0-.19-.01-.82-.01-1.49-2.01.38-2.53-.49-2.69-.94-'
+               '.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.83.72 1.21 1.87.87 '
+               '2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-'
+               '.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.03 2.2-.82 2.2-.82.44 1.1 '
+               '.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 '
+               '1.07-.01 1.93-.01 2.2 0 .22.15.46.55.4A8.13 8.13 0 0 0 16 8.13C16 3.64 12.42 0 8 0z"/></svg>')
+GITHUB_REPO = "https://github.com/shimoverse/openvoiceflow"
+GITHUB_LINK_NAV = (f'        <li><a href="{GITHUB_REPO}" class="nav-github" target="_blank" '
+                    f'rel="noopener">{GITHUB_ICON}<span>GitHub</span></a></li>')
+GITHUB_LINK_DRAWER = (f'      <a href="{GITHUB_REPO}" class="nav-github" target="_blank" '
+                      f'rel="noopener">{GITHUB_ICON}<span>GitHub</span></a>')
+
+NAVBAR = f"""  <nav class="nav" id="nav" aria-label="Main">
     <div class="nav-inner container">
       <a href="../index.html" class="nav-logo"><canvas class="nav-glyph" data-wf="glyph" aria-hidden="true"></canvas><span class="nav-logo-text">OpenVoiceFlow</span></a>
       <ul class="nav-links">
         <li><a href="../mission.html">Mission</a></li>
         <li><a href="index.html">Docs</a></li>
         <li><a href="../blog/index.html">Blog</a></li>
+{GITHUB_LINK_NAV}
         <li><a href="../download.html" class="btn btn-primary">Download</a></li>
       </ul>
       <button class="nav-hamburger" id="navHamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navDrawer"><span></span><span></span><span></span></button>
@@ -111,6 +126,7 @@ NAVBAR = """  <nav class="nav" id="nav" aria-label="Main">
       <a href="index.html">Docs</a>
       <a href="../how-it-works.html">How it works</a>
       <a href="../blog/index.html">Blog</a>
+{GITHUB_LINK_DRAWER}
       <a href="../download.html" class="btn btn-primary">Download for Mac</a>
     </div>
   </nav>"""
@@ -125,6 +141,7 @@ FOOTER = """  <footer class="footer">
         <a href="index.html">Docs</a>
         <a href="../how-it-works.html">How it works</a>
         <a href="../blog/index.html">Blog</a>
+        <a href="../releases.html">Releases</a>
         <a href="../privacy.html">Privacy</a>
         <a href="../llms.txt">llms.txt</a>
       </nav>
