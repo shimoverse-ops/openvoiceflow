@@ -177,15 +177,21 @@ export async function readInstallStats({ activeDays = 30, recentDays = 7, limit 
     GROUP BY 1 ORDER BY total DESC, key ASC LIMIT ${limit}
   `;
 
-  // jsonb_typeof guards the cast: a malformed value is skipped rather than
-  // failing the whole query.
+  // CASE, not `jsonb_typeof(...) = 'number' AND (...)::numeric > 0`: SQL's AND
+  // does not short-circuit, so the planner is free to attempt the cast on a
+  // row the type check would have excluded and fail the whole query with
+  // "cannot cast jsonb string to type numeric". CASE is defined to skip the
+  // branches it does not select. Rows written by an older or buggy client are
+  // exactly where a non-number shows up, so this has to hold for real data.
   const [features] = await query`
     SELECT
       COUNT(*) FILTER (WHERE feature_usage->>'cleanupEnabled' = 'true')::int AS cleanup_enabled,
-      COUNT(*) FILTER (WHERE jsonb_typeof(feature_usage->'snippetsCount') = 'number'
-                         AND (feature_usage->>'snippetsCount')::numeric > 0)::int AS uses_snippets,
-      COUNT(*) FILTER (WHERE jsonb_typeof(feature_usage->'dictionaryCount') = 'number'
-                         AND (feature_usage->>'dictionaryCount')::numeric > 0)::int AS uses_dictionary,
+      COUNT(*) FILTER (WHERE CASE WHEN jsonb_typeof(feature_usage->'snippetsCount') = 'number'
+                                  THEN (feature_usage->'snippetsCount')::numeric > 0
+                                  ELSE false END)::int AS uses_snippets,
+      COUNT(*) FILTER (WHERE CASE WHEN jsonb_typeof(feature_usage->'dictionaryCount') = 'number'
+                                  THEN (feature_usage->'dictionaryCount')::numeric > 0
+                                  ELSE false END)::int AS uses_dictionary,
       COUNT(*) FILTER (WHERE feature_usage->>'hasKnowMeProfile' = 'true')::int AS has_profile
     FROM devices
   `;
@@ -194,12 +200,15 @@ export async function readInstallStats({ activeDays = 30, recentDays = 7, limit 
   // installs touched it at all — the more honest adoption number, since a
   // single heavy user can dominate a raw total.
   const events = await query`
-    SELECT entry.key AS key,
-           SUM((entry.value)::numeric)::bigint AS total,
-           COUNT(*)::int AS devices
-    FROM devices, LATERAL jsonb_each(devices.events) AS entry
-    WHERE jsonb_typeof(entry.value) = 'number' AND (entry.value)::numeric > 0
-    GROUP BY entry.key ORDER BY total DESC, key ASC LIMIT ${limit}
+    SELECT key, SUM(value)::bigint AS total, COUNT(*)::int AS devices
+    FROM (
+      SELECT entry.key AS key,
+             CASE WHEN jsonb_typeof(entry.value) = 'number'
+                  THEN (entry.value)::numeric ELSE 0 END AS value
+      FROM devices, LATERAL jsonb_each(devices.events) AS entry
+    ) counted
+    WHERE value > 0
+    GROUP BY key ORDER BY total DESC, key ASC LIMIT ${limit}
   `;
 
   const rank = (rows) => rows.map((row) => ({ key: String(row.key), total: Number(row.total) }));
