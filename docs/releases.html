@@ -68,9 +68,19 @@
       <h1 class="hero-title">Releases</h1>
       <p class="hero-sub answer-block">OpenVoiceFlow ships often — every release below is real, shipped, and notarized, newest first. Notes come straight from the project's changelog, so this list is exactly as current as the code. Want the raw commit history or to file an issue? <a href="https://github.com/shimoverse/openvoiceflow/releases">See every release on GitHub</a>.</p>
 
+      <details class="content-card" id="v0.5.23" open><summary><h2>v0.5.23 <span class="release-date">· September 6, 2026</span></h2></summary>
+        <h3>Fixed</h3>
+        <ul class="check-list">
+          <li>Five usage counters shipped in 0.5.22 were declared but never recorded — copying a history entry, applying a per-app style, finishing the Know-Me interview, sending feedback, and completing onboarding. They now count where those actions complete. Nothing about what is collected changes; these were simply blank where they should have had data.</li>
+          <li>Opening <strong>Personalize</strong> now counts the tab you land on. It previously counted a tab only after you switched away and came back, so the default (Dictionary) was systematically under-reported.</li>
+          <li>Two syncs finishing out of order could roll usage counters backwards, because the newer snapshot was replaced wholesale by whichever request arrived last. Counters are now merged per name, keeping the larger value, so the order requests arrive in no longer matters.</li>
+          <li>The maintainer analytics dashboard no longer prints "Actual users are not [visible]" directly above a real install count.</li>
+        </ul>
+      </details>
       <details class="content-card" id="v0.5.22" open><summary><h2>v0.5.22 <span class="release-date">· September 6, 2026</span></h2></summary>
         <h3>Added</h3>
         <ul class="check-list">
+          <li><strong>Privacy default, signed off.</strong> Counting which screens and features get used is a *more permissive* default than 0.5.21 shipped, and <code>AGENTS.md</code> requires explicit maintainer sign-off for that. The maintainer requested this telemetry and signed off on it staying <strong>on by default</strong>, under the existing switch rather than a new one. Recorded here because the sign-off was missing from the pull request that shipped it (#136); the collection itself is described below and in <code>PRIVACY.md</code> §7.</li>
           <li><strong>Which parts of the app get used.</strong> The app now keeps a running count per screen (Home, History, Personalize and its tabs, Settings, Leaderboard) and per feature you press (finished a dictation, added a dictionary word or snippet, started the Know-Me interview, changed the cleanup backend, checked for updates, opened Feedback, and similar), and includes those counts in the anonymous usage summary it already sends. Each counter is a fixed name and a total — <code>pane.history</code>, 12 — with <strong>no timestamps and no ordering</strong>, so they show that a feature is used and never when you used it or what you did around it. The names are a closed list compiled into the app, and the server discards any name not already on its own matching list, so dictated text cannot reach them. Same single switch as before (Settings ▸ Privacy ▸ "Share anonymous usage &amp; leaderboard rank"), no new network requests, and "Delete my leaderboard data" now clears the local counters too so a later sync can't re-upload what you deleted.</li>
           <li>The website records anonymous counts for footer links, checksum copies, and opening a release note or FAQ answer, alongside the download/navigation/CTA events it already tracked.</li>
         </ul>
