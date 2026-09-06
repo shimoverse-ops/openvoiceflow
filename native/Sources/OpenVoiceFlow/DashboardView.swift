@@ -112,6 +112,9 @@ struct DashboardView: View {
             // The window opens on Home without a selection change, so count
             // that visit here or Home would look like the least-used pane.
             usageCounters.record(DashboardView.event(for: pane))
+            if pane == .personalize {
+                usageCounters.record(DashboardView.event(for: personalizeTab))
+            }
         }
         // Counted on change rather than on render: a pane's body re-runs for
         // any state it reads, and a visit is a navigation, not a redraw.
@@ -119,6 +122,13 @@ struct DashboardView: View {
             usageCounters.recordIfChanged(
                 DashboardView.event(for: current), from: DashboardView.event(for: previous)
             )
+            // Entering Personalize shows a tab immediately, and that tab's own
+            // onChange does not fire because the selection did not change.
+            // Without this the default tab is the only one never counted on
+            // arrival, which reads as "nobody uses Dictionary".
+            if current == .personalize {
+                usageCounters.record(DashboardView.event(for: personalizeTab))
+            }
         }
         .onChange(of: personalizeTab) { previous, current in
             usageCounters.recordIfChanged(
@@ -692,6 +702,7 @@ struct DashboardView: View {
                             NSPasteboard.general.clearContents()
                             if NSPasteboard.general.setString(entry.text, forType: .string) {
                                 copyFeedback.markCopied(entry.id)
+                                usageCounters.record(.historyCopied)
                             }
                         } label: {
                             Label(isCopied ? "Copied" : "Copy",
@@ -991,7 +1002,10 @@ struct DashboardView: View {
 
     private func styleBinding(for app: String) -> Binding<String> {
         Binding(get: { styleStore.map[app] ?? "default" },
-                set: { styleStore.map[app] = $0 })
+                set: {
+                    styleStore.map[app] = $0
+                    usageCounters.record(.styleApplied)
+                })
     }
 
     // MARK: Know-Me

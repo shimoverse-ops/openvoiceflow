@@ -12,9 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The website now records privacy-safe 30-minute visits, page views, acquisition source, allow-listed navigation/product clicks, and coarse city/region/country when Vercel makes it available. Query strings, IP addresses, typed text, raw click coordinates, and persistent cross-visit browser identifiers are not stored; Global Privacy Control and Do Not Track are honored, and raw events expire after 90 days.
 - A bearer-protected analytics report now exposes aggregate website sessions/pages/clicks/locations alongside current opt-in app feature state and usage counters for the private owner dashboard.
 
+## [0.5.23] — 2026-09-06
+
+### Fixed
+- Five usage counters shipped in 0.5.22 were declared but never recorded — copying a history entry, applying a per-app style, finishing the Know-Me interview, sending feedback, and completing onboarding. They now count where those actions complete. Nothing about what is collected changes; these were simply blank where they should have had data.
+- Opening **Personalize** now counts the tab you land on. It previously counted a tab only after you switched away and came back, so the default (Dictionary) was systematically under-reported.
+- Two syncs finishing out of order could roll usage counters backwards, because the newer snapshot was replaced wholesale by whichever request arrived last. Counters are now merged per name, keeping the larger value, so the order requests arrive in no longer matters.
+- The maintainer analytics dashboard no longer prints "Actual users are not [visible]" directly above a real install count.
+
 ## [0.5.22] — 2026-09-06
 
 ### Added
+- **Privacy default, signed off.** Counting which screens and features get used is a *more permissive* default than 0.5.21 shipped, and `AGENTS.md` requires explicit maintainer sign-off for that. The maintainer requested this telemetry and signed off on it staying **on by default**, under the existing switch rather than a new one. Recorded here because the sign-off was missing from the pull request that shipped it (#136); the collection itself is described below and in `PRIVACY.md` §7.
 - **Which parts of the app get used.** The app now keeps a running count per screen (Home, History, Personalize and its tabs, Settings, Leaderboard) and per feature you press (finished a dictation, added a dictionary word or snippet, started the Know-Me interview, changed the cleanup backend, checked for updates, opened Feedback, and similar), and includes those counts in the anonymous usage summary it already sends. Each counter is a fixed name and a total — `pane.history`, 12 — with **no timestamps and no ordering**, so they show that a feature is used and never when you used it or what you did around it. The names are a closed list compiled into the app, and the server discards any name not already on its own matching list, so dictated text cannot reach them. Same single switch as before (Settings ▸ Privacy ▸ "Share anonymous usage & leaderboard rank"), no new network requests, and "Delete my leaderboard data" now clears the local counters too so a later sync can't re-upload what you deleted.
 - The website records anonymous counts for footer links, checksum copies, and opening a release note or FAQ answer, alongside the download/navigation/CTA events it already tracked.
 

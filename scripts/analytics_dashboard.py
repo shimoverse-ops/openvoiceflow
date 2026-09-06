@@ -706,6 +706,23 @@ def render_dashboard(snapshot: Dict[str, Any]) -> str:
             "telemetry API token was not configured — not because the app sends nothing."
         )
 
+    # The hero used to assert "Actual users are not [visible]" unconditionally.
+    # With app telemetry in hand that is simply false, and a page that
+    # contradicts its own headline metric is worse than one that says less.
+    if app.get("available"):
+        hero_headline = "Installs are visible.<br>People are not."
+        hero_value = adoption["verified_installs"]
+        hero_label = "Opted-in installs"
+        hero_caption = (
+            f"{adoption['active_users']} active in {app_days} days · devices, not people · "
+            f"{adoption['high_confidence_external_interest']} high-confidence external interest"
+        )
+    else:
+        hero_headline = "Interest is visible.<br>Actual users are not."
+        hero_value = adoption["high_confidence_external_interest"]
+        hero_label = "High-confidence external interest"
+        hero_caption = "App telemetry unavailable · install count not read"
+
     limitations = "".join(f"<li>{_esc(item)}</li>" for item in snapshot["limitations"])
     referrer_rows = _ranked_rows(gh["popular_referrers"], "No GitHub referrers reported")
     release_rows = "".join(
@@ -728,7 +745,7 @@ def render_dashboard(snapshot: Dict[str, Any]) -> str:
 </head>
 <body><main class="shell">
 <header><div class="brand"><div class="glyph">|||</div><div><strong>OpenVoiceFlow Analytics</strong><span>Private maintainer view</span></div></div><div class="stamp">Updated<br>{_esc(updated_date)}<span class="stamp-time"> · {_esc(updated_time)}</span></div></header>
-<section class="hero"><div><span class="eyebrow">Adoption, without false precision</span><h1>Interest is visible.<br>Actual users are not.</h1><p>Repository and website signals in one place, with CI noise and low-signal activity kept separate from genuine adoption.</p></div><div class="answer"><strong>{_metric(adoption['high_confidence_external_interest'])}</strong><span>High-confidence external interest</span><small>No verified install data · exact real-user count unknown</small></div></section>
+<section class="hero"><div><span class="eyebrow">Adoption, without false precision</span><h1>{hero_headline}</h1><p>Repository, website and app signals in one place, with CI noise and low-signal activity kept separate from genuine adoption.</p></div><div class="answer"><strong>{_metric(hero_value)}</strong><span>{_esc(hero_label)}</span><small>{_esc(hero_caption)}</small></div></section>
 <section class="metrics" aria-label="Key metrics">
 <div class="metric"><span>Verified installs</span><strong>{_metric(adoption['verified_installs'])}</strong><small>{_esc(install_caption)}</small></div>
 <div class="metric"><span>Active installs</span><strong>{_metric(adoption['active_users'])}</strong><small>{_esc(active_caption)}</small></div>

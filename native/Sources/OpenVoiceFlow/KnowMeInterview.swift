@@ -115,6 +115,7 @@ struct KnowMeInterview: View {
     private func finish() {
         commit()
         controller.profileStore.profile = draft
+        controller.usageCounters.record(.knowMeInterviewFinished)
         // Double coverage: names + terms also seed the dictionary.
         controller.dictionaryStore.seed(with: controller.profileStore.dictionaryWords)
         dismiss()

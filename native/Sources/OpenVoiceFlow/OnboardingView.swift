@@ -134,6 +134,7 @@ struct OnboardingView: View {
             pill("Start using it", disabled: !helloDone) {
                 controller.settings.didOnboard = true
                 controller.settings.save()
+                controller.usageCounters.record(.onboardingCompleted)
                 _ = controller.startListening()
                 LoginItem.apply(controller.settings.launchAtLogin)
                 NSApplication.shared.keyWindow?.close()

@@ -123,10 +123,32 @@ export async function upsertDevice(device) {
       minutes_saved = EXCLUDED.minutes_saved,
       streak_days = EXCLUDED.streak_days,
       feature_usage = EXCLUDED.feature_usage,
-      -- The app sends lifetime totals, so a late or duplicated sync can only
-      -- repeat a number, never inflate one. Taking the larger of the two also
-      -- keeps counters intact if a device's local store is reset.
-      events = CASE WHEN EXCLUDED.events = '{}'::jsonb THEN devices.events ELSE EXCLUDED.events END,
+      -- Merge per key, taking the larger value. Counters are lifetime totals,
+      -- so the larger number is always the newer one — but "newer" is not the
+      -- same as "arrives second": syncIfDue, the leaderboard open and a
+      -- nickname commit can all be in flight at once, and if an older request
+      -- lands last, wholesale replacement would roll every counter backwards
+      -- and drop any key the newer snapshot had added. A per-key MAX is
+      -- order-independent, so it does not matter which request wins the race.
+      -- Non-numeric values (an older or buggy client) collapse to 0 rather
+      -- than failing the upsert; CASE is required because AND does not
+      -- short-circuit in SQL.
+      events = (
+        SELECT COALESCE(jsonb_object_agg(key, to_jsonb(value)), '{}'::jsonb)
+        FROM (
+          SELECT key, MAX(value) AS value
+          FROM (
+            SELECT key, CASE WHEN jsonb_typeof(value) = 'number'
+                             THEN (value)::numeric ELSE 0 END AS value
+            FROM jsonb_each(devices.events)
+            UNION ALL
+            SELECT key, CASE WHEN jsonb_typeof(value) = 'number'
+                             THEN (value)::numeric ELSE 0 END
+            FROM jsonb_each(EXCLUDED.events)
+          ) pairs
+          GROUP BY key
+        ) largest
+      ),
       country = COALESCE(EXCLUDED.country, devices.country),
       app_version = EXCLUDED.app_version,
       first_use_date = COALESCE(devices.first_use_date, EXCLUDED.first_use_date),

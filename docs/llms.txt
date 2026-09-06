@@ -26,13 +26,13 @@ OpenVoiceFlow is a free push-to-talk voice dictation app for macOS. It transcrib
 - How it works: https://openvoiceflow.com/how-it-works.html
 - Releases (version history and release notes): https://openvoiceflow.com/releases.html
 - Source code (GitHub, MIT-licensed): https://github.com/shimoverse/openvoiceflow
-- Website-hosted universal macOS DMG (v0.5.22): https://openvoiceflow.com/downloads/OpenVoiceFlow-0.5.22.dmg
+- Website-hosted universal macOS DMG (v0.5.23): https://openvoiceflow.com/downloads/OpenVoiceFlow-0.5.23.dmg
 - Website-hosted macOS 12–13 fallback (v0.3.6 Apple Silicon): https://openvoiceflow.com/downloads/OpenVoiceFlow-0.3.6-arm64.dmg
 - Product film (52-second MP4, original score, captioned): https://openvoiceflow.com/assets/openvoiceflow-demo.mp4
 
 ## Documentation
 
-Full product manual (25 pages) for OpenVoiceFlow 0.5.22:
+Full product manual (25 pages) for OpenVoiceFlow 0.5.23:
 
 - Documentation home: https://openvoiceflow.com/docs/
 - Quickstart: https://openvoiceflow.com/docs/quickstart.html
@@ -79,7 +79,7 @@ Full product manual (25 pages) for OpenVoiceFlow 0.5.22:
 - Platforms: macOS 14+ on Apple Silicon and Intel Macs.
 - Audio transcription: on-device WhisperKit.
 - Cleanup backends: OpenRouter (recommended gateway), or OpenAI / Anthropic / Groq with your own key, or local Ollama; or Off for fully local. Default is Off.
-- Download path: one website-hosted universal DMG (v0.5.22); a v0.3.6 fallback remains for macOS 12–13.
+- Download path: one website-hosted universal DMG (v0.5.23); a v0.3.6 fallback remains for macOS 12–13.
 
 ## Do not claim
 

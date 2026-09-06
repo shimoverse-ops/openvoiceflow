@@ -133,4 +133,4 @@ Last reviewed against:
 - `pyproject.toml` runtime deps (core + optional extras).
 - `native/Package.swift` runtime dependencies.
 - `package.json` website API runtime dependencies.
-- `main` branch after v0.5.22.
+- `main` branch after v0.5.23.
