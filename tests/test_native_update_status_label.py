@@ -87,6 +87,12 @@ def test_footer_states_up_to_date_without_a_call_to_action() -> None:
 
 
 def test_dashboard_refreshes_update_status_when_it_appears() -> None:
+    """The footer must re-probe the appcast when the window comes back, or it
+    reports whatever was true at launch. Asserted on the call inside `.onAppear`
+    rather than on an exact one-line spelling, so adding another statement to
+    that block doesn't read as removing this one."""
     dashboard = source("DashboardView.swift")
 
-    assert ".onAppear { updater.refreshUpdateStatus() }" in dashboard
+    body = dashboard.split("var body: some View", 1)[1]
+    on_appear = body.split(".onAppear {", 1)[1].split("}", 1)[0]
+    assert "updater.refreshUpdateStatus()" in on_appear

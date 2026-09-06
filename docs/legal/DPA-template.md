@@ -74,7 +74,11 @@ OpenVoiceFlow itself is **not** a sub-processor. The maintainer does not receive
 In v0.3, OpenVoiceFlow ships with the following on each Mac:
 
 - `~/.openvoiceflow/*.json` written with **mode 600** (owner read/write only).
-- **No telemetry.** No usage pings, no crash reports, no install beacons.
+- **No telemetry in the v0.3 CLI.** No usage pings, no crash reports, no install beacons. The
+  native Mac app (0.5.8+) shares anonymous aggregate usage counters by default — a random
+  device ID, counters, and app version, never Customer Personal Data or dictation content —
+  and a single setting disables it. Controllers who require zero outbound usage data should
+  turn it off as part of deployment.
 - **Update check is opt-out-able** via `update_check: false`.
 - **Audio never leaves the Mac.** Whisper.cpp processes locally; temp WAV is deleted in the `finally` block of each dictation.
 - **No central server.** There is nothing for the maintainer to compromise that would expose your data.

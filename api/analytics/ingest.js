@@ -3,6 +3,40 @@ import * as productionDatabase from "../_db.js";
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const MAX_COUNTER = 100_000_000;
 const FEATURE_KEYS = ["cleanupEnabled", "snippetsCount", "dictionaryCount", "hasKnowMeProfile"];
+
+/// Which pane/feature counters the app is allowed to report, mirroring
+/// UsageCounters.Event in the native app (tests/test_usage_counters_contract.py
+/// fails if the two drift). An allowlist rather than a pattern: it is the one
+/// thing standing between an aggregate counter store and an arbitrary
+/// client-supplied string, and a string is where user content could leak in.
+/// Unknown names are dropped silently so an older server never rejects a newer
+/// app's sync outright.
+const EVENT_KEYS = [
+  "pane.home",
+  "pane.history",
+  "pane.personalize",
+  "pane.settings",
+  "pane.leaderboard",
+  "tab.dictionary",
+  "tab.snippets",
+  "tab.styles",
+  "tab.profile",
+  "action.dictation_completed",
+  "action.history_copied",
+  "action.history_cleared",
+  "action.dictionary_entry_added",
+  "action.snippet_added",
+  "action.style_applied",
+  "action.know_me_interview_started",
+  "action.know_me_interview_finished",
+  "action.cleanup_backend_changed",
+  "action.update_checked",
+  "action.version_history_opened",
+  "action.feedback_opened",
+  "action.feedback_sent",
+  "action.leaderboard_name_changed",
+  "action.onboarding_completed",
+];
 const CONTROL_CHARS_RE = /[\x00-\x1F\x7F]/g;
 
 function isNonNegInt(value) {
@@ -26,6 +60,16 @@ function sanitizeFeatureUsage(raw) {
     const value = raw[key];
     if (typeof value === "boolean") out[key] = value;
     else if (isNonNegInt(value)) out[key] = value;
+  }
+  return out;
+}
+
+function sanitizeEvents(raw) {
+  if (typeof raw !== "object" || raw === null || Array.isArray(raw)) return {};
+  const out = {};
+  for (const key of EVENT_KEYS) {
+    const value = raw[key];
+    if (isNonNegInt(value) && value > 0) out[key] = value;
   }
   return out;
 }
@@ -79,6 +123,7 @@ export function createIngestHandler(database = productionDatabase) {
       minutesSaved: isNonNegInt(body.minutesSaved) ? body.minutesSaved : 0,
       streakDays: isNonNegInt(body.streakDays) ? body.streakDays : 0,
       featureUsage: sanitizeFeatureUsage(body.featureUsage),
+      events: sanitizeEvents(body.events),
       country,
       appVersion: typeof body.appVersion === "string" ? body.appVersion.slice(0, 20) : null,
       firstUseDate,

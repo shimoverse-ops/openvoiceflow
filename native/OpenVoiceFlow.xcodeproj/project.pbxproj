@@ -479,14 +479,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = OpenVoiceFlow.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.5.21;
+				MARKETING_VERSION = 0.5.22;
 				PRODUCT_BUNDLE_IDENTIFIER = app.openvoiceflow;
 				PRODUCT_NAME = OpenVoiceFlow;
 				SDKROOT = macosx;
@@ -499,14 +499,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = OpenVoiceFlow.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.5.21;
+				MARKETING_VERSION = 0.5.22;
 				PRODUCT_BUNDLE_IDENTIFIER = app.openvoiceflow;
 				PRODUCT_NAME = OpenVoiceFlow;
 				SDKROOT = macosx;

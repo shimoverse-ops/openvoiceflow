@@ -38,6 +38,9 @@ final class AppController: ObservableObject {
     let styleStore = StyleStore()
     let historyStore = HistoryStore()
     let analyticsIdentity = AnalyticsIdentityStore()
+    /// Which panes and features get used. Local counters; shared only under
+    /// the same opt-out switch as the rest of the analytics payload.
+    let usageCounters = UsageCounters()
     let analyticsClient = AnalyticsClient()
 
     /// Today's dictated words — read straight from the persisted stats.
@@ -290,6 +293,7 @@ final class AppController: ObservableObject {
         // returns false, and we nudge the user to paste it manually.
         let pasted = settings.autoPaste ? Paster.paste(text) : true
         historyStore.record(app: app, text: text, words: words)
+        usageCounters.record(.dictationCompleted)
         analyticsClient.syncIfDue(controller: self)
         lastError = nil
         lastTranscript = text

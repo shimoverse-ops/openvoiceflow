@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.22] — 2026-09-06
+
+### Added
+- **Which parts of the app get used.** The app now keeps a running count per screen (Home, History, Personalize and its tabs, Settings, Leaderboard) and per feature you press (finished a dictation, added a dictionary word or snippet, started the Know-Me interview, changed the cleanup backend, checked for updates, opened Feedback, and similar), and includes those counts in the anonymous usage summary it already sends. Each counter is a fixed name and a total — `pane.history`, 12 — with **no timestamps and no ordering**, so they show that a feature is used and never when you used it or what you did around it. The names are a closed list compiled into the app, and the server discards any name not already on its own matching list, so dictated text cannot reach them. Same single switch as before (Settings ▸ Privacy ▸ "Share anonymous usage & leaderboard rank"), no new network requests, and "Delete my leaderboard data" now clears the local counters too so a later sync can't re-upload what you deleted.
+- The website records anonymous counts for footer links, checksum copies, and opening a release note or FAQ answer, alongside the download/navigation/CTA events it already tracked.
+
+### Fixed
+- The maintainer analytics dashboard reported **"Verified installs: Unknown — Native app has no telemetry."** That stopped being true in 0.5.8, when opt-out usage sharing shipped: the install data was in the database the whole time and the dashboard never asked for it. It now reports opted-in installs, active installs, app versions, countries, and which screens and features get used, via a new token-gated aggregate endpoint (`api/analytics/stats.js`). Without the token the dashboard says the source is unavailable rather than asserting the app is silent.
+
+### Changed
+- `README.md`, `SECURITY.md`, `docs/ARCHITECTURE.md`, the DPA template, and the website's "Really free?" answer still carried blanket "no telemetry" claims that 0.5.8 had already made false, or that were true only of the legacy Python CLI. Each now says what the Mac app actually sends and how to turn it off, or names the CLI it applies to.
+
 ## [0.5.21] — 2026-09-06
 
 ### Fixed

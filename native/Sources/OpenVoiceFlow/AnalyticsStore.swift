@@ -7,9 +7,11 @@ import Foundation
 /// sent is a handful of aggregate counters this app already shows on the
 /// Home pane — total words, minutes saved, streak, which features are in
 /// use — tagged with a random device ID and a display name the user can
-/// change. Never dictation text, snippets, dictionary entries, or the
-/// Know-Me profile. See the Analytics & leaderboard section of the privacy
-/// docs for the exact wire format.
+/// change — plus aggregate counters for which panes and features get used
+/// (`UsageCounters`: a fixed set of names and totals, no text, no timestamps).
+/// Never dictation text, snippets, dictionary entries, or the Know-Me profile.
+/// See the Analytics & leaderboard section of the privacy docs for the exact
+/// wire format.
 
 // MARK: - Identity
 
@@ -113,6 +115,9 @@ final class AnalyticsClient: ObservableObject {
                 "dictionaryCount": controller.dictionaryStore.entries.count,
                 "hasKnowMeProfile": controller.profileStore.hasProfile,
             ],
+            // Which panes and features this install actually uses: counter
+            // names and totals, nothing else. See UsageCounters.
+            "events": controller.usageCounters.payload,
         ]
         if let firstUse = settings.firstUseDate {
             body["firstUseDate"] = ISO8601DateFormatter().string(from: firstUse)
@@ -143,7 +148,7 @@ final class AnalyticsClient: ObservableObject {
     /// entirely (right-to-erasure). Does not touch the local sharing
     /// toggle — call this from an explicit "Delete my leaderboard data"
     /// action, separate from just turning sharing off.
-    func deleteMyData(deviceId: String) async {
+    func deleteMyData(deviceId: String, counters: UsageCounters? = nil) async {
         var components = URLComponents(url: baseURL.appending(path: "api/analytics/ingest"), resolvingAgainstBaseURL: false)!
         components.queryItems = [URLQueryItem(name: "deviceId", value: deviceId)]
         guard let url = components.url else { return }
@@ -151,6 +156,10 @@ final class AnalyticsClient: ObservableObject {
         req.httpMethod = "DELETE"
         req.timeoutInterval = 10
         _ = try? await URLSession.shared.data(for: req)
+        // Clear the local counters too. They are lifetime totals, so leaving
+        // them behind would have the next sync re-upload the very numbers the
+        // user just asked to have deleted.
+        counters?.reset()
         leaderboard = nil
     }
 

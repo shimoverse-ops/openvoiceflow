@@ -16,6 +16,7 @@ struct DashboardView: View {
     @ObservedObject private var styleStore: StyleStore
     @ObservedObject private var profileStore: ProfileStore
     @ObservedObject private var analyticsClient: AnalyticsClient
+    @ObservedObject private var usageCounters: UsageCounters
     @ObservedObject private var analyticsIdentity: AnalyticsIdentityStore
     // Observe the updater so the "Check for updates now" CTA re-enables when a
     // background check finishes.
@@ -48,6 +49,7 @@ struct DashboardView: View {
         self.styleStore = controller.styleStore
         self.profileStore = controller.profileStore
         self.analyticsClient = controller.analyticsClient
+        self.usageCounters = controller.usageCounters
         self.analyticsIdentity = controller.analyticsIdentity
         self._leaderboardNameDraft = State(initialValue: controller.analyticsIdentity.identity.displayName)
     }
@@ -105,7 +107,45 @@ struct DashboardView: View {
         .frame(minWidth: 1000, minHeight: 768)
         // Re-probe the appcast whenever the window comes back, so the footer
         // reflects a release published since the app launched.
-        .onAppear { updater.refreshUpdateStatus() }
+        .onAppear {
+            updater.refreshUpdateStatus()
+            // The window opens on Home without a selection change, so count
+            // that visit here or Home would look like the least-used pane.
+            usageCounters.record(DashboardView.event(for: pane))
+        }
+        // Counted on change rather than on render: a pane's body re-runs for
+        // any state it reads, and a visit is a navigation, not a redraw.
+        .onChange(of: pane) { previous, current in
+            usageCounters.recordIfChanged(
+                DashboardView.event(for: current), from: DashboardView.event(for: previous)
+            )
+        }
+        .onChange(of: personalizeTab) { previous, current in
+            usageCounters.recordIfChanged(
+                DashboardView.event(for: current), from: DashboardView.event(for: previous)
+            )
+        }
+    }
+
+    /// Panes and tabs map to counter names here, in one place, so a renamed
+    /// case can't silently split one metric into two.
+    static func event(for pane: Pane) -> UsageCounters.Event {
+        switch pane {
+        case .home: return .paneHome
+        case .history: return .paneHistory
+        case .personalize: return .panePersonalize
+        case .settings: return .paneSettings
+        case .leaderboard: return .paneLeaderboard
+        }
+    }
+
+    static func event(for tab: PersonalizeTab) -> UsageCounters.Event {
+        switch tab {
+        case .dictionary: return .tabDictionary
+        case .snippets: return .tabSnippets
+        case .styles: return .tabStyles
+        case .knowMe: return .tabProfile
+        }
     }
 
     // MARK: sidebar (212 pt, dot + label rows)
@@ -142,7 +182,10 @@ struct DashboardView: View {
                 .buttonStyle(.plain)
             }
 
-            Button { showFeedback = true } label: {
+            Button {
+                usageCounters.record(.feedbackOpened)
+                showFeedback = true
+            } label: {
                 HStack(spacing: 8) {
                     Circle().fill(.clear).frame(width: 6, height: 6)
                     Text("Feedback")
@@ -246,8 +289,14 @@ struct DashboardView: View {
         // is a separate, explicit choice rather than collateral damage.
         .confirmationDialog("Delete every dictation from this Mac?",
                             isPresented: $showDeleteHistory, titleVisibility: .visible) {
-            Button("Delete, keep my first words") { history.clearAll(keepingFirst: true) }
-            Button("Delete everything", role: .destructive) { history.clearAll(keepingFirst: false) }
+            Button("Delete, keep my first words") {
+                history.clearAll(keepingFirst: true)
+                usageCounters.record(.historyCleared)
+            }
+            Button("Delete everything", role: .destructive) {
+                history.clearAll(keepingFirst: false)
+                usageCounters.record(.historyCleared)
+            }
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("History, stats and the per-app breakdown are cleared. Your first dictation can be kept.")
@@ -856,7 +905,10 @@ struct DashboardView: View {
     }
 
     @ViewBuilder private var dictionarySection: some View {
-        addRow(placeholder: "Add a word (e.g. WhisperKit)") { dictionary.add(word: $0) }
+        addRow(placeholder: "Add a word (e.g. WhisperKit)") {
+            dictionary.add(word: $0)
+            usageCounters.record(.dictionaryEntryAdded)
+        }
         if dictionary.entries.isEmpty {
             emptyPanel(title: "No corrections yet",
                        body: "Add a word above, or run the Know-Me interview to seed names and jargon automatically.",
@@ -883,6 +935,7 @@ struct DashboardView: View {
     @ViewBuilder private var snippetsSection: some View {
         SnippetAddRow(fill: fill, ink: ink, ink2: ink2, accent: DT.emberLight) { trigger, expansion in
             snippets.add(trigger: trigger, expansion: expansion)
+            usageCounters.record(.snippetAdded)
         }
         if snippets.snippets.isEmpty {
             emptyPanel(title: "No snippets yet",
@@ -955,7 +1008,10 @@ struct DashboardView: View {
                         profileRow("Jargon", profileStore.profile.technicalTerms.joined(separator: ", "))
                         profileRow("Tone", profileStore.profile.communicationStyle)
                         HStack(spacing: 12) {
-                            Button("Re-run interview") { showInterview = true }.buttonStyle(.bordered)
+                            Button("Re-run interview") {
+                                usageCounters.record(.knowMeInterviewStarted)
+                                showInterview = true
+                            }.buttonStyle(.bordered)
                             Button("Clear") { profileStore.profile = Profile() }
                                 .buttonStyle(.plain).font(.system(size: 12)).foregroundStyle(DT.destructive)
                         }
@@ -963,7 +1019,10 @@ struct DashboardView: View {
                     } else {
                         Text("Run the interview and cleanup learns your name, your team's jargon, and how you like to sound.")
                             .font(.system(size: 12.5)).foregroundStyle(ink2)
-                        Button("Run interview (2 min)") { showInterview = true }
+                        Button("Run interview (2 min)") {
+                            usageCounters.record(.knowMeInterviewStarted)
+                            showInterview = true
+                        }
                             .buttonStyle(.borderedProminent).tint(DT.emberWave)
                     }
                 }
@@ -1126,7 +1185,12 @@ struct DashboardView: View {
                     }
                     settingsRow("Delete my leaderboard data") {
                         Button("Delete…") {
-                            Task { await analyticsClient.deleteMyData(deviceId: analyticsIdentity.identity.deviceId) }
+                            Task {
+                                await analyticsClient.deleteMyData(
+                                    deviceId: analyticsIdentity.identity.deviceId,
+                                    counters: usageCounters
+                                )
+                            }
                         }
                         .buttonStyle(.plain).font(.system(size: 12)).foregroundStyle(DT.destructive)
                     }
@@ -1140,10 +1204,14 @@ struct DashboardView: View {
                         // Anchored at the running version, so the page opens on
                         // "what am I actually on" rather than the newest entry.
                         Button("Version history") {
+                            usageCounters.record(.versionHistoryOpened)
                             NSWorkspace.shared.open(ReleaseNotes.url(forVersion: updater.appVersion))
                         }
                         .buttonStyle(.plain).foregroundStyle(ink2)
-                        Button("Check for updates now") { updater.checkForUpdates() }
+                        Button("Check for updates now") {
+                            usageCounters.record(.updateChecked)
+                            updater.checkForUpdates()
+                        }
                             .buttonStyle(.plain).foregroundStyle(DT.emberLight)
                             .disabled(!updater.canCheckForUpdates)
                     }
@@ -1321,6 +1389,7 @@ struct DashboardView: View {
             get: { controller.settings.backend != .none },
             set: { on in
                 controller.settings.backend = on ? .anthropic : .none
+                usageCounters.record(.cleanupBackendChanged)
                 controller.settings.save()
                 reloadAPIKeyDraft()
             }
@@ -1332,6 +1401,7 @@ struct DashboardView: View {
             get: { controller.settings.backend },
             set: { b in
                 controller.settings.backend = b
+                usageCounters.record(.cleanupBackendChanged)
                 controller.settings.save()
                 reloadAPIKeyDraft()
             }
@@ -1369,6 +1439,7 @@ struct DashboardView: View {
 
         let changed = normalized != analyticsIdentity.identity.displayName
         guard changed || analyticsClient.syncError != nil else { return }
+        if changed { usageCounters.record(.leaderboardNameChanged) }
         analyticsIdentity.identity.displayName = normalized
         syncAndRefreshLeaderboard()
     }

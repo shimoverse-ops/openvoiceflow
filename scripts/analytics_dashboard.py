@@ -3,9 +3,13 @@
 
 The collector uses the authenticated GitHub CLI and, when available, the local
 Vercel CLI token. Credentials are never copied into the generated snapshot or
-HTML. The native app remains telemetry-free; this dashboard only combines
-repository traffic, release-asset request counters, CI activity, and aggregate
-website analytics.
+HTML. It combines repository traffic, release-asset request counters, CI
+activity, aggregate website analytics, and the app's own aggregate install and
+usage counters (opt-out, on by default since 0.5.8 — see PRIVACY.md §7).
+
+Everything here is aggregate. No source returns a per-user or per-device row,
+and the app telemetry endpoint is token-gated precisely because the public
+leaderboard hides the population size on purpose.
 """
 
 from __future__ import annotations
@@ -34,6 +38,11 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / ".analytics-dashboard" / "index.html"
 DEFAULT_SNAPSHOT = ROOT / ".analytics-dashboard" / "snapshot.json"
 VERCEL_AUTH = Path.home() / "Library/Application Support/com.vercel.cli/auth.json"
+# Aggregate install + in-app usage counters (api/analytics/stats.js). Private:
+# the public leaderboard hides the population size on purpose, so this needs
+# the deployment's ANALYTICS_STATS_TOKEN.
+APP_STATS_URL = "https://openvoiceflow.com/api/analytics/stats"
+APP_STATS_TOKEN_ENV = "OVF_ANALYTICS_STATS_TOKEN"
 
 
 class AnalyticsError(RuntimeError):
@@ -310,6 +319,81 @@ def collect_vercel(
     }
 
 
+def collect_app_telemetry(
+    now: Optional[datetime] = None,
+    days: int = 30,
+    base_url: str = APP_STATS_URL,
+    token: Optional[str] = None,
+) -> Dict[str, Any]:
+    """Collect aggregate install + in-app usage counters from the private API.
+
+    The token is read from the environment and never written to the snapshot or
+    the HTML. Without one the dashboard still builds — the app sections just
+    report themselves unavailable, the same way the website sections do when
+    `vercel login` has not been run.
+    """
+    token = token or os.environ.get(APP_STATS_TOKEN_ENV, "")
+    if not token:
+        raise AnalyticsError(
+            f"App telemetry unavailable; set {APP_STATS_TOKEN_ENV} to the value configured on the deployment"
+        )
+    query = urllib.parse.urlencode({"activeDays": str(days), "recentDays": "7"})
+    request = urllib.request.Request(
+        f"{base_url}?{query}",
+        headers={"Authorization": f"Bearer {token}", "Accept": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        # Deliberately does not echo the response body — it is an authenticated
+        # endpoint and the error text is not worth risking in a shared log.
+        raise AnalyticsError(f"App telemetry request rejected (HTTP {exc.code})") from exc
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError) as exc:
+        raise AnalyticsError("App telemetry request failed") from exc
+
+    if not isinstance(payload, dict) or payload.get("version") != 1:
+        raise AnalyticsError("App telemetry returned an unexpected response schema")
+    totals = payload.get("totals")
+    if not isinstance(totals, dict):
+        raise AnalyticsError("App telemetry response had no totals")
+    return {
+        "available": True,
+        "window": payload.get("window", {}),
+        "totals": {
+            "installs": _require_int(totals.get("installs"), "app totals.installs"),
+            "active_recent": _require_int(totals.get("activeRecent"), "app totals.activeRecent"),
+            "active_window": _require_int(totals.get("activeWindow"), "app totals.activeWindow"),
+            "new_window": _require_int(totals.get("newWindow"), "app totals.newWindow"),
+            "countries": _require_int(totals.get("countries"), "app totals.countries"),
+        },
+        "versions": _rank_payload(payload.get("versions"), "versions"),
+        "countries": _rank_payload(payload.get("countries"), "countries"),
+        "features": payload.get("features", {}),
+        "events": _rank_payload(payload.get("events"), "events"),
+    }
+
+
+def _rank_payload(rows: Any, label: str) -> List[Dict[str, Any]]:
+    """Normalize an API ranking into the {key,total} shape the renderer uses."""
+    if not isinstance(rows, list):
+        raise AnalyticsError(f"App telemetry `{label}` was not a list")
+    normalized = []
+    for row in rows:
+        if not isinstance(row, dict) or "key" not in row:
+            raise AnalyticsError(f"App telemetry `{label}` row had an unexpected shape")
+        normalized.append(
+            {
+                "key": str(row["key"]),
+                "total": _require_int(row.get("total"), f"app {label}.total"),
+                "visitors": _require_int(row["devices"], f"app {label}.devices")
+                if isinstance(row.get("devices"), int)
+                else None,
+            }
+        )
+    return normalized
+
+
 def estimate_external_interest(
     github: Dict[str, Any],
     owner_logins: Set[str],
@@ -380,6 +464,7 @@ def build_snapshot(
     vercel: Dict[str, Any],
     now: Optional[datetime] = None,
     owner_logins: Optional[Set[str]] = None,
+    app: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Normalize provider responses into the dashboard's stable data contract."""
     now = now or datetime.now(timezone.utc)
@@ -390,6 +475,20 @@ def build_snapshot(
     view_uniques = _require_int(github.get("views", {}).get("uniques"), "views.uniques")
     checkout_jobs = sum(_require_int(run.get("checkout_jobs", 0), "workflow checkout_jobs") for run in github.get("workflow_runs", []))
     estimate = estimate_external_interest(github, owner_logins=owner_logins, now=now)
+
+    app = app or {"available": False, "error": "App telemetry unavailable"}
+    if app.get("available"):
+        # The app does report installs now (opt-out, aggregate — see
+        # UsageCounters and PRIVACY.md §7), so the honest answer is no longer
+        # "unknown". It is still a count of installs that opted in, not of
+        # people: one person with two Macs is two.
+        totals = app["totals"]
+        estimate["verified_installs"] = totals["installs"]
+        estimate["active_users"] = totals["active_window"]
+        estimate["install_note"] = (
+            "Installs that share anonymous usage (on by default, Settings ▸ Privacy). "
+            "Devices, not people, and excludes anyone who opted out."
+        )
 
     website: Dict[str, Any]
     if vercel.get("available"):
@@ -445,12 +544,14 @@ def build_snapshot(
             "release_assets": _release_assets(github.get("releases", [])),
         },
         "website": website,
+        "app": app,
         "limitations": [
             "GitHub does not expose clone identities, IP addresses, user agents, or geography.",
             "GitHub clone operations and release-asset requests are not people, installations, or successful product use.",
             "Vercel's anonymous visitor metric cannot retroactively separate owner testing from external visits.",
             "Website download-click events measure clicks, not completed transfers or installations.",
-            "The native OpenVoiceFlow app is telemetry-free, so verified installs, active users, and retention are unknown.",
+            "App telemetry counts installs that share anonymous usage — devices, not people, and not anyone who opted out.",
+            "In-app counters are lifetime totals per install with no timestamps, so they show what gets used, never when or in what order.",
         ],
     }
 
@@ -511,6 +612,14 @@ def _ranked_rows(items: List[Dict[str, Any]], empty: str = "No data") -> str:
 def render_dashboard(snapshot: Dict[str, Any]) -> str:
     """Render a self-contained dashboard with no external scripts or telemetry."""
     adoption = snapshot["adoption"]
+    app = snapshot.get("app", {"available": False})
+    app_days = app.get("window", {}).get("activeDays", 30)
+    if app.get("available"):
+        install_caption = "Opted-in installs · devices, not people"
+        active_caption = f"Synced in the last {app_days} days"
+    else:
+        install_caption = "App telemetry unavailable"
+        active_caption = "App telemetry unavailable"
     gh = snapshot["github"]
     website = snapshot["website"]
     updated = _parse_datetime(snapshot["generated_at"]).astimezone(ZoneInfo(TIMEZONE))
@@ -548,6 +657,55 @@ def render_dashboard(snapshot: Dict[str, Any]) -> str:
           <section class="section" id="website"><div class="section-head"><div><span class="eyebrow">Website</span><h2>Website analytics unavailable</h2></div><span class="badge warn">Needs Vercel login</span></div><article class="panel"><p>Run <code>vercel login</code>, then rebuild the dashboard. GitHub analytics remains available.</p></article></section>
         """
 
+    if app.get("available"):
+        features = app.get("features", {})
+        feature_rows = _ranked_rows(
+            [
+                {"key": label, "total": features.get(field, 0)}
+                for label, field in (
+                    ("AI cleanup enabled", "cleanupEnabled"),
+                    ("Uses snippets", "usesSnippets"),
+                    ("Uses dictionary", "usesDictionary"),
+                    ("Has Know-Me profile", "hasKnowMeProfile"),
+                )
+            ],
+            "No feature data",
+        )
+        screens = [row for row in app["events"] if row["key"].startswith(("pane.", "tab."))]
+        actions = [row for row in app["events"] if row["key"].startswith("action.")]
+        app_panels = f"""
+          <section class="section" id="app">
+            <div class="section-head"><div><span class="eyebrow">App</span><h2>What people actually open</h2></div><span class="badge good">{_metric(app['totals']['installs'])} installs reporting</span></div>
+            <div class="grid three">
+              <article class="panel"><h3>Screens opened</h3>{_ranked_rows(screens, 'No screen counters yet')}</article>
+              <article class="panel"><h3>Features used</h3>{_ranked_rows(actions, 'No feature counters yet')}</article>
+              <article class="panel"><h3>Feature adoption</h3>{feature_rows}</article>
+            </div>
+            <div class="grid two compact-top">
+              <article class="panel"><h3>App versions</h3>{_ranked_rows(app['versions'], 'No version data')}</article>
+              <article class="panel"><h3>Countries</h3>{_ranked_rows(app['countries'], 'No country data')}</article>
+            </div>
+            <p class="footnote">Counters are lifetime totals per install, names and numbers only — no timestamps, no ordering, and never dictation text. {_metric(app['totals']['active_recent'])} of {_metric(app['totals']['installs'])} installs synced in the last 7 days; {_metric(app['totals']['new_window'])} first appeared in the last {app_days}.</p>
+          </section>
+        """
+    else:
+        app_panels = f"""
+          <section class="section" id="app"><div class="section-head"><div><span class="eyebrow">App</span><h2>App telemetry unavailable</h2></div><span class="badge warn">Needs API token</span></div><article class="panel"><p>Set <code>{APP_STATS_TOKEN_ENV}</code> to the value configured on the deployment, then rebuild. The app does report aggregate install and usage counters (opt-out, on by default); this dashboard just could not read them.</p></article></section>
+        """
+
+    if app.get("available"):
+        defensible_install_sentence = (
+            f"Separately, {app['totals']['installs']} installs share anonymous usage "
+            f"(on by default, Settings ▸ Privacy) and {app['totals']['active_window']} of them "
+            f"synced in the last {app_days} days. Those are devices that opted in — a floor on real "
+            "users, not a total, since anyone who opted out is uncounted."
+        )
+    else:
+        defensible_install_sentence = (
+            "Verified install and active-user counts are unavailable in this build because the "
+            "telemetry API token was not configured — not because the app sends nothing."
+        )
+
     limitations = "".join(f"<li>{_esc(item)}</li>" for item in snapshot["limitations"])
     referrer_rows = _ranked_rows(gh["popular_referrers"], "No GitHub referrers reported")
     release_rows = "".join(
@@ -572,7 +730,8 @@ def render_dashboard(snapshot: Dict[str, Any]) -> str:
 <header><div class="brand"><div class="glyph">|||</div><div><strong>OpenVoiceFlow Analytics</strong><span>Private maintainer view</span></div></div><div class="stamp">Updated<br>{_esc(updated_date)}<span class="stamp-time"> · {_esc(updated_time)}</span></div></header>
 <section class="hero"><div><span class="eyebrow">Adoption, without false precision</span><h1>Interest is visible.<br>Actual users are not.</h1><p>Repository and website signals in one place, with CI noise and low-signal activity kept separate from genuine adoption.</p></div><div class="answer"><strong>{_metric(adoption['high_confidence_external_interest'])}</strong><span>High-confidence external interest</span><small>No verified install data · exact real-user count unknown</small></div></section>
 <section class="metrics" aria-label="Key metrics">
-<div class="metric"><span>Verified installs</span><strong>{_metric(adoption['verified_installs'])}</strong><small>Native app has no telemetry</small></div>
+<div class="metric"><span>Verified installs</span><strong>{_metric(adoption['verified_installs'])}</strong><small>{_esc(install_caption)}</small></div>
+<div class="metric"><span>Active installs</span><strong>{_metric(adoption['active_users'])}</strong><small>{_esc(active_caption)}</small></div>
 <div class="metric"><span>Release requests</span><strong>{_metric(asset_value)}</strong><small title="{_esc(asset_label)}">Latest DMG · cumulative</small></div>
 {website_summary}
 <div class="metric"><span>Repository views</span><strong>{_metric(gh['views']['operations'])}</strong><small>{_metric(gh['views']['unique_visitors'])} GitHub uniques</small></div>
@@ -583,8 +742,9 @@ def render_dashboard(snapshot: Dict[str, Any]) -> str:
 <article class="panel chart-panel"><div class="chart-head"><div><h3>Repository views</h3><span>Daily GitHub totals</span></div><div><strong>{_metric(gh['views']['operations'])}</strong><span>views</span></div></div>{_sparkline(gh['views']['daily'])}</article></div>
 <div class="grid three compact-top"><article class="panel"><h3>Noise accounting</h3><ul class="signal-list"><li><span>CI jobs that executed checkout</span><strong>{_metric(gh['automation']['checkout_jobs'])}</strong></li><li><span>Owner / external clone split</span><strong>{_metric(gh['automation']['owner_external_split'])}</strong></li><li><span>Low-signal recent stars</span><strong>{_metric(gh['stars']['low_signal_recent'])}</strong></li><li><span>High-confidence recent external stars</span><strong>{_metric(gh['stars']['high_confidence_recent_external'])}</strong></li></ul></article><article class="panel"><h3>GitHub referrers</h3>{referrer_rows}</article><article class="panel"><h3>Release assets</h3>{release_rows}</article></div>
 <p class="footnote">{_esc(gh['automation']['note'])}</p></section>
+{app_panels}
 {website_panels}
-<section class="section"><div class="section-head"><div><span class="eyebrow">Interpretation</span><h2>What “real users” means here</h2></div></div><div class="grid two"><article class="panel callout"><h3>The defensible answer</h3><p>There are <strong>{_metric(adoption['high_confidence_external_interest'])} high-confidence external GitHub accounts</strong> showing recent interest. That is a lower-bound engagement signal, not a count of app users. There are <strong>no verified install or active-user counts</strong> because the app intentionally sends no telemetry.</p></article><article class="panel"><h3>Measurement limits</h3><ul class="limits">{limitations}</ul></article></div></section>
+<section class="section"><div class="section-head"><div><span class="eyebrow">Interpretation</span><h2>What “real users” means here</h2></div></div><div class="grid two"><article class="panel callout"><h3>The defensible answer</h3><p>There are <strong>{_metric(adoption['high_confidence_external_interest'])} high-confidence external GitHub accounts</strong> showing recent interest. That is a lower-bound engagement signal, not a count of app users. {_esc(defensible_install_sentence)}</p></article><article class="panel"><h3>Measurement limits</h3><ul class="limits">{limitations}</ul></article></div></section>
 <footer><span>Generated locally · no analytics scripts · no credentials embedded</span><span>Schema v{_esc(snapshot['schema_version'])}</span></footer>
 </main></body></html>"""
 
@@ -619,7 +779,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Private dashboard HTML path")
     parser.add_argument("--snapshot-output", type=Path, default=DEFAULT_SNAPSHOT, help="Private normalized JSON path")
     parser.add_argument("--days", type=int, default=30, help="Website analytics window (default: 30)")
-    parser.add_argument("--no-vercel", action="store_true", help="Build with GitHub analytics only")
+    parser.add_argument("--no-vercel", action="store_true", help="Skip website analytics")
+    parser.add_argument("--no-app", action="store_true", help="Skip app install/usage telemetry")
     parser.add_argument("--open", action="store_true", dest="open_dashboard", help="Open the local dashboard after building")
     args = parser.parse_args(argv)
     if args.days < 1 or args.days > 90:
@@ -636,17 +797,32 @@ def main(argv: Optional[List[str]] = None) -> int:
             print(f"Warning: {exc}")
             vercel = {"available": False, "error": "Website analytics unavailable"}
 
+    if args.no_app:
+        app = {"available": False, "error": "App telemetry unavailable"}
+    else:
+        try:
+            app = collect_app_telemetry(now=now, days=args.days)
+        except AnalyticsError as exc:
+            print(f"Warning: {exc}")
+            app = {"available": False, "error": "App telemetry unavailable"}
+
     configured = os.environ.get("OVF_ANALYTICS_OWNER_LOGINS", "shimoverse")
     owner_logins = {item.strip().lower() for item in configured.split(",") if item.strip()}
-    snapshot = build_snapshot(github, vercel, now=now, owner_logins=owner_logins)
+    snapshot = build_snapshot(github, vercel, now=now, owner_logins=owner_logins, app=app)
     write_private(args.snapshot_output, json.dumps(snapshot, indent=2, sort_keys=True) + "\n")
     write_private(args.output, render_dashboard(snapshot))
     print(f"Dashboard: {args.output}")
     print(f"Snapshot:  {args.snapshot_output}")
+    installs = snapshot["adoption"]["verified_installs"]
+    install_line = (
+        f"{installs} opted-in installs ({snapshot['adoption']['active_users']} active)"
+        if installs is not None
+        else "verified installs unavailable (no API token)"
+    )
     print(
         "Answer: "
         f"{snapshot['adoption']['high_confidence_external_interest']} high-confidence external interest accounts; "
-        "verified installs and exact real users remain unknown."
+        f"{install_line}."
     )
     if args.open_dashboard:
         webbrowser.open(args.output.resolve().as_uri())
