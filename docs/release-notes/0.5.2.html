@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, follow" />
+  <title>OpenVoiceFlow 0.5.2 release notes</title>
+  <link rel="canonical" href="https://openvoiceflow.com/releases.html#v0.5.2" />
+  <style>
+    :root { color-scheme: light dark; --ink: #16130f; --ink2: #5d564d; --rule: #e4ded4; --ember: #b4531d; --bg: #fffdfa; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f4efe7; --ink2: #a49a8c; --rule: #322d27; --ember: #e2854a; --bg: #17140f; }
+    }
+    html, body { background: var(--bg); }
+    body {
+      margin: 0; padding: 16px 20px 22px;
+      font: 13px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+    }
+    h1 { margin: 0 0 2px; font-size: 17px; letter-spacing: -0.2px; }
+    .date { margin: 0 0 14px; color: var(--ink2); font-size: 12px; }
+    h2 { margin: 16px 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.7px; color: var(--ink2); }
+    ul { margin: 0; padding-left: 18px; }
+    li { margin: 0 0 5px; }
+    code { font-family: "SF Mono", ui-monospace, Menlo, monospace; font-size: 12px; background: color-mix(in srgb, var(--ink) 8%, transparent); padding: 1px 4px; border-radius: 4px; }
+    a { color: var(--ember); }
+    footer { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--ink2); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>OpenVoiceFlow 0.5.2</h1>
+    <p class="date">July 26, 2026</p>
+    <h2>Added</h2>
+    <ul>
+      <li>Live transcript in the HUD while the key is held ("Show words as you speak", default on; respects the text-echo privacy setting).</li>
+      <li>Speech-engine choice in onboarding — four models with size and benefit, nothing preselected, nothing downloading until you pick.</li>
+      <li>Launch at login (SMAppService), default on, with a Settings toggle.</li>
+      <li>Onboarding's "I live up there" now anchors a callout to the real menu-bar icon, with a mock menu-bar illustration when the icon is squeezed out.</li>
+      <li>Dashboard banner explaining when macOS hides the menu-bar icon (full bar / notch) and the ⌘-drag fix.</li>
+    </ul>
+    <h2>Changed</h2>
+    <ul>
+      <li>Onboarding ends in the dashboard instead of an empty desktop; the try-it card acknowledges key-down instantly.</li>
+      <li>The "names I'd get wrong" question moved out of onboarding (Know-Me keeps it).</li>
+    </ul>
+  </main>
+  <footer>
+    <a href="https://openvoiceflow.com/releases.html">See the full version history</a>
+  </footer>
+</body>
+</html>

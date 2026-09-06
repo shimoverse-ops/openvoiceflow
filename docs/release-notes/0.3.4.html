@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, follow" />
+  <title>OpenVoiceFlow 0.3.4 release notes</title>
+  <link rel="canonical" href="https://openvoiceflow.com/releases.html#v0.3.4" />
+  <style>
+    :root { color-scheme: light dark; --ink: #16130f; --ink2: #5d564d; --rule: #e4ded4; --ember: #b4531d; --bg: #fffdfa; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f4efe7; --ink2: #a49a8c; --rule: #322d27; --ember: #e2854a; --bg: #17140f; }
+    }
+    html, body { background: var(--bg); }
+    body {
+      margin: 0; padding: 16px 20px 22px;
+      font: 13px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+    }
+    h1 { margin: 0 0 2px; font-size: 17px; letter-spacing: -0.2px; }
+    .date { margin: 0 0 14px; color: var(--ink2); font-size: 12px; }
+    h2 { margin: 16px 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.7px; color: var(--ink2); }
+    ul { margin: 0; padding-left: 18px; }
+    li { margin: 0 0 5px; }
+    code { font-family: "SF Mono", ui-monospace, Menlo, monospace; font-size: 12px; background: color-mix(in srgb, var(--ink) 8%, transparent); padding: 1px 4px; border-radius: 4px; }
+    a { color: var(--ember); }
+    footer { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--ink2); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>OpenVoiceFlow 0.3.4</h1>
+    <p class="date">July 10, 2026</p>
+    <h2>Added</h2>
+    <ul>
+      <li>A polished native menu-bar experience led by <strong>Open OpenVoiceFlow</strong>, with grouped Dictation Shortcut, AI Cleanup, Writing Style, Personalization, and Advanced menus.</li>
+      <li>A user-triggered <strong>Check for Updates…</strong> action that always reports whether a release is available, the app is current, or the service could not be reached.</li>
+      <li>Direct menu links to macOS Microphone and Accessibility settings.</li>
+    </ul>
+    <h2>Changed</h2>
+    <ul>
+      <li>The status item now uses dark-mode-safe SF Symbols with accessible labels: a waveform while ready, a pause symbol while paused, and a warning symbol when setup needs attention. A visible <code>OpenVoiceFlow</code> text label remains as the fallback if symbols are unavailable.</li>
+      <li>Menu selections now use native macOS checkmarks, clean human-readable names, every supported dictation shortcut, standard separators, and <strong>⌘Q</strong> for <strong>Quit OpenVoiceFlow</strong> instead of emoji-prefixed labels.</li>
+      <li>The long-lived Python UI process now stays out of the Dock and uses the bundled OpenVoiceFlow icon for native dialogs. The Current App row refreshes as focus changes without mistaking the UI process for the user's app.</li>
+    </ul>
+    <h2>Fixed</h2>
+    <ul>
+      <li>The waveform status item is created before backend validation begins, so a slow local backend no longer makes launch look unresponsive.</li>
+      <li><strong>Edit Profile</strong> now runs its Tk interview in an isolated process instead of risking a native Tk crash in the menu-bar process.</li>
+      <li>The <strong>Download</strong> button in the update alert now recognizes AppKit's native button result and opens the release page correctly.</li>
+    </ul>
+  </main>
+  <footer>
+    <a href="https://openvoiceflow.com/releases.html">See the full version history</a>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, follow" />
+  <title>OpenVoiceFlow 0.2.0 release notes</title>
+  <link rel="canonical" href="https://openvoiceflow.com/releases.html#v0.2.0" />
+  <style>
+    :root { color-scheme: light dark; --ink: #16130f; --ink2: #5d564d; --rule: #e4ded4; --ember: #b4531d; --bg: #fffdfa; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f4efe7; --ink2: #a49a8c; --rule: #322d27; --ember: #e2854a; --bg: #17140f; }
+    }
+    html, body { background: var(--bg); }
+    body {
+      margin: 0; padding: 16px 20px 22px;
+      font: 13px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+    }
+    h1 { margin: 0 0 2px; font-size: 17px; letter-spacing: -0.2px; }
+    .date { margin: 0 0 14px; color: var(--ink2); font-size: 12px; }
+    h2 { margin: 16px 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.7px; color: var(--ink2); }
+    ul { margin: 0; padding-left: 18px; }
+    li { margin: 0 0 5px; }
+    code { font-family: "SF Mono", ui-monospace, Menlo, monospace; font-size: 12px; background: color-mix(in srgb, var(--ink) 8%, transparent); padding: 1px 4px; border-radius: 4px; }
+    a { color: var(--ember); }
+    footer { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--ink2); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>OpenVoiceFlow 0.2.0</h1>
+    <p class="date">March 15, 2026</p>
+    <h2>Added</h2>
+    <ul>
+      <li><strong>Know Me</strong> — tkinter onboarding interview. Captures name, occupation, industry, frequently-mentioned names/tools, communication style. Output is injected into every LLM cleanup prompt as system context.</li>
+      <li><strong>Auto-learn</strong> — watches the focused text field via the macOS Accessibility API for 30 seconds after every paste and learns word-level substitutions from your edits. Levenshtein-gated, substitutions only (never inserts/deletes), 5-sample minimum.</li>
+      <li><strong>Streaming transcription</strong> via <code>whisper-stream</code> with refinement-replacement and Jaccard-overlap deduplication. Falls back to non-streaming for the canonical text.</li>
+      <li><strong>Per-app context + per-app styles</strong> — frontmost-app detection via Apple events; the cleanup prompt picks up the right style automatically (e.g. terse in Slack, formal in Mail).</li>
+      <li><strong>Voice commands</strong> — say "new line", "period", "delete that", etc. Configurable via <code>--add-command</code> / <code>--remove-command</code> / <code>--list-commands</code> / <code>--voice-commands on/off</code>.</li>
+      <li><strong>Clipboard / selected-text context</strong> — whatever's selected when you start dictating gets handed to the LLM as context.</li>
+      <li><strong>History search</strong> — <code>--search QUERY</code> greps the daily transcript logs.</li>
+      <li><strong>Voice snippets</strong> — trigger-phrase → expansion. <code>--add-snippet</code> / <code>--remove-snippet</code> / <code>--list-snippets</code>.</li>
+      <li><strong>Personal dictionary</strong> — proper-noun and acronym table. <code>--add-word</code> / <code>--remove-word</code> / <code>--list-words</code>.</li>
+      <li><strong>Launch-at-login</strong> — <code>--autostart on/off</code>; writes a LaunchAgent plist.</li>
+      <li><strong>Statistics</strong> — <code>--stats</code> shows dictations, words, time saved.</li>
+      <li><strong>Auto-update notifier</strong> — once-a-day check against the GitHub Releases API; quiet on failure.</li>
+      <li><strong>Floating macOS overlay HUD</strong> — visual feedback during recording, streaming, and auto-learn moments.</li>
+      <li>New CLI flags across the board: <code>--version</code>, <code>--show-config</code>, <code>--set-prompt</code>, <code>--clear-prompt</code>, <code>--set-key</code>, <code>--app-style</code>, <code>--remove-app-style</code>, <code>--list-app-styles</code>, <code>--auto-style on/off</code>, <code>--streaming on/off</code>, <code>--auto-learn on/off</code>.</li>
+    </ul>
+    <h2>Changed</h2>
+    <ul>
+      <li>DMG installer split into separate <code>arm64</code> and <code>x86_64</code> artifacts — one-click install on any Mac, no Rosetta dance.</li>
+      <li><code>pyproject.toml</code> gained an <code>[overlay]</code> extra for the optional PyObjC dependencies (Cocoa, Quartz). <code>rumps</code> (the menubar lib) transitively installs Cocoa, so menubar users get the HUD by default.</li>
+      <li>Codebase grew from ~13 modules to ~28. Backend <code>cleanup()</code> interface now accepts <code>context</code>, <code>app_context</code>, <code>override_style</code>; all 5 existing backends were updated consistently.</li>
+      <li>Anthropic default model: <code>claude-3-5-haiku-20241022</code>.</li>
+      <li>Groq default model: <code>llama-3.1-8b-instant</code>.</li>
+    </ul>
+    <h2>Fixed</h2>
+    <ul>
+      <li>22 bugs from a deep QA audit (#3): debounce on the recording hotkey, auto-paste timing window, error reporting in <code>system.py</code>, and a long tail of small UX papercuts.</li>
+    </ul>
+  </main>
+  <footer>
+    <a href="https://openvoiceflow.com/releases.html">See the full version history</a>
+  </footer>
+</body>
+</html>

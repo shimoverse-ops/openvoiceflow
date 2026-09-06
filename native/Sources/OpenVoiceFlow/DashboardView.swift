@@ -1133,10 +1133,21 @@ struct DashboardView: View {
                 }
                 settingsToggle("Automatic updates", isOn: autoUpdateBinding)
                 settingsRow("You're on v\(updater.appVersion)") {
-                    Button("Check for updates now") { updater.checkForUpdates() }
-                        .buttonStyle(.plain).foregroundStyle(DT.emberLight)
-                        .font(.system(size: 12))
-                        .disabled(!updater.canCheckForUpdates)
+                    HStack(spacing: 14) {
+                        // Reaching the release notes shouldn't require running
+                        // an update check first — on a current build Sparkle
+                        // buries them behind the "You're up to date" alert.
+                        // Anchored at the running version, so the page opens on
+                        // "what am I actually on" rather than the newest entry.
+                        Button("Version history") {
+                            NSWorkspace.shared.open(ReleaseNotes.url(forVersion: updater.appVersion))
+                        }
+                        .buttonStyle(.plain).foregroundStyle(ink2)
+                        Button("Check for updates now") { updater.checkForUpdates() }
+                            .buttonStyle(.plain).foregroundStyle(DT.emberLight)
+                            .disabled(!updater.canCheckForUpdates)
+                    }
+                    .font(.system(size: 12))
                 }
             }
         }

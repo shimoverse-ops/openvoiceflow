@@ -69,6 +69,39 @@ def test_appcast_is_present_and_signed_for_the_final_native_release():
     )
 
 
+def test_appcast_release_notes_links_point_at_pages_that_exist():
+    """Sparkle's "Version History" button opens `fullReleaseNotesLink`, and its
+    update sheet loads `releaseNotesLink` — the two links a user reaches from
+    Settings ▸ "Check for updates now". Both once pointed at how-it-works.html,
+    a marketing page with no version history on it at all, which is invisible
+    until someone clicks the button. Both must be real, generated pages.
+    """
+    appcast = (DOCS / "appcast.xml").read_text(encoding="utf-8")
+
+    def link(tag: str) -> str:
+        return appcast.split(f"<sparkle:{tag}>")[1].split(f"</sparkle:{tag}>")[0]
+
+    assert link("fullReleaseNotesLink") == f"{CANONICAL}/releases.html"
+    assert (DOCS / "releases.html").exists()
+
+    notes = link("releaseNotesLink")
+    assert notes == f"{CANONICAL}/release-notes/{RELEASE_VERSION}.html"
+    # The publish PR ships the appcast; the notes page it points at is
+    # generated from CHANGELOG.md, so the changelog entry has to land in the
+    # same PR or the update sheet 404s for everyone (RELEASE.md).
+    notes_page = DOCS / "release-notes" / f"{RELEASE_VERSION}.html"
+    assert notes_page.exists(), (
+        f"missing {notes_page.relative_to(ROOT)} — add the CHANGELOG entry for "
+        f"{RELEASE_VERSION} and run python3 scripts/build_releases.py"
+    )
+    assert RELEASE_VERSION in notes_page.read_text(encoding="utf-8")
+
+    # Whatever the next release generates must keep both links.
+    script = (ROOT / "native" / "scripts" / "appcast.sh").read_text(encoding="utf-8")
+    assert "<sparkle:fullReleaseNotesLink>$SITE_BASE/releases.html<" in script
+    assert "<sparkle:releaseNotesLink>$SITE_BASE/release-notes/$OVF_VERSION.html<" in script
+
+
 def test_legacy_split_downloads_redirect_to_the_universal_native_dmg():
     redirects = {item["source"]: item for item in json.loads((ROOT / "vercel.json").read_text())["redirects"]}
     for previous in ["0.2.0", "0.3.2", "0.3.3", "0.3.4", "0.3.5"]:

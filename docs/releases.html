@@ -68,26 +68,42 @@
       <h1 class="hero-title">Releases</h1>
       <p class="hero-sub answer-block">OpenVoiceFlow ships often — every release below is real, shipped, and notarized, newest first. Notes come straight from the project's changelog, so this list is exactly as current as the code. Want the raw commit history or to file an issue? <a href="https://github.com/shimoverse/openvoiceflow/releases">See every release on GitHub</a>.</p>
 
-      <details class="content-card" open><summary><h2>v0.5.20 <span class="release-date">· September 2, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.21" open><summary><h2>v0.5.21 <span class="release-date">· September 6, 2026</span></h2></summary>
+        <h3>Fixed</h3>
+        <ul class="check-list">
+          <li>The <strong>Version History</strong> button on the "You're up to date!" update alert now opens the <a href="https://openvoiceflow.com/releases.html">Releases page</a> instead of the "How it works" marketing page, which listed no versions at all. Sparkle fills that button from the appcast's <code>fullReleaseNotesLink</code>, which the feed never set, so it fell back to a <code>releaseNotesLink</code> that pointed at marketing copy. The appcast now sets both, and this fix reaches every installed build the moment the site deploys — the button reads the website's feed, not the app.</li>
+          <li>The release notes shown inside the update sheet are now that version's actual notes, generated from this changelog, rather than the same marketing page.</li>
+        </ul>
+        <h3>Added</h3>
+        <ul class="check-list">
+          <li>Settings ▸ "You're on vX.Y.Z" now has a <strong>Version history</strong> link that opens the Releases page at the running version, so the notes no longer sit behind an update check that reports there is nothing to install.</li>
+          <li>Every release on the Releases page is individually linkable (<code>releases.html#v0.5.21</code>), and opening such a link expands that release rather than landing on a collapsed card.</li>
+        </ul>
+        <h3>Changed</h3>
+        <ul class="check-list">
+          <li>The dashboard sidebar footer now says whether the running build is current instead of always reading "auto-updating". When the appcast offers a newer version it shows an <strong>Update</strong> action that installs it; when the build is the latest, it reads "Up to date" with nothing to click. Before a check has finished — including when automatic updates are off, which stays an opt-out of background checks — the footer shows the version alone rather than claiming a freshness nothing verified.</li>
+        </ul>
+      </details>
+      <details class="content-card" id="v0.5.20" open><summary><h2>v0.5.20 <span class="release-date">· September 2, 2026</span></h2></summary>
         <h3>Changed</h3>
         <ul class="check-list">
           <li>The leaderboard now labels its figure "time back" instead of "time saved", matching Home, onboarding, and the manual. The number is how long the same words would have taken to type at 40 wpm; nothing subtracts the time dictating them actually took, so calling it a saving overstated it. The number itself is unchanged, as are the <code>minutesSaved</code> field and <code>minutes_saved</code> column that already-shipped clients depend on.</li>
         </ul>
       </details>
-      <details class="content-card" open><summary><h2>v0.5.19 <span class="release-date">· September 2, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.19" open><summary><h2>v0.5.19 <span class="release-date">· September 2, 2026</span></h2></summary>
         <h3>Changed</h3>
         <ul class="check-list">
           <li>The leaderboard now draws a fixed seven rows whatever the standings return, so the height of the card no longer reveals how many people use OpenVoiceFlow. Rows the service doesn't name are masked — a shimmering placeholder with no rank, name, or total — and the tail fades out rather than ending on a countable last row. The card states no rule and shows no threshold: naming the bar would let anyone counting the visible names work out what population they were counting.</li>
         </ul>
       </details>
-      <details class="content-card" open><summary><h2>v0.5.18 <span class="release-date">· August 31, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.18" open><summary><h2>v0.5.18 <span class="release-date">· August 31, 2026</span></h2></summary>
         <h3>Fixed</h3>
         <ul class="check-list">
           <li>Public leaderboard standings now include only rows with at least 60 minutes saved and show no more than five entries, while still showing your own row separately.</li>
           <li>Legacy auto-generated leaderboard names now use the same exact 10–99 suffix range as the native app, preserving custom-looking names ending in 00–09.</li>
         </ul>
       </details>
-      <details class="content-card" open><summary><h2>v0.5.17 <span class="release-date">· August 30, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.17" open><summary><h2>v0.5.17 <span class="release-date">· August 30, 2026</span></h2></summary>
         <h3>Added</h3>
         <ul class="check-list">
           <li>App names across Home, History, and Personalize now use recognizable app or company logos, including Claude, Discord, Notion, and Outlook. Installed macOS app icons remain the first choice, with bundled brand marks as reliable fallbacks.</li>
@@ -104,20 +120,20 @@
           <li>Leaderboard loading and nickname-sync failures now show an honest retry action instead of appearing as empty standings.</li>
         </ul>
       </details>
-      <details class="content-card" open><summary><h2>v0.5.16 <span class="release-date">· August 29, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.16" open><summary><h2>v0.5.16 <span class="release-date">· August 29, 2026</span></h2></summary>
         <h3>Fixed</h3>
         <ul class="check-list">
           <li>Personalized Styles now shows recognizable Discord and Gmail icons, using installed app icons first and bundled brand marks when those apps are unavailable.</li>
           <li>Clicking the dashboard outside the centered Feedback sheet now dismisses it, while clicks inside the sheet or in unrelated OpenVoiceFlow windows keep their normal behavior.</li>
         </ul>
       </details>
-      <details class="content-card" open><summary><h2>v0.5.15 <span class="release-date">· August 29, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.15" open><summary><h2>v0.5.15 <span class="release-date">· August 29, 2026</span></h2></summary>
         <h3>Fixed</h3>
         <ul class="check-list">
           <li>Restored Feedback as a centered native modal instead of a left-anchored popover, while retaining the always-visible optional email field and Cancel, Send, and Escape dismissal.</li>
         </ul>
       </details>
-      <details class="content-card" open><summary><h2>v0.5.14 <span class="release-date">· August 29, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.14" open><summary><h2>v0.5.14 <span class="release-date">· August 29, 2026</span></h2></summary>
         <h3>Changed</h3>
         <ul class="check-list">
           <li>Simplified feedback to one optional email field in a native macOS popover that dismisses with Cancel, Send, Escape, or an outside click.</li>
@@ -125,37 +141,37 @@
           <li>Changed generated leaderboard aliases to compact one-token handles while preserving custom names during legacy migration.</li>
         </ul>
       </details>
-      <details class="content-card" open><summary><h2>v0.5.13 <span class="release-date">· August 29, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.13" open><summary><h2>v0.5.13 <span class="release-date">· August 29, 2026</span></h2></summary>
         <h3>Changed</h3>
         <ul class="check-list">
           <li>Settings no longer exposes the anonymous analytics device ID or the long leaderboard-sharing explanation, and the Feedback sheet no longer shows its usage-snapshot explainer. The sharing toggle, leaderboard name, deletion action, and feedback behavior are unchanged.</li>
         </ul>
       </details>
-      <details class="content-card" open><summary><h2>v0.5.12 <span class="release-date">· August 29, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.12" open><summary><h2>v0.5.12 <span class="release-date">· August 29, 2026</span></h2></summary>
         <h3>Changed</h3>
         <ul class="check-list">
           <li>“Where you dictate” now shows each app’s real icon with a time-share ring, making the per-app breakdown easier to scan while preserving the existing local-only usage data and accessibility labels.</li>
         </ul>
       </details>
-      <details class="content-card" open><summary><h2>v0.5.11 <span class="release-date">· August 29, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.11" open><summary><h2>v0.5.11 <span class="release-date">· August 29, 2026</span></h2></summary>
         <h3>Changed</h3>
         <ul class="check-list">
           <li>The History pane now carries a subtitle: "Stored only on this Mac — never synced to a server." Scoped deliberately to what's true unconditionally (this list is local storage, full stop) rather than a blanket "nothing leaves this machine" claim, since cloud AI cleanup (opt-in, off by default) does send dictated text to the selected provider before it lands here — that's covered separately by the existing footer line and the privacy docs.</li>
         </ul>
       </details>
-      <details class="content-card" open><summary><h2>v0.5.10 <span class="release-date">· August 29, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.10" open><summary><h2>v0.5.10 <span class="release-date">· August 29, 2026</span></h2></summary>
         <h3>Changed</h3>
         <ul class="check-list">
           <li>Dictionary, Snippets, and Styles are now one <strong>Personalize</strong> pane in the dashboard sidebar, switched with tabs instead of three separate rows. Each tab keeps its item count, the content area now sits in a single card, and switching tabs animates instead of jumping. No data or behavior changes — same stores, same add/remove actions, same empty states. Docs updated to describe the new location (<code>Dashboard ▸ Personalize</code>).</li>
         </ul>
       </details>
-      <details class="content-card" open><summary><h2>v0.5.9 <span class="release-date">· August 29, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.9" open><summary><h2>v0.5.9 <span class="release-date">· August 29, 2026</span></h2></summary>
         <h3>Fixed</h3>
         <ul class="check-list">
           <li>The Feedback sheet's category picker ("Something's broken" / "Feature idea" / "Just saying thanks" / "Something else") overflowed a 440pt-wide sheet, truncating the leading and trailing segments. Segmented control now shows short labels (Bug/Idea/Thanks/Other); the full wording still goes into the email subject and body. Sheet widened to 480pt for margin.</li>
         </ul>
       </details>
-      <details class="content-card" open><summary><h2>v0.5.8 <span class="release-date">· August 28, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.8" open><summary><h2>v0.5.8 <span class="release-date">· August 28, 2026</span></h2></summary>
         <h3>Added</h3>
         <ul class="check-list">
           <li>Anonymous usage sharing and an in-app Leaderboard, ranked by time saved. <strong>On by default</strong> — a real, disclosed change from every prior release, which sent nothing. Settings ▸ Privacy ▸ "Share anonymous usage &amp; leaderboard rank" turns it off, deletes nothing retroactively but stops every future request immediately; a "Delete my leaderboard data" button removes a past submission outright. What's sent: a random per-device ID, a display name you can change, aggregate word/time/streak/feature-usage counters already shown on Home, and a server-derived country (no IP stored). Never dictation text, snippets, dictionary entries, or the Know-Me profile. Full detail in <code>PRIVACY.md</code> §7 and the docs site's Privacy architecture ▸ Analytics &amp; leaderboard section.</li>
@@ -165,19 +181,19 @@
           <li>Docs and <code>PRIVACY.md</code> updated to describe the above plainly, replacing the "no telemetry" claims that were accurate through 0.5.7 and are not anymore.</li>
         </ul>
       </details>
-      <details class="content-card" open><summary><h2>v0.5.7 <span class="release-date">· August 28, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.7" open><summary><h2>v0.5.7 <span class="release-date">· August 28, 2026</span></h2></summary>
         <h3>Added</h3>
         <ul class="check-list">
           <li>A Feedback item in the sidebar, below Settings. Opens a short form (bug / idea / praise / other, plus an optional reply email) and, only on Send, opens a <code>mailto:</code> with the message and a small aggregate usage snapshot (words dictated, time saved, streak, last 7 days, first-use date) — never dictation text, snippets, dictionary entries, or the Know-Me profile, and nothing is sent until Send is pressed.</li>
         </ul>
       </details>
-      <details class="content-card" open><summary><h2>v0.5.6 <span class="release-date">· August 25, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.6" open><summary><h2>v0.5.6 <span class="release-date">· August 25, 2026</span></h2></summary>
         <h3>Added</h3>
         <ul class="check-list">
           <li>The language picker now offers all 99 languages in Whisper's multilingual set (previously eleven), including Ukrainian. Tiny, Small, Medium, and Large turbo all share the same tokenizer, so the list applies to every engine offered in Settings.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.5.5 <span class="release-date">· July 27, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.5"><summary><h2>v0.5.5 <span class="release-date">· July 27, 2026</span></h2></summary>
         <h3>Fixed</h3>
         <ul class="check-list">
           <li>The progress bar no longer parks at 100% with no way forward. WhisperKit compiles the model for your chip after the download — minutes on a first large-model run, with no progress signal — so the transfer now owns 0–90% and the compile creeps through the 90s under "Downloaded — now optimizing for your Mac. First run only." 100% arrives only with the Try It button.</li>
@@ -187,13 +203,13 @@
           <li>RECOMMENDED now adapts to the Mac: Large turbo on Apple Silicon with disk headroom, Small on Intel or a tight disk. No permissions involved.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.5.4 <span class="release-date">· July 27, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.4"><summary><h2>v0.5.4 <span class="release-date">· July 27, 2026</span></h2></summary>
         <h3>Fixed</h3>
         <ul class="check-list">
           <li>The download meter showed "0 of 0 MB · 0.0 MB/s" over a moving bar: WhisperKit reports abstract progress units for multi-file model downloads, not bytes. The meter now shows percent (and the always-honest ETA) when units can't be bytes, instead of inventing megabytes.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.5.3 <span class="release-date">· July 27, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.3"><summary><h2>v0.5.3 <span class="release-date">· July 27, 2026</span></h2></summary>
         <h3>Fixed</h3>
         <ul class="check-list">
           <li><strong>Large turbo could never download.</strong> Its model id didn't exist in the WhisperKit repo; every user who chose it hit "no models found" disguised as a connection error. Correct id shipped, saved settings migrate silently.</li>
@@ -201,7 +217,7 @@
           <li>Download failure copy points at Details instead of guessing "check your connection" — the guess was wrong exactly when it mattered.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.5.2 <span class="release-date">· July 26, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.2"><summary><h2>v0.5.2 <span class="release-date">· July 26, 2026</span></h2></summary>
         <h3>Added</h3>
         <ul class="check-list">
           <li>Live transcript in the HUD while the key is held ("Show words as you speak", default on; respects the text-echo privacy setting).</li>
@@ -216,7 +232,7 @@
           <li>The "names I'd get wrong" question moved out of onboarding (Know-Me keeps it).</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.5.1 <span class="release-date">· July 26, 2026</span></h2></summary>
+      <details class="content-card" id="v0.5.1"><summary><h2>v0.5.1 <span class="release-date">· July 26, 2026</span></h2></summary>
         <h3>Fixed</h3>
         <ul class="check-list">
           <li><strong>The hotkey now works from launch.</strong> Previously nothing started the key listener after first run — every relaunch came up deaf until Start Dictation was clicked in the menu. The Start/Stop menu item is gone (Pause remains); a Turn On Dictation button appears only if a permission was revoked.</li>
@@ -226,13 +242,13 @@
           <li>PERMISSIONS card in dashboard Settings with live status per grant; re-granting revives dictation without a relaunch.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.4.3 <span class="release-date">· July 26, 2026</span></h2></summary>
+      <details class="content-card" id="v0.4.3"><summary><h2>v0.4.3 <span class="release-date">· July 26, 2026</span></h2></summary>
         <h3>Fixed</h3>
         <ul class="check-list">
           <li>Dock presence obeys the setting; <code>fn</code> is the default hotkey; onboarding gives real feedback while permissions land.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.4.2 <span class="release-date">· July 25, 2026</span></h2></summary>
+      <details class="content-card" id="v0.4.2"><summary><h2>v0.4.2 <span class="release-date">· July 25, 2026</span></h2></summary>
         <h3>Added</h3>
         <ul class="check-list">
           <li>Automatic background updates (Sparkle) with honest in-app update cues.</li>
@@ -243,7 +259,7 @@
           <li>Failed pastes recover; the transcription model hot-swaps without restart.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.3.6 <span class="release-date">· July 18, 2026</span></h2></summary>
+      <details class="content-card" id="v0.3.6"><summary><h2>v0.3.6 <span class="release-date">· July 18, 2026</span></h2></summary>
         <h3>Fixed — Fn / 🌐 Globe key no longer fails silently</h3>
         <ul class="check-list">
           <li><strong>Fn was never a working hotkey.</strong> macOS doesn't deliver the Fn/Globe key to <code>pynput</code>, so selecting it left dictation permanently dead with no feedback. Choosing Fn now surfaces an immediate modal explaining the limitation and pointing at Right Command (the default), the menu-bar picker hides Fn unless it's the current (legacy) selection, and onboarding no longer offers it.</li>
@@ -260,7 +276,7 @@
           <li><strong>Know-Me interview no longer self-destructs</strong> when Escape is pressed while a text field is focused.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.3.5 <span class="release-date">· July 13, 2026</span></h2></summary>
+      <details class="content-card" id="v0.3.5"><summary><h2>v0.3.5 <span class="release-date">· July 13, 2026</span></h2></summary>
         <h3>Fixed — first launch could silently do nothing (no menu bar icon, no wizard)</h3>
         <ul class="check-list">
           <li><strong>Stale bootstrap lock.</strong> <code>~/.openvoiceflow/.bootstrap.lock</code> survives reboots, and its stored pid could be reused by an unrelated live process — the alive check then matched, so every launch exited silently forever. The lock now only counts when the pid is alive *and* is really our <code>launcher.sh</code>.</li>
@@ -295,7 +311,7 @@
           <li>CI lint now covers the entire repository (<code>ruff check .</code>), not just <code>voiceflow/</code>.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.3.4 <span class="release-date">· July 10, 2026</span></h2></summary>
+      <details class="content-card" id="v0.3.4"><summary><h2>v0.3.4 <span class="release-date">· July 10, 2026</span></h2></summary>
         <h3>Added</h3>
         <ul class="check-list">
           <li>A polished native menu-bar experience led by <strong>Open OpenVoiceFlow</strong>, with grouped Dictation Shortcut, AI Cleanup, Writing Style, Personalization, and Advanced menus.</li>
@@ -315,7 +331,7 @@
           <li>The <strong>Download</strong> button in the update alert now recognizes AppKit's native button result and opens the release page correctly.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.3.3 <span class="release-date">· July 10, 2026</span></h2></summary>
+      <details class="content-card" id="v0.3.3"><summary><h2>v0.3.3 <span class="release-date">· July 10, 2026</span></h2></summary>
         <h3>Added</h3>
         <ul class="check-list">
           <li>The menu-bar menu now includes a persistent <strong>How to Use</strong> guide, and the first-run hotkey tip also appears in the floating HUD instead of relying only on a potentially hidden macOS notification.</li>
@@ -338,7 +354,7 @@
           <li><code>validate_setup</code> reports a broken audio backend (<code>OSError</code>) instead of only a missing <code>sounddevice</code> package.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.3.2 <span class="release-date">· July 9, 2026</span></h2></summary>
+      <details class="content-card" id="v0.3.2"><summary><h2>v0.3.2 <span class="release-date">· July 9, 2026</span></h2></summary>
         <h3>Fixed</h3>
         <ul class="check-list">
           <li>The DMG bootstrap now executes the virtual-environment Python interpreter at its original path, preventing a silent dynamic-library crash on launch.</li>
@@ -347,7 +363,7 @@
           <li>Menu-bar settings no longer clear uninitialized native submenus during startup.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.3.1 <span class="release-date">· July 9, 2026</span></h2></summary>
+      <details class="content-card" id="v0.3.1"><summary><h2>v0.3.1 <span class="release-date">· July 9, 2026</span></h2></summary>
         <h3>Fixed</h3>
         <ul class="check-list">
           <li>The notarized macOS app now carries the hardened-runtime entitlements for microphone input and Apple Events, allowing recording and auto-paste to pass macOS privacy enforcement.</li>
@@ -355,7 +371,7 @@
           <li>First launch uses the native macOS consent prompts and no longer stacks two conflicting custom permission dialogs.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.3.0 <span class="release-date">· July 8, 2026</span></h2></summary>
+      <details class="content-card" id="v0.3.0"><summary><h2>v0.3.0 <span class="release-date">· July 8, 2026</span></h2></summary>
         <h3>Added</h3>
         <ul class="check-list">
           <li>Pytest scaffold under <code>tests/</code> with regression tests for every Wave-1 ship-stopper (<code>test_python39_compat</code>, <code>test_install_sh</code>, <code>test_config_migration</code>, <code>test_onboarding</code>, <code>test_voice_commands_count</code>, <code>test_updater</code>) plus privacy invariants (<code>test_chmod_600</code>, <code>test_privacy_defaults</code>) and package smoke tests. 60 tests total, green on Python 3.9, 3.10, and 3.11.</li>
@@ -407,7 +423,7 @@
           <li>Twelve community-health files added so a procurement reviewer can find the answers they need without filing an issue: <code>SECURITY.md</code>, <code>PRIVACY.md</code>, <code>THREAT_MODEL.md</code>, <code>COMPLIANCE.md</code>, <code>CODE_OF_CONDUCT.md</code>, <code>CONTRIBUTING.md</code>, <code>SUPPORT.md</code>, <code>CHANGELOG.md</code> (this file), <code>VERSIONING.md</code>, <code>COMPATIBILITY.md</code>, <code>legal/DPA-template.md</code>, <code>legal/THIRD_PARTY_NOTICES.md</code>.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.2.0 <span class="release-date">· March 15, 2026</span></h2></summary>
+      <details class="content-card" id="v0.2.0"><summary><h2>v0.2.0 <span class="release-date">· March 15, 2026</span></h2></summary>
         <h3>Added</h3>
         <ul class="check-list">
           <li><strong>Know Me</strong> — tkinter onboarding interview. Captures name, occupation, industry, frequently-mentioned names/tools, communication style. Output is injected into every LLM cleanup prompt as system context.</li>
@@ -438,7 +454,7 @@
           <li>22 bugs from a deep QA audit (#3): debounce on the recording hotkey, auto-paste timing window, error reporting in <code>system.py</code>, and a long tail of small UX papercuts.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.1.1 <span class="release-date">· March 1, 2026</span></h2></summary>
+      <details class="content-card" id="v0.1.1"><summary><h2>v0.1.1 <span class="release-date">· March 1, 2026</span></h2></summary>
         <h3>Fixed</h3>
         <ul class="check-list">
           <li>Rosetta + macOS compatibility. The launcher now smart-detects architecture (Apple Silicon vs Intel) and bootstraps the right venv.</li>
@@ -447,7 +463,7 @@
           <li>Several broken GitHub URLs across the README and install scripts.</li>
         </ul>
       </details>
-      <details class="content-card"><summary><h2>v0.1.0 <span class="release-date">· February 22, 2026</span></h2></summary>
+      <details class="content-card" id="v0.1.0"><summary><h2>v0.1.0 <span class="release-date">· February 22, 2026</span></h2></summary>
         <h3>Added</h3>
         <ul class="check-list">
           <li>13-module Python package (<code>voiceflow/</code>).</li>
@@ -487,5 +503,23 @@
   </footer>
 
   <script src="site.js"></script>
+  <script>
+    // Deep links carry a version anchor (releases.html#v0.5.20) — the app's
+    // update sheet and the changelog both link that way. A collapsed <details>
+    // is invisible to the browser's own fragment scroll, so open the targeted
+    // release first, then jump to it.
+    (function () {
+      function revealTarget() {
+        var id = location.hash.slice(1);
+        if (!id) return;
+        var card = document.getElementById(id);
+        if (!card || card.tagName !== "DETAILS") return;
+        card.open = true;
+        card.scrollIntoView({ block: "start" });
+      }
+      window.addEventListener("hashchange", revealTarget);
+      revealTarget();
+    })();
+  </script>
 </body>
 </html>

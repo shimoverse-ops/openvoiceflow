@@ -1,5 +1,22 @@
 import Combine
+import Foundation
 import Sparkle
+
+/// Where the app sends people for release notes.
+///
+/// The same page backs Sparkle's "Version History" button — the appcast's
+/// `sparkle:fullReleaseNotesLink` points here, and Sparkle offers that button
+/// on the "You're up to date!" alert. Kept in one place so the in-app link and
+/// the feed can't drift onto different pages. The page itself is generated
+/// from CHANGELOG.md by scripts/build_releases.py.
+enum ReleaseNotes {
+    static let historyURL = URL(string: "https://openvoiceflow.com/releases.html")!
+
+    /// The notes for one specific version, as an anchored card on that page.
+    static func url(forVersion version: String) -> URL {
+        URL(string: "https://openvoiceflow.com/releases.html#v\(version)") ?? historyURL
+    }
+}
 
 /// Receives Sparkle's appcast results.
 ///

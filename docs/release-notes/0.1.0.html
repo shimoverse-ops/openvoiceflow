@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, follow" />
+  <title>OpenVoiceFlow 0.1.0 release notes</title>
+  <link rel="canonical" href="https://openvoiceflow.com/releases.html#v0.1.0" />
+  <style>
+    :root { color-scheme: light dark; --ink: #16130f; --ink2: #5d564d; --rule: #e4ded4; --ember: #b4531d; --bg: #fffdfa; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f4efe7; --ink2: #a49a8c; --rule: #322d27; --ember: #e2854a; --bg: #17140f; }
+    }
+    html, body { background: var(--bg); }
+    body {
+      margin: 0; padding: 16px 20px 22px;
+      font: 13px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+    }
+    h1 { margin: 0 0 2px; font-size: 17px; letter-spacing: -0.2px; }
+    .date { margin: 0 0 14px; color: var(--ink2); font-size: 12px; }
+    h2 { margin: 16px 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.7px; color: var(--ink2); }
+    ul { margin: 0; padding-left: 18px; }
+    li { margin: 0 0 5px; }
+    code { font-family: "SF Mono", ui-monospace, Menlo, monospace; font-size: 12px; background: color-mix(in srgb, var(--ink) 8%, transparent); padding: 1px 4px; border-radius: 4px; }
+    a { color: var(--ember); }
+    footer { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--ink2); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>OpenVoiceFlow 0.1.0</h1>
+    <p class="date">February 22, 2026</p>
+    <h2>Added</h2>
+    <ul>
+      <li>13-module Python package (<code>voiceflow/</code>).</li>
+      <li>Local transcription via <code>whisper.cpp</code>. Audio never leaves the Mac.</li>
+      <li>Five LLM cleanup backends: Gemini, Groq, OpenAI, Anthropic, Ollama, plus a "none" pass-through.</li>
+      <li>tkinter onboarding wizard for first-run setup.</li>
+      <li>DMG installer (universal, with Rosetta fallback on Intel).</li>
+      <li>Hotkey-driven dictation with auto-paste at the cursor.</li>
+      <li>Configurable prompt, model, hotkey, language, and style.</li>
+      <li>MIT licensed.</li>
+    </ul>
+  </main>
+  <footer>
+    <a href="https://openvoiceflow.com/releases.html">See the full version history</a>
+  </footer>
+</body>
+</html>
