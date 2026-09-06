@@ -15,6 +15,8 @@ OpenVoiceFlow is a free push-to-talk voice dictation app for macOS. It transcrib
 - Download page: https://openvoiceflow.com/download.html
 - Install guide: https://openvoiceflow.com/install.html
 - How it works: https://openvoiceflow.com/how-it-works.html
+- Releases (version history and release notes): https://openvoiceflow.com/releases.html
+- Source code (GitHub, MIT-licensed): https://github.com/shimoverse/openvoiceflow
 - Website-hosted universal macOS DMG (v0.5.20): https://openvoiceflow.com/downloads/OpenVoiceFlow-0.5.20.dmg
 - Website-hosted macOS 12–13 fallback (v0.3.6 Apple Silicon): https://openvoiceflow.com/downloads/OpenVoiceFlow-0.3.6-arm64.dmg
 - Product film (52-second MP4, original score, captioned): https://openvoiceflow.com/assets/openvoiceflow-demo.mp4
