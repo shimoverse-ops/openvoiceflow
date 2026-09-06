@@ -359,7 +359,7 @@ def test_homepage_structured_data_links_the_project_to_its_repository():
     repository = "https://github.com/shimoverse/openvoiceflow"
 
     assert software["license"] == "https://opensource.org/licenses/MIT"
-    assert software["codeRepository"] == repository
+    assert "codeRepository" not in software
     assert software["sameAs"] == repository
     assert organization["sameAs"] == [repository, "https://github.com/shimoverse"]
 
