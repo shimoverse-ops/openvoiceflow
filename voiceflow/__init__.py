@@ -1,4 +1,4 @@
-"""OpenVoiceFlow — Free, open-source voice dictation for macOS."""
+"""OpenVoiceFlow — source-available dictation, free for personal and qualifying noncommercial use."""
 
 from __future__ import annotations
 

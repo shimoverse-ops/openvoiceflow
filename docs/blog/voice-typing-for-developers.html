@@ -122,7 +122,7 @@
           <p>Let's not oversell this. Editing code by voice — <code>args?.filter(Boolean).map(f =&gt; f.id)</code> — means speaking punctuation soup, and it's miserable. Dedicated voice-coding systems for hands-free programming exist (Talon is the serious one, built for accessibility needs, and it's impressive); that's a different discipline with a real learning curve. The workflow we're describing needs no learning curve at all: <strong>speak the English, type the symbols.</strong> Push-to-talk makes the split effortless — hold the key when talking to humans or AIs, keep coding when not. No modes to enter, nothing to remember.</p>
 
           <h2>The setup that actually sticks</h2>
-          <p>OpenVoiceFlow is <a href="../index.html">our app</a>, free and open source, so the specifics below use it — but the principles port anywhere.</p>
+          <p>OpenVoiceFlow is <a href="../index.html">our app</a>, source-available and free for personal and qualifying noncommercial use, so the specifics below use it — but the principles port anywhere.</p>
           <ol>
             <li><strong>Push-to-talk on a key you don't fight over.</strong> Default is <code>fn</code>. Hold, talk, release; text lands in whatever has focus — Cursor's chat pane, a code-review comment box, your terminal. It's a <a href="../how-it-works.html">five-stage local pipeline</a> under the hood, but it feels like a longer spacebar.</li>
             <li><strong>Load the dictionary before you judge accuracy.</strong> Whisper has never seen your service names, and no model size fixes that (<a href="whisper-models-for-dictation.html">we explain why</a>). Spend five minutes: <code>kubectl</code>, <code>useEffect</code>, <code>psql</code>, <code>nginx</code>, teammates' names, the staging cluster's cursed codename. Every term is fixed once, forever.</li>
@@ -132,7 +132,7 @@
           </ol>
 
           <h2>The part your security team will ask about</h2>
-          <p>Speaking your codebase's internals aloud to a cloud transcription service is a genuinely reasonable thing for a security team to veto. The clean answer is architectural: with on-device transcription, the audio never leaves the Mac — there's no server, no account, no retention policy to audit, because there's no upload. OpenVoiceFlow's transcription is local always; with cleanup Off or pointed at Ollama, the entire pipeline is airtight, NDA-code included. The <a href="../privacy.html">privacy page</a> states it plainly, and since the app is MIT-licensed, "trust us" is replaced by "read it" — an argument that tends to end the meeting. It also works offline entirely, as <a href="offline-dictation-mac.html">we've tested with the radios off</a>.</p>
+          <p>Speaking your codebase's internals aloud to a cloud transcription service is a genuinely reasonable thing for a security team to veto. The clean answer is architectural: with on-device transcription, the audio never leaves the Mac — there's no server, no account, no retention policy to audit, because there's no upload. OpenVoiceFlow's transcription is local always; with cleanup Off or pointed at Ollama, the entire pipeline is airtight, NDA-code included. The <a href="../privacy.html">privacy page</a> states it plainly, and since the source is public, "trust us" is replaced by "read it" — an argument that tends to end the meeting. It also works offline entirely, as <a href="offline-dictation-mac.html">we've tested with the radios off</a>.</p>
 
           <h2>A week-long experiment worth running</h2>
           <p>Don't change your workflow; add one held key. For one week, dictate only two things: every AI prompt, and every PR description or review comment. Notice two effects — the obvious one (words per minute) and the sneaky one: your prompts get <em>longer and better</em>, because the cost of context dropped to nearly zero. Most people who try this stop noticing they're doing it by Thursday, which is the highest compliment an input method can earn.</p>
@@ -145,11 +145,11 @@
           <h3>Is it safe for proprietary code?</h3>
           <p>Transcription is on-device; audio never leaves the Mac. With cleanup Off (default) or via Ollama, nothing does. Cloud cleanup, if you opt in, sends text only, under your own key.</p>
           <h3>What does it cost?</h3>
-          <p>Nothing. Free, MIT-licensed, no account. If you enable cloud cleanup you pay your model provider cents for tokens — a rounding error next to <a href="wispr-flow-alternative.html">$144-a-year subscriptions</a>.</p>
+          <p>Nothing for personal and qualifying noncommercial use. No account. Commercial use requires a separate license from Shimoverse Studios. If you enable cloud cleanup you pay your model provider cents for tokens — a rounding error next to <a href="wispr-flow-alternative.html">$144-a-year subscriptions</a>.</p>
 
           <div class="article-cta">
             <h2>Your next prompt, spoken</h2>
-            <p>Free and open source. Hold a key, describe the bug properly for once, release. The keyboard keeps the semicolons.</p>
+            <p>Free for personal and qualifying noncommercial use, with public source. Hold a key, describe the bug properly for once, release. The keyboard keeps the semicolons.</p>
             <div class="hero-cta-row">
               <a class="btn btn-primary btn-lg" href="../download.html">Download for Mac — free</a>
               <a class="btn btn-outline btn-lg" href="../how-it-works.html">See how it works</a>
@@ -173,7 +173,7 @@
   <footer class="footer">
     <div class="container footer-inner">
       <canvas class="footer-glyph" data-wf="glyph" aria-hidden="true"></canvas>
-      <p class="footer-copy">© 2026 OpenVoiceFlow contributors. MIT License.</p>
+      <p class="footer-copy">© 2026 Shimoverse Studios. Personal + reciprocal source license.</p>
       <nav class="footer-links" aria-label="Footer">
         <a href="../index.html">Home</a>
         <a href="../download.html">Download</a>

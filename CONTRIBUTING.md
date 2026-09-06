@@ -5,17 +5,19 @@ out of date, that itself is a bug — please open an issue.
 
 ## What this project is, briefly
 
-OpenVoiceFlow is a free, macOS-only voice-dictation app: hold a hotkey, speak,
-text appears at your cursor. The **shipping app is native Swift** and lives in
+OpenVoiceFlow is a macOS-only voice-dictation app, free for personal and
+qualifying noncommercial use: hold a hotkey, speak, and text appears at your
+cursor. The **shipping app is native Swift** and lives in
 `native/`. The repo also carries the legacy Python app (`voiceflow/`, ≤ 0.3.6)
 it replaced — end-of-life, no security fixes, kept for reference and the
 macOS 12–13 fallback build. New work belongs in `native/` unless you're fixing
 something in the website or docs.
 
-This is a **single-maintainer open-source project**. Issues and PRs get
+This is a **single-maintainer source-available project**. Issues and PRs get
 best-effort responses on a human schedule. There is no SLA. If you build on
-this code in your own project, keep the credit visible and tell us about it
-at shimoverse@gmail.com — we like knowing where the work travels.
+this code in your own project, follow the reciprocal-source and rebranding
+requirements in [LICENSE](LICENSE). You are welcome to tell us about it at
+shimoverse@gmail.com — we like knowing where the work travels.
 
 ## Working on the native app (the usual case)
 
@@ -131,8 +133,20 @@ Security issues: **don't** open a public issue — see [SECURITY.md](SECURITY.md
 - [ ] For UI changes: screenshot or recording in the PR body
 - [ ] For behavior changes: the PR body says what changed *for the user*
 - [ ] No version bumps, no new dependencies without discussion in an issue
-- [ ] You're okay with MIT — everything merged is MIT-licensed
+- [ ] You agree to the contribution and licensing terms below
 
 ## License
 
-By contributing you agree your work is licensed under the [MIT License](LICENSE).
+The project is source-available under the [OpenVoiceFlow Personal and Reciprocal
+Source License 1.0](LICENSE), with separate commercial licenses available from
+Shimoverse Studios. Distributed derivatives and modified network versions must
+publish complete corresponding source under the same license. See
+[LICENSING.md](LICENSING.md).
+
+By submitting a contribution, you represent that you have the right to do so
+and grant Shimoverse Studios a perpetual, worldwide, non-exclusive,
+royalty-free, irrevocable copyright and patent license to use, reproduce,
+modify, distribute, sublicense, and relicense that contribution, including as
+part of commercial licenses. You also agree that the contribution may be
+distributed under the project's current or future public license. This grant
+does not transfer your copyright ownership.

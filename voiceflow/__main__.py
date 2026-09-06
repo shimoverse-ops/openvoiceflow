@@ -20,7 +20,7 @@ from .config import (
 def main():
     parser = argparse.ArgumentParser(
         prog="openvoiceflow",
-        description="🎙️ OpenVoiceFlow — Free voice dictation for macOS",
+        description="🎙️ OpenVoiceFlow — voice dictation free for personal and qualifying noncommercial use",
     )
     # BUG-019 fix: add --version flag
     parser.add_argument(

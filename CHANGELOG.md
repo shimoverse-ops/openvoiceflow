@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Current source and future releases are now offered under the OpenVoiceFlow Personal and Reciprocal Source License 1.0: personal and qualifying noncommercial use remains free; distributed derivatives and modified network versions must publish complete corresponding source under the same license; and business use, paid products or services, bundling, and resale require a separate commercial license from Shimoverse Studios even when source is published. Earlier versions already released under MIT remain available under their original terms, and retained third-party contribution portions remain separately identified under MIT.
+
 ## [0.5.24] — 2026-09-06
 
 ### Fixed

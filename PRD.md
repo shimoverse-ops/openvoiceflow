@@ -9,13 +9,13 @@
 
 ## Executive Summary
 
-OpenVoiceFlow is a free, open-source voice dictation app for macOS competing against Wispr Flow ($144/yr), Superwhisper ($85/yr), and VoiceInk. Current state: functional push-to-talk with whisper.cpp STT, LLM cleanup (6 backends), floating overlay, personal dictionary, snippets, multi-language, style modes, stats, auto-update, launch-at-login, tkinter onboarding wizard, and menu bar app.
+OpenVoiceFlow is a source-available voice dictation app for macOS, free for personal and qualifying noncommercial use, competing against Wispr Flow ($144/yr), Superwhisper ($85/yr), and VoiceInk. Commercial use requires separate terms from Shimoverse Studios. Current state: functional push-to-talk with whisper.cpp STT, LLM cleanup (6 backends), floating overlay, personal dictionary, snippets, multi-language, style modes, stats, auto-update, launch-at-login, tkinter onboarding wizard, and menu bar app.
 
-This PRD defines 7 features that close competitive gaps and establish OpenVoiceFlow as the clear open-source leader in macOS voice dictation. The features are ordered by priority and dependency chain.
+This PRD defines 7 features that close competitive gaps and establish OpenVoiceFlow as a source-available leader in macOS voice dictation. The features are ordered by priority and dependency chain.
 
 **Positioning:**
 - $0-3/yr vs $85-144/yr (40-50x cheaper)
-- MIT license, true open source, PRs welcome (vs VoiceInk's GPL/no-PRs-accepted)
+- Public source, free personal and qualifying noncommercial license, PRs welcome (vs VoiceInk's GPL/no-PRs-accepted)
 - Python (accessible contributor base) vs Swift (high barrier)
 - 6 LLM backends vs locked ecosystems
 - Local-first audio (whisper.cpp, never leaves machine)
@@ -242,7 +242,7 @@ As a user, I want OpenVoiceFlow to automatically switch its style/tone when I mo
 
 **Priority:** P1
 **Effort:** S (Small)
-**Competitive gap:** None of our competitors handle this well in open-source. Dictation-native commands like "new line", "period", "comma" should be instant, not require an LLM round-trip.
+**Competitive gap:** Few source-available competitors handle this well. Dictation-native commands like "new line", "period", "comma" should be instant, not require an LLM round-trip.
 
 ### User Story
 
@@ -439,10 +439,10 @@ As a developer, I want to install OpenVoiceFlow via `brew install openvoiceflow`
    - `Formula/openvoiceflow.rb` — Homebrew formula:
      ```ruby
      class Openvoiceflow < Formula
-       desc "Free, open-source voice dictation for macOS"
+       desc "Free personal-use, source-available voice dictation for macOS"
        homepage "https://github.com/shimoverse/openvoiceflow"
        url "https://github.com/shimoverse/openvoiceflow/archive/refs/tags/v#{version}.tar.gz"
-       license "MIT"
+       license :cannot_represent
        depends_on "whisper-cpp"
        depends_on "python@3.11"
        # ... virtualenv setup, pip install, model download
@@ -562,7 +562,7 @@ As a potential user visiting the GitHub repo, I want to see a short demo of Open
 6. **Speaker diarization** — "Speaker 1 said X, Speaker 2 said Y" is interesting but not a dictation feature. Future consideration.
 7. **In-app settings GUI** — the menu bar app + CLI is sufficient. A full preferences window adds complexity for marginal UX gain. The tkinter onboarding wizard handles first-run. Config.json handles the rest.
 8. **Plugin/extension system** — premature abstraction. The codebase is small enough that contributors can modify directly.
-9. **Paid features or premium tier** — everything is free, forever. MIT license.
+9. **Consumer premium tier** — personal and qualifying noncommercial use remains free; commercial use is licensed separately.
 10. **Audio recording/playback** — we're a dictation tool, not a voice recorder. Logs are text-only (JSONL).
 
 ---
@@ -609,9 +609,9 @@ As a potential user visiting the GitHub repo, I want to see a short demo of Open
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Wispr Flow or Superwhisper drop price significantly | Our cost advantage shrinks | Low | Our advantage is open-source + multi-backend + privacy, not just cost. |
+| Wispr Flow or Superwhisper drop price significantly | Our cost advantage shrinks | Low | Our advantage is public source + multi-backend + privacy, not just cost. |
 | Apple ships native dictation improvements in macOS 16 | Reduces TAM | Medium | Apple's dictation will never support custom LLMs, multi-backend, voice commands, or app-specific styles. Our power-user niche remains. |
-| VoiceInk goes truly open-source (accepts PRs, relicenses MIT) | Direct competitor in our niche | Very Low | VoiceInk is Swift; we're Python. Different contributor bases. Our multi-backend approach is architecturally different. |
+| VoiceInk broadens its source license and accepts PRs | Direct competitor in our niche | Very Low | VoiceInk is Swift; we're Python. Different contributor bases. Our multi-backend approach is architecturally different. |
 
 ---
 
@@ -665,7 +665,7 @@ Phase 3 (P2 — ship within 6 weeks):
 | Style modes | ✅ | ✅ | ❌ | ❌ | ❌ |
 | Homebrew | ❌ | ✅ | ❌ | ❌ | ✅ |
 | History search | ❌ | ✅ | ❌ | ❌ | ❌ |
-| Open source (MIT) | ✅ | ✅ | ❌ | ❌ | ❌ (GPL) |
+| Source available | ✅ | ✅ | ❌ | ❌ | ✅ (GPL) |
 | Price | $0-3/yr | $0-3/yr | $144/yr | $85/yr | $0 (GPL) |
 
 After this PRD ships, OpenVoiceFlow will have feature parity or superiority in every category except native Swift performance (which we trade for Python accessibility and contributor friendliness).

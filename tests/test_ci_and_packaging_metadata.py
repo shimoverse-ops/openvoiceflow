@@ -17,11 +17,13 @@ def test_github_actions_use_node_24_compatible_major_versions():
     assert "actions/setup-python@v5" not in combined
 
 
-def test_pyproject_uses_spdx_license_metadata_without_deprecated_classifier():
+def test_pyproject_packages_current_and_legacy_license_files_without_osi_classifier():
     pyproject = read(ROOT / "pyproject.toml")
 
-    assert 'license = "MIT"' in pyproject
-    assert 'license = {text = "MIT"}' not in pyproject
+    assert 'license = "LicenseRef-OpenVoiceFlow-Personal-Reciprocal-1.0"' in pyproject
+    assert 'license-files = ["LICENSE", "docs/legal/LEGACY_MIT_PORTIONS.md"]' in pyproject
+    assert 'license = {file = "LICENSE"}' not in pyproject
+    assert 'license = "MIT"' not in pyproject
     assert "License :: OSI Approved :: MIT License" not in pyproject
 
 

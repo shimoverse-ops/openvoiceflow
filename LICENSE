@@ -1,21 +1,177 @@
-MIT License
+# OpenVoiceFlow Personal and Reciprocal Source License 1.0
 
-Copyright (c) 2025 Shimoverse Studios
+Copyright 2025–2026 Shimoverse Studios.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This license is a custom source-available license. It is not an Open Source
+Initiative-approved open-source license because it limits commercial use. The
+plain-language guide in `LICENSING.md` does not replace these terms.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+## 1. Acceptance
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+You receive rights under this license only if you accept and comply with all of
+its terms. These terms are conditions of every license granted below.
+
+## 2. Scope
+
+"Software" means the OpenVoiceFlow source code, object code, documentation, and
+other material distributed with this license, but not any material identified
+as third-party or separately licensed.
+
+"Covered Work" means the Software, a modified version of the Software, or a work
+that incorporates, links to, imports, adapts, translates, or is otherwise based
+on any copyrightable part of the Software. Merely communicating with the
+Software through a documented operating-system or network interface, without
+incorporating or modifying the Software, does not by itself create a Covered
+Work.
+
+Each contributor licenses only the material for which that contributor has the
+right to grant a license. Earlier releases and separately identified portions
+remain governed by the license notices that accompany them.
+
+## 3. Permitted purposes
+
+Subject to the source-sharing conditions below, you may use, copy, modify, and
+distribute the Software only for these permitted purposes:
+
+1. **Personal use.** Research, experiment, testing, personal study, private
+   entertainment, hobby projects, amateur pursuits, or religious observance for
+   your own benefit, without anticipated commercial application.
+2. **Qualifying noncommercial organizations.** Use solely in furtherance of the
+   noncommercial mission of a charitable organization, educational institution,
+   public research organization, public-safety or public-health organization,
+   environmental-protection organization, or government institution.
+
+A purpose is not permitted merely because no money changes hands. Use for or on
+behalf of a business, employer, client, sole proprietorship, or other commercial
+organization is commercial use.
+
+## 4. Commercial use is not granted
+
+This license does not permit commercial use. Commercial use includes, without
+limitation:
+
+- using the Software or a Covered Work for work, business operations, an
+  employer, a client, or a commercial organization;
+- offering or using it in a paid product, paid service, hosted service,
+  monetized workflow, advertising-supported activity, or revenue-generating
+  activity;
+- selling, sublicensing, renting, leasing, bundling, reselling, or commercially
+  distributing it; or
+- using it where procurement, paid support, warranty, indemnity, or other
+  commercial terms are required.
+
+Commercial rights require a separate written license from Shimoverse Studios.
+Contact `shimoverse@gmail.com`.
+
+## 5. Source-sharing conditions
+
+### 5.1 Distribution
+
+If you distribute or otherwise provide a Covered Work to anyone, you must, at
+no charge:
+
+1. provide the complete Corresponding Source to every recipient at the same
+   time, or provide a durable written offer and working URL from which every
+   recipient can obtain it;
+2. make that Corresponding Source publicly available from a stable URL without
+   registration, payment, or access restrictions;
+3. license the entire Covered Work and its Corresponding Source under this exact
+   license, without additional terms that restrict the rights granted here;
+4. preserve this license, all copyright and attribution notices, and all
+   third-party notices;
+5. state prominently that you changed the Software, identify the material
+   changes, and provide the date of each release; and
+6. use a name and branding that do not imply the Covered Work is an official
+   OpenVoiceFlow release, except to state truthfully that it is based on
+   OpenVoiceFlow.
+
+The public source must remain available for as long as you distribute the
+Covered Work and for at least three years after your last distribution.
+
+### 5.2 Network use
+
+If you modify the Software or create a Covered Work and allow anyone other than
+you to interact with its functionality over a computer network, you must make
+the complete Corresponding Source publicly available under the conditions in
+Section 5.1 no later than the first day that network access is provided. The
+user interface or service documentation must include a reasonably prominent
+"Source" link to that public source.
+
+Using an unmodified official OpenVoiceFlow build solely as a local personal tool
+does not trigger this network-use condition merely because optional text cleanup
+contacts a third-party model provider.
+
+### 5.3 Corresponding Source
+
+"Corresponding Source" means the preferred form for making changes to the
+Covered Work, including all source code, interface definitions, scripts,
+configuration, dependency manifests, and build and installation instructions
+reasonably necessary to generate, install, and run the same Covered Work. It
+does not include unmodified third-party dependencies that are normally obtained
+from their original public sources, but their names, versions, and applicable
+licenses must be disclosed.
+
+You may charge only the reasonable direct cost of physically transferring a
+copy. You may not use access controls, contracts, or technological measures to
+prevent recipients from exercising rights granted by this license for a
+permitted purpose.
+
+## 6. Copyright and patent licenses
+
+For permitted purposes and subject to all conditions in this license, each
+licensor grants you a worldwide, royalty-free, non-exclusive copyright license
+to reproduce, run, modify, and distribute the material that licensor can
+license.
+
+Each licensor also grants you a worldwide, royalty-free, non-exclusive patent
+license covering patent claims that the licensor can license and that you would
+necessarily infringe by exercising the copyright license above.
+
+No right to sublicense or relicense the Software is granted except that you may
+distribute a Covered Work under this exact license as Section 5 requires.
+
+## 7. No trademark license
+
+This license does not grant rights in the OpenVoiceFlow name, logo, or other
+trademarks. See `TRADEMARKS.md`. You may make accurate, nominative statements
+such as "based on OpenVoiceFlow" while following the rebranding requirement in
+Section 5.1.
+
+## 8. Fair use and independent works
+
+This license does not limit rights you may have under fair use, fair dealing, or
+other law. It does not apply to independent works that are not Covered Works,
+or to third-party material governed by separate license terms.
+
+## 9. Patent defense
+
+If you or your organization make a written claim that the Software infringes or
+contributes to infringement of a patent, every patent license granted to you
+under these terms ends immediately.
+
+## 10. Violations and cure
+
+Your rights under this license end automatically when you violate its terms. For
+a first violation, your rights will be reinstated retroactively if you fully
+correct the violation and take practical steps to remedy its consequences
+within 30 days after receiving written notice. Repeated violations, or a first
+violation not cured within that period, terminate your rights permanently unless
+the relevant licensor reinstates them in writing.
+
+## 11. No warranty; limitation of liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SOFTWARE IS PROVIDED "AS IS" AND
+WITHOUT WARRANTY OR CONDITION OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND
+NONINFRINGEMENT. TO THE MAXIMUM EXTENT PERMITTED BY LAW, NO LICENSOR WILL BE
+LIABLE FOR ANY DAMAGES OR OTHER LIABILITY ARISING FROM THE SOFTWARE OR THESE
+TERMS, UNDER ANY LEGAL THEORY, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGES.
+
+## 12. Other terms
+
+If a provision of this license is held unenforceable, it will be limited to the
+minimum extent necessary and the remaining provisions will remain in effect.
+Failure to enforce a provision is not a waiver. These terms do not prevent a
+licensor from offering the Software under other terms, including a commercial
+license.

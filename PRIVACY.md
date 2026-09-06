@@ -4,6 +4,14 @@ OpenVoiceFlow is a native macOS app that runs on your Mac. We wrote this documen
 
 This policy applies to the native OpenVoiceFlow macOS app (`v0.4.0` and later, including the current `v0.5.x` line). For the older Python CLI (`v0.3.x` and earlier), check `git log PRIVACY.md` or the corresponding tagged release.
 
+Privacy behavior and licensing are separate. The current project is
+source-available for personal and qualifying noncommercial use under the
+[OpenVoiceFlow Personal and Reciprocal Source License 1.0](LICENSE). Commercial use, business use,
+and selling or bundling the software require a separate license from Shimoverse
+Studios; contact **shimoverse@gmail.com**. Distributed derivatives and modified
+network versions must publish complete corresponding source under the same
+license. See [LICENSING.md](LICENSING.md).
+
 ---
 
 ## 1. TL;DR
@@ -56,7 +64,7 @@ Everything OpenVoiceFlow knows about you lives in one of the rows below.
                                           cleaned text  ──►  paste at cursor
 ```
 
-With cleanup **Off** (the default) or set to **Ollama**, no byte of your dictation crosses the machine boundary. The only baseline network egress is the Sparkle update check.
+With cleanup **Off** (the default) or set to **Ollama**, no byte of your dictation crosses the machine boundary. Baseline network egress consists of the Sparkle update check and, while the privacy toggle remains on, the anonymous aggregate usage summary described in §7.
 
 ---
 
@@ -74,7 +82,7 @@ The third parties your install can talk to:
 - **Sparkle updates** — the app checks a signed appcast for newer builds and can download and install them in place. The request is anonymous (no auth, no key, no user ID); updates are Developer-ID-signed and verified before install.
 - **OpenVoiceFlow's own analytics API** (`openvoiceflow.com/api/...`) — **only if** "Share anonymous usage & leaderboard rank" is on (Settings ▸ Privacy, on by default since v0.5.7). Receives a device ID, a display name you choose, and aggregate counters — see §7 for the exact fields and how to turn it off.
 
-Cleanup is **Off by default** — the raw on-device transcript is pasted as-is and nothing leaves your Mac. A cloud provider only ever receives text if you turn cleanup on and select one.
+Cleanup is **Off by default** — the raw on-device transcript is pasted as-is and no dictation content leaves your Mac. A cloud provider only receives transcript text if you turn cleanup on and select one; the separate aggregate usage summary never contains dictated content.
 
 ---
 
@@ -99,7 +107,7 @@ Every privacy-relevant default is a toggle in the app's menu-bar settings. There
 | **Voice commands** | on | Replaces spoken punctuation phrases ("new line", "comma") locally, before any cleanup call. |
 | **Update check (Sparkle)** | on | Checks the signed appcast for a newer build. |
 
-Because cleanup ships **Off**, a fresh install does nothing over the network at runtime except the Sparkle update check — and your audio and text stay on the Mac regardless.
+Because cleanup ships **Off**, a fresh install sends no dictation content over the network. The baseline runtime requests are the Sparkle update check and, while the privacy toggle remains on, the anonymous aggregate usage summary in §7; audio and dictated text stay on the Mac regardless.
 
 ---
 

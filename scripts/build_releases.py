@@ -196,7 +196,7 @@ def render(releases: list[dict]) -> str:
   <footer class="footer">
     <div class="container footer-inner">
       <canvas class="footer-glyph" data-wf="glyph" aria-hidden="true"></canvas>
-      <p class="footer-copy">© 2026 OpenVoiceFlow contributors. MIT License.</p>
+      <p class="footer-copy">© 2026 Shimoverse Studios. Personal + reciprocal source license.</p>
       <nav class="footer-links" aria-label="Footer">
         <a href="index.html">Home</a>
         <a href="mission.html">Mission</a>
@@ -206,6 +206,7 @@ def render(releases: list[dict]) -> str:
         <a href="docs/index.html">Docs</a>
         <a href="blog/index.html">Blog</a>
         <a href="privacy.html">Privacy</a>
+        <a href="https://github.com/shimoverse/openvoiceflow/blob/main/LICENSE" rel="noopener">License</a>
         <a href="llms.txt">llms.txt</a>
       </nav>
     </div>
