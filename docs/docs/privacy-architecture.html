@@ -31,7 +31,7 @@
     "author": {"@type": "Organization", "name": "OpenVoiceFlow maintainers", "url": "https://openvoiceflow.com/"},
     "publisher": {"@type": "Organization", "name": "OpenVoiceFlow", "url": "https://openvoiceflow.com/", "logo": {"@type": "ImageObject", "url": "https://openvoiceflow.com/assets/openvoiceflow-logo-512.png"}},
     "proficiencyLevel": "Beginner",
-    "about": "OpenVoiceFlow 0.5.22 for macOS",
+    "about": "OpenVoiceFlow 0.5.23 for macOS",
     "mainEntityOfPage": "https://openvoiceflow.com/docs/privacy-architecture.html"
   }
   </script>
@@ -193,7 +193,7 @@
         <ul>
           <li>A random device ID generated for this installation (not tied to your Apple ID, email, or any account — there is no account) and a display name you can change, shown to other users on the leaderboard. Installations remain separate even when they use the same nickname, so three computers produce three independent rows.</li>
           <li>Aggregate counters already shown on your Home pane: total words dictated, total time back, your streak, and which features are on (cleanup enabled, snippet/dictionary counts, whether you've run Know-Me) — counts only, never contents.</li>
-          <li><strong>Which parts of the app you use (since 0.5.22).</strong> A running count per screen (Home, History, Personalize and its tabs, Settings, Leaderboard) and per feature you press (finished a dictation, added a dictionary word or a snippet, started the Know-Me interview, changed the cleanup backend, checked for updates, opened Feedback, and similar). Each one is a fixed name and a number &mdash; <code>pane.history</code>, 12 &mdash; with <strong>no timestamps and no ordering</strong>, so it can show that a feature gets used and never when you used it or what you did around it. The list of names is compiled into the app and the server discards anything not already on its matching list, which is what keeps text you type or dictate out of it entirely.</li>
+          <li><strong>Which parts of the app you use (since 0.5.23).</strong> A running count per screen (Home, History, Personalize and its tabs, Settings, Leaderboard) and per feature you press (finished a dictation, added a dictionary word or a snippet, started the Know-Me interview, changed the cleanup backend, checked for updates, opened Feedback, and similar). Each one is a fixed name and a number &mdash; <code>pane.history</code>, 12 &mdash; with <strong>no timestamps and no ordering</strong>, so it can show that a feature gets used and never when you used it or what you did around it. The list of names is compiled into the app and the server discards anything not already on its matching list, which is what keeps text you type or dictate out of it entirely.</li>
           <li>Your country, derived server-side from the request at the moment it arrives. Your IP address itself is never logged or stored.</li>
         </ul>
         <p>Aggregate totals sync periodically during active dictation. Opening Leaderboard sends the same aggregate snapshot before fetching standings, so saved local totals can restore that installation's row. Changing a nickname also sends the snapshot once when you press Return or leave the field; individual keystrokes are not uploaded.</p>
@@ -227,7 +227,7 @@
         <a class="prev" href="settings.html"><span class="dir">← Previous</span><span class="label">Settings reference</span></a>
         <a class="next" href="updates.html"><span class="dir">Next →</span><span class="label">Updates & versions</span></a>
       </nav>
-        <p class="docs-feedback">Documentation for OpenVoiceFlow 0.5.22 · last updated 2026-09-02. Something wrong or missing here? That is a bug — tell us at <a href="mailto:shimoverse@gmail.com">shimoverse@gmail.com</a>.</p>
+        <p class="docs-feedback">Documentation for OpenVoiceFlow 0.5.23 · last updated 2026-09-02. Something wrong or missing here? That is a bug — tell us at <a href="mailto:shimoverse@gmail.com">shimoverse@gmail.com</a>.</p>
       </article>
     </div>
   </main>
