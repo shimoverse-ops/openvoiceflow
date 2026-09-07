@@ -53,7 +53,7 @@ export function createCampaignRecipientToken(campaignId, secret, nonceBytes = cr
   return `v1.${nonce}.${mac}`;
 }
 
-function isValidCampaignRecipientToken(campaignId, token, secret) {
+export function isValidCampaignRecipientToken(campaignId, token, secret) {
   if (!RECIPIENT_TOKEN_RE.test(token || "")) return false;
   const [, nonce, suppliedMac] = token.split(".");
   const expectedMac = campaignTokenMac(campaignId, nonce, secret);
@@ -253,6 +253,37 @@ export function isAutomatedRequest(headers) {
   const purpose = String(readHeader(headers, "purpose") || readHeader(headers, "sec-purpose") || "");
   return /bot|crawl|spider|slurp|headless|lighthouse|preview/i.test(userAgent)
     || /prefetch|preview/i.test(purpose);
+}
+
+export function isPrivacyOptOutRequest(headers) {
+  return String(readHeader(headers, "sec-gpc") || "") === "1"
+    || String(readHeader(headers, "dnt") || "") === "1";
+}
+
+export function createEmailCampaignEvent({ campaignId, recipientToken, eventName, target }, secret) {
+  if (!CAMPAIGN_ID_RE.test(String(campaignId || ""))) throw new TypeError("campaignId is invalid");
+  if (!isValidCampaignRecipientToken(campaignId, recipientToken, secret)) {
+    throw new TypeError("recipientToken is invalid");
+  }
+  const allowed = {
+    email_open_detected: null,
+    email_demo_click: "youtube_demo",
+    email_site_click: "website",
+  };
+  if (!Object.hasOwn(allowed, eventName) || target !== allowed[eventName]) {
+    throw new TypeError("email campaign event is invalid");
+  }
+  return {
+    eventId: crypto.randomUUID(),
+    sessionId: crypto.randomUUID(),
+    eventName,
+    path: "/email",
+    target,
+    acquisitionSource: "other",
+    campaignId,
+    recipientToken,
+    location: { country: null, region: null, city: null },
+  };
 }
 
 export function setPrivateResponseHeaders(res) {

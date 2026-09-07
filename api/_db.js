@@ -352,6 +352,7 @@ function normalizeReportRows(rows) {
   const numericFields = new Set([
     "sessions", "pageviews", "clicks", "downloads", "events", "pages_per_session",
     "bounce_rate", "reporting_installations", "total_items", "visitors", "downloaders",
+    "opens_detected", "site_clickers", "demo_clickers",
   ]);
   return rows.map((row) => Object.fromEntries(Object.entries(row).map(([key, value]) => {
     if (typeof value === "bigint") return [key, Number(value)];
@@ -380,7 +381,8 @@ export async function readAnalyticsReport(days = 30) {
                COUNT(*) FILTER (WHERE event_name = 'page_view')::int AS pageviews,
                COUNT(*) FILTER (WHERE event_name <> 'page_view')::int AS clicks
         FROM website_events
-        WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')
+        WHERE event_name NOT LIKE 'email_%'
+          AND created_at >= NOW() - (${days} * INTERVAL '1 day')
         GROUP BY session_id
       )
       SELECT COUNT(*)::int AS sessions,
@@ -392,7 +394,8 @@ export async function readAnalyticsReport(days = 30) {
               WHERE event_name = 'download_click'
                 AND created_at >= NOW() - (${days} * INTERVAL '1 day')) AS downloads,
              (SELECT MAX(created_at)::text FROM website_events
-              WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')) AS last_event_at
+              WHERE event_name NOT LIKE 'email_%'
+                AND created_at >= NOW() - (${days} * INTERVAL '1 day')) AS last_event_at
       FROM per_session
     `,
     query`
@@ -408,6 +411,7 @@ export async function readAnalyticsReport(days = 30) {
              COUNT(DISTINCT session_id)::int AS sessions
       FROM website_events
       WHERE event_name <> 'page_view'
+        AND event_name NOT LIKE 'email_%'
         AND created_at >= NOW() - (${days} * INTERVAL '1 day')
       GROUP BY event_name, path, target
       ORDER BY clicks DESC, sessions DESC LIMIT 100
@@ -416,7 +420,8 @@ export async function readAnalyticsReport(days = 30) {
       SELECT event_name, COUNT(*)::int AS events,
              COUNT(DISTINCT session_id)::int AS sessions
       FROM website_events
-      WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')
+      WHERE event_name NOT LIKE 'email_%'
+        AND created_at >= NOW() - (${days} * INTERVAL '1 day')
       GROUP BY event_name ORDER BY events DESC
     `,
     query`
@@ -426,7 +431,8 @@ export async function readAnalyticsReport(days = 30) {
              COUNT(DISTINCT session_id)::int AS sessions,
              COUNT(*)::int AS events
       FROM website_events
-      WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')
+      WHERE event_name NOT LIKE 'email_%'
+        AND created_at >= NOW() - (${days} * INTERVAL '1 day')
       GROUP BY country, region, city
       ORDER BY sessions DESC, events DESC LIMIT 100
     `,
@@ -435,7 +441,8 @@ export async function readAnalyticsReport(days = 30) {
              COUNT(*) FILTER (WHERE event_name = 'page_view')::int AS pageviews,
              COUNT(*) FILTER (WHERE event_name <> 'page_view')::int AS clicks
       FROM website_events
-      WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')
+      WHERE event_name NOT LIKE 'email_%'
+        AND created_at >= NOW() - (${days} * INTERVAL '1 day')
       GROUP BY acquisition_source ORDER BY sessions DESC, pageviews DESC
     `,
     query`
@@ -444,13 +451,17 @@ export async function readAnalyticsReport(days = 30) {
              COUNT(*) FILTER (WHERE event_name = 'page_view')::int AS pageviews,
              COUNT(*) FILTER (WHERE event_name <> 'page_view')::int AS clicks
       FROM website_events
-      WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')
+      WHERE event_name NOT LIKE 'email_%'
+        AND created_at >= NOW() - (${days} * INTERVAL '1 day')
       GROUP BY created_at::date ORDER BY day
     `,
     query`
       SELECT campaign_id,
              COUNT(DISTINCT recipient_token) FILTER (WHERE event_name = 'page_view')::int AS visitors,
              COUNT(DISTINCT recipient_token) FILTER (WHERE event_name = 'download_click')::int AS downloaders,
+             COUNT(DISTINCT recipient_token) FILTER (WHERE event_name = 'email_open_detected')::int AS opens_detected,
+             COUNT(DISTINCT recipient_token) FILTER (WHERE event_name = 'email_site_click')::int AS site_clickers,
+             COUNT(DISTINCT recipient_token) FILTER (WHERE event_name = 'email_demo_click')::int AS demo_clickers,
              COUNT(*)::int AS events,
              MAX(created_at)::text AS last_event_at
       FROM website_events

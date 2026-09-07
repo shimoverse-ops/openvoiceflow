@@ -35,7 +35,7 @@ export function createAnalyticsReportHandler(
           app_features: "Current aggregate feature state from the latest opt-in installation snapshot, not raw feature-event history.",
           location: "Coarse city, region, and country are derived from Vercel edge headers when available; IP addresses are not stored.",
           clicks: "Allow-listed navigation and product actions only. No raw coordinates, typed text, form values, query strings, or arbitrary DOM text are retained.",
-          email_campaigns: "Distinct opaque recipient tokens that reached the site and, separately, clicked a download. Tokens contain no names or email addresses, respect browser privacy opt-outs, and do not measure email opens or delivery.",
+          email_campaigns: "Distinct opaque recipient tokens with an open detected, an allow-listed first-party link redirect, a website visit, or a download. An open detected is not proof that a person read the message: image proxies and privacy preloading can create or suppress it. Tokens contain no names or email addresses, privacy opt-outs are honored when the client forwards them, and delivery, bounces, and replies are verified separately in Gmail.",
         },
         ...report,
       });

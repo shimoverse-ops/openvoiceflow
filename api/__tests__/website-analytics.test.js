@@ -10,6 +10,8 @@ import {
   isAuthorizedReportRequest,
 } from "../_websiteAnalytics.js";
 import { createWebsiteEventHandler } from "../analytics/event.js";
+import { createEmailOpenHandler } from "../analytics/email-open.js";
+import { createEmailLinkHandler } from "../analytics/email-link.js";
 import { createOwnerOptOutHandler } from "../analytics/owner-opt-out.js";
 import { createAnalyticsReportHandler } from "../analytics/report.js";
 import { createAnalyticsRetentionHandler } from "../cron/analytics-retention.js";
@@ -163,15 +165,180 @@ test("privacy disclosure explains anonymous outreach attribution", () => {
   const privacy = readFileSync(new URL("../../docs/privacy.html", import.meta.url), "utf8");
   assert.match(privacy, /opaque campaign and recipient tokens/i);
   assert.match(privacy, /never contain.*name.*email address/i);
+  assert.match(privacy, /open detected/i);
+  assert.match(privacy, /image prox(?:y|ies)|preload/i);
+  assert.match(privacy, /first-party redirect/i);
+});
+
+test("email open endpoint records only a privacy-safe open detection and returns a transparent pixel", async () => {
+  const recipientToken = createCampaignRecipientToken(
+    "creator_outreach_2026_09",
+    CAMPAIGN_SECRET,
+    Buffer.alloc(16, 8)
+  );
+  const inserted = [];
+  const handler = createEmailOpenHandler({
+    async ensureSchema() {},
+    async insertWebsiteEvent(event) { inserted.push(event); },
+  }, { campaignAttributionSecret: CAMPAIGN_SECRET });
+
+  const response = await call(handler, {
+    query: { c: "creator_outreach_2026_09", r: recipientToken },
+    headers: { "user-agent": "Mozilla/5.0" },
+  });
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(response.headers["content-type"], "image/gif");
+  assert.equal(response.headers["referrer-policy"], "no-referrer");
+  assert.ok(Buffer.isBuffer(response.body));
+  assert.equal(inserted.length, 1);
+  assert.equal(inserted[0].eventName, "email_open_detected");
+  assert.equal(inserted[0].path, "/email");
+  assert.equal(inserted[0].campaignId, "creator_outreach_2026_09");
+  assert.equal(inserted[0].recipientToken, recipientToken);
+  assert.deepEqual(inserted[0].location, { country: null, region: null, city: null });
+});
+
+test("email open endpoint honors privacy signals and ignores automation without breaking the pixel", async () => {
+  const recipientToken = createCampaignRecipientToken(
+    "creator_outreach_2026_09",
+    CAMPAIGN_SECRET,
+    Buffer.alloc(16, 9)
+  );
+  let databaseCalls = 0;
+  const handler = createEmailOpenHandler({
+    async ensureSchema() { databaseCalls += 1; },
+    async insertWebsiteEvent() { databaseCalls += 1; },
+  }, { campaignAttributionSecret: CAMPAIGN_SECRET });
+
+  for (const headers of [
+    { "sec-gpc": "1", "user-agent": "Mozilla/5.0" },
+    { dnt: "1", "user-agent": "Mozilla/5.0" },
+    { "user-agent": "Googlebot" },
+    { purpose: "prefetch", "user-agent": "Mozilla/5.0" },
+  ]) {
+    const response = await call(handler, {
+      query: { c: "creator_outreach_2026_09", r: recipientToken },
+      headers,
+    });
+    assert.equal(response.statusCode, 200);
+    assert.equal(response.headers["content-type"], "image/gif");
+  }
+  assert.equal(databaseCalls, 0);
+});
+
+test("email link endpoint records allow-listed clicks and redirects without leaking a referrer", async () => {
+  const recipientToken = createCampaignRecipientToken(
+    "creator_outreach_2026_09",
+    CAMPAIGN_SECRET,
+    Buffer.alloc(16, 10)
+  );
+  const inserted = [];
+  const handler = createEmailLinkHandler({
+    async ensureSchema() {},
+    async insertWebsiteEvent(event) { inserted.push(event); },
+  }, { campaignAttributionSecret: CAMPAIGN_SECRET });
+
+  const demo = await call(handler, {
+    query: { c: "creator_outreach_2026_09", r: recipientToken, to: "demo" },
+    headers: { "user-agent": "Mozilla/5.0" },
+  });
+  assert.equal(demo.statusCode, 302);
+  assert.equal(demo.headers.location, "https://www.youtube.com/watch?v=tWDLtZolv0A");
+  assert.equal(demo.headers["referrer-policy"], "no-referrer");
+  assert.equal(inserted[0].eventName, "email_demo_click");
+  assert.equal(inserted[0].target, "youtube_demo");
+
+  const site = await call(handler, {
+    query: { c: "creator_outreach_2026_09", r: recipientToken, to: "site" },
+    headers: { "user-agent": "Mozilla/5.0" },
+  });
+  assert.equal(site.statusCode, 302);
+  assert.equal(site.headers.location, `https://openvoiceflow.com/?utm_source=creator_outreach&utm_medium=email&utm_campaign=creator_outreach_2026_09&ovf_r=${encodeURIComponent(recipientToken)}`);
+  assert.equal(inserted[1].eventName, "email_site_click");
+  assert.equal(inserted[1].target, "website");
+});
+
+test("email links still reach allow-listed destinations when tracking is opted out", async () => {
+  const recipientToken = createCampaignRecipientToken(
+    "creator_outreach_2026_09",
+    CAMPAIGN_SECRET,
+    Buffer.alloc(16, 11)
+  );
+  let databaseCalls = 0;
+  const handler = createEmailLinkHandler({
+    async ensureSchema() { databaseCalls += 1; },
+    async insertWebsiteEvent() { databaseCalls += 1; },
+  }, { campaignAttributionSecret: CAMPAIGN_SECRET });
+
+  const response = await call(handler, {
+    query: { c: "creator_outreach_2026_09", r: recipientToken, to: "demo" },
+    headers: { dnt: "1", "user-agent": "Mozilla/5.0" },
+  });
+  assert.equal(response.statusCode, 302);
+  assert.equal(response.headers.location, "https://www.youtube.com/watch?v=tWDLtZolv0A");
+  assert.equal(databaseCalls, 0);
+
+  for (const headers of [
+    { dnt: "1", "user-agent": "Mozilla/5.0" },
+    { "sec-gpc": "1", "user-agent": "Mozilla/5.0" },
+    { "user-agent": "Googlebot" },
+  ]) {
+    const site = await call(handler, {
+      query: { c: "creator_outreach_2026_09", r: recipientToken, to: "site" },
+      headers,
+    });
+    assert.equal(site.statusCode, 302);
+    assert.equal(site.headers.location, "https://openvoiceflow.com/");
+  }
+  assert.equal(databaseCalls, 0);
+});
+
+test("email site redirect never propagates malformed or unverifiable attribution", async () => {
+  let databaseCalls = 0;
+  const database = {
+    async ensureSchema() { databaseCalls += 1; },
+    async insertWebsiteEvent() { databaseCalls += 1; },
+  };
+  const handler = createEmailLinkHandler(database, { campaignAttributionSecret: CAMPAIGN_SECRET });
+  for (const query of [
+    { to: "site" },
+    { to: "site", c: "creator_outreach_2026_09", r: "person@example.com" },
+    { to: "site", c: "person@example.com", r: "not-a-token" },
+  ]) {
+    const response = await call(handler, { query, headers: { "user-agent": "Mozilla/5.0" } });
+    assert.equal(response.statusCode, 302);
+    assert.equal(response.headers.location, "https://openvoiceflow.com/");
+  }
+
+  const recipientToken = createCampaignRecipientToken(
+    "creator_outreach_2026_09",
+    CAMPAIGN_SECRET,
+    Buffer.alloc(16, 12)
+  );
+  const missingSecretHandler = createEmailLinkHandler(database, { campaignAttributionSecret: "" });
+  const missingSecret = await call(missingSecretHandler, {
+    query: { to: "site", c: "creator_outreach_2026_09", r: recipientToken },
+    headers: { "user-agent": "Mozilla/5.0" },
+  });
+  assert.equal(missingSecret.statusCode, 302);
+  assert.equal(missingSecret.headers.location, "https://openvoiceflow.com/");
+  assert.equal(databaseCalls, 0);
 });
 
 test("canonical database schema preserves campaign attribution as an all-or-nothing pair", () => {
   const schema = readFileSync(new URL("../../db/schema.sql", import.meta.url), "utf8");
+  const databaseSource = readFileSync(new URL("../_db.js", import.meta.url), "utf8");
   assert.match(schema, /campaign_id\s+TEXT/);
   assert.match(schema, /recipient_token\s+TEXT/);
   assert.match(
     schema,
     /CHECK\s*\(\s*\(campaign_id IS NULL AND recipient_token IS NULL\)\s*OR\s*\(campaign_id IS NOT NULL AND recipient_token IS NOT NULL\)\s*\)/i
+  );
+  assert.match(
+    databaseSource,
+    /SELECT MAX\(created_at\)::text FROM website_events\s+WHERE event_name NOT LIKE 'email_%'/,
+    "ordinary website last-event reporting must exclude email signals"
   );
 });
 
