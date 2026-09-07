@@ -11,7 +11,7 @@ are visible on the rendered page — which is exactly why they're tests.
 import json
 import re
 import struct
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -310,6 +310,24 @@ def test_the_product_film_ships_with_its_plumbing():
 
     site_js = read("site.js")
     assert "demo_play" in site_js, "film plays must be visible in analytics"
+
+
+def test_product_film_upload_date_is_a_timezone_aware_datetime():
+    """Google Video rich results require uploadDate to contain a valid time;
+    an explicit timezone prevents Googlebot from guessing one."""
+    blocks = [
+        json.loads(raw)
+        for raw in re.findall(
+            r'<script type="application/ld\+json">(.*?)</script>',
+            read("index.html"),
+            flags=re.DOTALL,
+        )
+    ]
+    video = next(block for block in blocks if block.get("@type") == "VideoObject")
+
+    upload_date = datetime.fromisoformat(video["uploadDate"])
+    assert upload_date.tzinfo is not None
+    assert upload_date.utcoffset() is not None
 
 
 def test_every_page_links_the_public_github_repo():
