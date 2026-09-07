@@ -28,7 +28,40 @@ export const ALLOWED_ACQUISITION_SOURCES = Object.freeze([
 
 const EVENT_FIELDS = new Set([
   "eventId", "sessionId", "eventName", "path", "target", "acquisitionSource",
+  "campaignId", "recipientToken",
 ]);
+
+const CAMPAIGN_ID_RE = /^[a-z0-9][a-z0-9_-]{2,63}$/;
+const RECIPIENT_TOKEN_RE = /^v1\.[A-Za-z0-9_-]{22}\.[A-Za-z0-9_-]{22}$/;
+
+function campaignTokenMac(campaignId, nonce, secret) {
+  if (typeof secret !== "string" || secret.length < 32) return "";
+  return crypto
+    .createHmac("sha256", secret)
+    .update(`openvoiceflow-campaign-attribution:v1:${campaignId}:${nonce}`)
+    .digest()
+    .subarray(0, 16)
+    .toString("base64url");
+}
+
+export function createCampaignRecipientToken(campaignId, secret, nonceBytes = crypto.randomBytes(16)) {
+  if (!CAMPAIGN_ID_RE.test(String(campaignId || ""))) throw new TypeError("campaignId is invalid");
+  if (!Buffer.isBuffer(nonceBytes) || nonceBytes.length !== 16) throw new TypeError("nonce must be 16 random bytes");
+  const nonce = nonceBytes.toString("base64url");
+  const mac = campaignTokenMac(campaignId, nonce, secret);
+  if (!mac) throw new TypeError("campaign attribution secret is invalid");
+  return `v1.${nonce}.${mac}`;
+}
+
+function isValidCampaignRecipientToken(campaignId, token, secret) {
+  if (!RECIPIENT_TOKEN_RE.test(token || "")) return false;
+  const [, nonce, suppliedMac] = token.split(".");
+  const expectedMac = campaignTokenMac(campaignId, nonce, secret);
+  if (!expectedMac) return false;
+  const supplied = Buffer.from(suppliedMac, "base64url");
+  const expected = Buffer.from(expectedMac, "base64url");
+  return supplied.length === expected.length && crypto.timingSafeEqual(supplied, expected);
+}
 
 function cleanString(value, maxLength) {
   if (value === null || value === undefined || value === "") return null;
@@ -92,7 +125,7 @@ function cleanTarget(value, eventName) {
   return null;
 }
 
-export function normalizeWebsiteEvent(input) {
+export function normalizeWebsiteEvent(input, options = {}) {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
     throw new TypeError("body must be an object");
   }
@@ -104,6 +137,8 @@ export function normalizeWebsiteEvent(input) {
   const sessionId = cleanString(input.sessionId, 36);
   const eventName = cleanString(input.eventName, 48);
   const acquisitionSource = cleanString(input.acquisitionSource, 32) || "direct";
+  const campaignId = cleanString(input.campaignId, 64);
+  const recipientToken = cleanString(input.recipientToken, 64);
 
   if (!eventId || !UUID_RE.test(eventId)) throw new TypeError("eventId must be a UUID");
   if (!sessionId || !UUID_RE.test(sessionId)) throw new TypeError("sessionId must be a UUID");
@@ -111,8 +146,17 @@ export function normalizeWebsiteEvent(input) {
   if (!ALLOWED_ACQUISITION_SOURCES.includes(acquisitionSource)) {
     throw new TypeError("acquisitionSource is invalid");
   }
+  if (Boolean(campaignId) !== Boolean(recipientToken)) {
+    throw new TypeError("campaign attribution must include both fields");
+  }
+  if (campaignId && !CAMPAIGN_ID_RE.test(campaignId)) throw new TypeError("campaignId is invalid");
+  if (recipientToken && !isValidCampaignRecipientToken(
+    campaignId,
+    recipientToken,
+    options.campaignAttributionSecret
+  )) throw new TypeError("recipientToken is invalid");
 
-  return {
+  const event = {
     eventId,
     sessionId,
     eventName,
@@ -120,6 +164,9 @@ export function normalizeWebsiteEvent(input) {
     target: cleanTarget(input.target, eventName),
     acquisitionSource,
   };
+  if (campaignId) event.campaignId = campaignId;
+  if (recipientToken) event.recipientToken = recipientToken;
+  return event;
 }
 
 function readHeader(headers, name) {

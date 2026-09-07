@@ -13,7 +13,10 @@ function serviceUnavailable(res, error) {
   return res.status(503).json({ error: "service unavailable" });
 }
 
-export function createWebsiteEventHandler(database = productionDatabase) {
+export function createWebsiteEventHandler(
+  database = productionDatabase,
+  options = { campaignAttributionSecret: process.env.ANALYTICS_CAMPAIGN_SECRET }
+) {
   return async function handler(req, res) {
     setPrivateResponseHeaders(res);
     if (req.method !== "POST") {
@@ -32,7 +35,7 @@ export function createWebsiteEventHandler(database = productionDatabase) {
 
     let event;
     try {
-      event = normalizeWebsiteEvent(req.body || {});
+      event = normalizeWebsiteEvent(req.body || {}, options);
     } catch (error) {
       return res.status(400).json({ error: error?.message || "invalid event" });
     }
