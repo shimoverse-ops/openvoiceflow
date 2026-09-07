@@ -76,7 +76,7 @@ derivative or let others use a modified version over a network, you must publish
 its complete source under the same license; the free license does not allow
 closed-source derivatives. Commercial or organizational use requires separate
 written permission or a separate written license from Shimoverse Studios even when the
-source is published. Contact **shimoverse@gmail.com** before commercial or organizational
+source is published. Contact **contact@openvoiceflow.com** before commercial or organizational
 use.
 
 Copyright © 2025–2026 **Shimoverse Studios**. Keep the required notices with every

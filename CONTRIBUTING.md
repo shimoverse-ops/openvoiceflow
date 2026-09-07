@@ -17,7 +17,7 @@ This is a **single-maintainer source-available project**. Issues and PRs get
 best-effort responses on a human schedule. There is no SLA. If you build on
 this code in your own project, follow the reciprocal-source and rebranding
 requirements in [LICENSE](LICENSE). You are welcome to tell us about it at
-shimoverse@gmail.com — we like knowing where the work travels.
+contact@openvoiceflow.com — we like knowing where the work travels.
 
 ## Working on the native app (the usual case)
 

@@ -3,7 +3,7 @@
 The OpenVoiceFlow **code** is source-available for personal use only under the
 [project license](LICENSE). Commercial or organizational use requires separate
 written permission or a separate written license from Shimoverse Studios; see
-[LICENSING.md](LICENSING.md) or contact shimoverse@gmail.com.
+[LICENSING.md](LICENSING.md) or contact contact@openvoiceflow.com.
 
 Distributed derivatives and modified network versions must publish complete
 corresponding source under the same software license. That source-sharing rule
@@ -48,4 +48,4 @@ from forks that may change those promises.
 
 Keep the license's required notices with every permitted copy and preserve the
 credit above for derivatives and integrations. Questions, permission or license
-requests, or edge cases: **shimoverse@gmail.com**.
+requests, or edge cases: **contact@openvoiceflow.com**.

@@ -40,7 +40,7 @@ the user publishes its modifications or no money changes hands. Nonprofits,
 schools, charities, government bodies, associations, employers, clients,
 businesses, institutions, and other organized groups need separate written
 permission or a separate written license from Shimoverse Studios. Contact
-**shimoverse@gmail.com** before using OpenVoiceFlow:
+**contact@openvoiceflow.com** before using OpenVoiceFlow:
 
 - for work on behalf of a business, employer, client, sole proprietorship, or
   other commercial organization;

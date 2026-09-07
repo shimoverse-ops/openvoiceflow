@@ -286,7 +286,7 @@ def render(slug: str, page: dict) -> str:
         </div>
 
 {pager(slug)}
-        <p class="docs-feedback">Documentation for OpenVoiceFlow {VERSION} · last updated {UPDATED}. Something wrong or missing here? That is a bug — tell us at <a href="mailto:shimoverse@gmail.com">shimoverse@gmail.com</a>.</p>
+        <p class="docs-feedback">Documentation for OpenVoiceFlow {VERSION} · last updated {UPDATED}. Something wrong or missing here? That is a bug — tell us at <a href="mailto:contact@openvoiceflow.com">contact@openvoiceflow.com</a>.</p>
       </article>
     </div>
   </main>

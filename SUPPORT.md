@@ -5,7 +5,7 @@ OpenVoiceFlow is a single-maintainer source-available project. Response time is 
 Personal use only is covered by the
 [OpenVoiceFlow Personal and Reciprocal Source License 1.0](LICENSE). Distributed
 derivatives and modified network versions must publish their complete source
-under the same license. For commercial or organizational use, contact **shimoverse@gmail.com** for
+under the same license. For commercial or organizational use, contact **contact@openvoiceflow.com** for
 separate written permission or a separate written license; see
 [LICENSING.md](LICENSING.md).
 

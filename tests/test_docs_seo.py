@@ -324,7 +324,19 @@ def test_every_page_links_the_public_github_repo():
         html = read(rel)
         assert 'class="nav-github"' in html, f"{rel}: missing the GitHub nav link"
         assert html.count(repo) >= 1, f"{rel}: GitHub nav link does not point at {repo}"
-    assert "shimoverse@gmail.com" in read("mission.html")
+
+
+def test_public_site_uses_the_dedicated_contact_address_everywhere():
+    """Visitors must see the product contact address, never the maintainer's
+    personal Gmail address. Pin both visible copy and mailto destinations."""
+    public_text = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in DOCS.rglob("*")
+        if path.is_file() and path.suffix in {".html", ".txt", ".xml", ".js", ".json", ".md"}
+    )
+    assert "shimoverse@gmail.com" not in public_text
+    assert "contact@openvoiceflow.com" in public_text
+    assert "mailto:contact@openvoiceflow.com" in public_text
 
 
 def test_releases_page_lists_recent_versions_with_notes():
