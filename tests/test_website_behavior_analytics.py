@@ -69,6 +69,9 @@ def test_public_privacy_copy_matches_collected_fields_and_retention() -> None:
         assert "Global Privacy Control" in content
         assert "opaque campaign and recipient tokens" in content
         assert "name or email address" in content
+        assert "open detected" in content
+        assert "image prox" in content or "preload" in content
+        assert "first-party redirect" in content
 
 
 def test_outreach_tokens_are_removed_from_visible_urls_and_cross_origin_referrers() -> None:
