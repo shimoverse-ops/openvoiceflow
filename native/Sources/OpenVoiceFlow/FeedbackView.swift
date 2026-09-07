@@ -6,7 +6,7 @@ import SwiftUI
 /// OpenVoiceFlow ships no telemetry and no backend (see privacy-architecture
 /// docs), so there is nowhere to POST a submission to. Feedback goes out the
 /// same door the docs already point people to — a `mailto:` to
-/// shimoverse@gmail.com — opened only when the user taps Send. Nothing is
+/// contact@openvoiceflow.com — opened only when the user taps Send. Nothing is
 /// gathered passively or on a timer.
 ///
 /// What rides along is a small, aggregate usage snapshot (word/time totals,
@@ -104,7 +104,7 @@ struct FeedbackView: View {
         )
         var components = URLComponents()
         components.scheme = "mailto"
-        components.path = "shimoverse@gmail.com"
+        components.path = "contact@openvoiceflow.com"
         components.queryItems = [
             URLQueryItem(name: "subject", value: "OpenVoiceFlow feedback: \(category.rawValue)"),
             URLQueryItem(name: "body", value: body),

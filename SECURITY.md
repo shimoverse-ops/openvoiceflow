@@ -5,7 +5,7 @@ is available under the
 [OpenVoiceFlow Personal and Reciprocal Source License 1.0](LICENSE). Commercial
 or organizational use, including selling or bundling the software, requires
 separate written permission or a separate written license from Shimoverse Studios;
-contact **shimoverse@gmail.com**. This document explains
+contact **contact@openvoiceflow.com**. This document explains
 which versions get security fixes, how to report a vulnerability, what to expect from us,
 and what is in scope.
 

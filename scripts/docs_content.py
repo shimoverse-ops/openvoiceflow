@@ -780,7 +780,7 @@ PAGES["styles"] = {
 
         <div class="callout">
           <span class="callout-label">In this version</span>
-          <p>The Styles tab edits the mapping for apps already listed; there is no control for adding an app that is not on the list, so unlisted apps use the fallback. If per-app tone in a specific app matters to you, tell us at <a href="mailto:shimoverse@gmail.com">shimoverse@gmail.com</a> — that feedback is how the list grows.</p>
+          <p>The Styles tab edits the mapping for apps already listed; there is no control for adding an app that is not on the list, so unlisted apps use the fallback. If per-app tone in a specific app matters to you, tell us at <a href="mailto:contact@openvoiceflow.com">contact@openvoiceflow.com</a> — that feedback is how the list grows.</p>
         </div>
 
         <h2 id="storage">Where it is stored</h2>
@@ -1101,7 +1101,7 @@ PAGES["privacy-architecture"] = {
           <li><strong>Airplane mode.</strong> Turn off Wi-Fi with cleanup set to None and dictate. It works, because dictation itself never needs a network — the usage sync above is fire-and-forget and never blocks it.</li>
           <li><strong>Network monitor.</strong> Run Little Snitch or similar and watch. With cleanup off and usage sharing off, dictation generates no connections at all. With usage sharing on (the default), you'll see the occasional request described in the table above, and nothing else.</li>
         </ul>
-        <p>OpenVoiceFlow's source is public, so every claim here is checkable in the code itself rather than taken on trust. If anything on this page does not match what the app does, that is a bug — tell us at <a href="mailto:shimoverse@gmail.com">shimoverse@gmail.com</a>.</p>
+        <p>OpenVoiceFlow's source is public, so every claim here is checkable in the code itself rather than taken on trust. If anything on this page does not match what the app does, that is a bug — tell us at <a href="mailto:contact@openvoiceflow.com">contact@openvoiceflow.com</a>.</p>
 """,
 }
 
@@ -1169,7 +1169,7 @@ PAGES["uninstall"] = {
         <p>If you leave the Application Support folder in place, reinstalling picks up exactly where you left off — same settings, same history, same dictionary. Remove that folder first if you want a genuinely clean start.</p>
 
         <h2 id="feedback">Before you go</h2>
-        <p>If something drove you to uninstall, we would genuinely like to know which thing it was — <a href="mailto:shimoverse@gmail.com">shimoverse@gmail.com</a>. The project has no individual retention analytics, so an email is the only way that detailed signal reaches anyone.</p>
+        <p>If something drove you to uninstall, we would genuinely like to know which thing it was — <a href="mailto:contact@openvoiceflow.com">contact@openvoiceflow.com</a>. The project has no individual retention analytics, so an email is the only way that detailed signal reaches anyone.</p>
 """,
 }
 
@@ -1361,7 +1361,7 @@ PAGES["troubleshooting"] = {
         </div>
 
         <h2 id="still">Still stuck?</h2>
-        <p>Use the <strong>Feedback</strong> item in the dashboard sidebar, or email <a href="mailto:shimoverse@gmail.com">shimoverse@gmail.com</a> with your macOS version, your Mac's chip, your OpenVoiceFlow version (Settings shows it), the model you are using, and what you saw versus what you expected. The anonymous usage summary (see <a href="privacy-architecture.html#analytics">Privacy architecture</a>) is aggregate counts, not diagnostics — it can't tell us what went wrong on your machine, so a real description is still what gets bugs fixed.</p>
+        <p>Use the <strong>Feedback</strong> item in the dashboard sidebar, or email <a href="mailto:contact@openvoiceflow.com">contact@openvoiceflow.com</a> with your macOS version, your Mac's chip, your OpenVoiceFlow version (Settings shows it), the model you are using, and what you saw versus what you expected. The anonymous usage summary (see <a href="privacy-architecture.html#analytics">Privacy architecture</a>) is aggregate counts, not diagnostics — it can't tell us what went wrong on your machine, so a real description is still what gets bugs fixed.</p>
 """,
 }
 
@@ -1372,7 +1372,7 @@ PAGES["faq"] = {
     "lede": "Short answers to what we get asked most. Longer versions link through to the relevant page.",
     "faq": [
         ("Is OpenVoiceFlow really free?",
-         "Use is free for personal purposes only, with no account or trial period. Commercial or organizational use requires separate written permission or a separate written license from Shimoverse Studios; contact shimoverse@gmail.com. If you enable optional cloud cleanup you pay your chosen AI provider directly for tokens."),
+         "Use is free for personal purposes only, with no account or trial period. Commercial or organizational use requires separate written permission or a separate written license from Shimoverse Studios; contact contact@openvoiceflow.com. If you enable optional cloud cleanup you pay your chosen AI provider directly for tokens."),
         ("Does my voice leave my Mac?",
          "No. Audio is transcribed on-device by Whisper and discarded once text exists. There is no code path that uploads audio. If you turn on cloud AI cleanup, the resulting text is sent to the provider you chose under your own key; choosing Ollama or leaving cleanup off keeps everything local."),
         ("Does it work offline?",
@@ -1394,13 +1394,13 @@ PAGES["faq"] = {
         ("Does it collect any analytics?",
          "As of 0.5.7, yes, and it's on by default: an anonymous usage summary (word/time totals, which features you use, your country, and a display name you choose) powers an in-app leaderboard. Never audio, never dictated text, never anything from your dictionary, snippets, or Know-Me profile. Turn it off in Settings ▸ Privacy ▸ \"Share anonymous usage & leaderboard rank\" — full detail in Privacy architecture's Analytics & leaderboard section. The website separately uses privacy-friendly anonymous page-view analytics — page views plus counts of which links and buttons get clicked — unrelated to the app and tied to no identifier."),
         ("How do I get support?",
-         "Use the Feedback item in the dashboard sidebar, or email shimoverse@gmail.com. Include your macOS version, your Mac's chip, your OpenVoiceFlow version, and what you saw versus what you expected — the usage summary is aggregate counts, not diagnostics, so your description is still what gets things fixed."),
+         "Use the Feedback item in the dashboard sidebar, or email contact@openvoiceflow.com. Include your macOS version, your Mac's chip, your OpenVoiceFlow version, and what you saw versus what you expected — the usage summary is aggregate counts, not diagnostics, so your description is still what gets things fixed."),
         ("Can I use OpenVoiceFlow at work with confidential material?",
          "The architecture supports that case: audio never leaves the machine, and with cleanup off or pointed at local Ollama, neither does text. Your organization's own policy still applies, and the public source lets your security team verify the claims. Workplace or other organizational use requires separate written permission or a separate written license from Shimoverse Studios."),
         ("Can I use the code in my own project?",
          "For personal purposes only, yes, under the OpenVoiceFlow Personal and Reciprocal Source License 1.0. Every integration, derivative, fork, or modified build must keep the required notices and visibly state ‘Based on OpenVoiceFlow by Shimoverse Studios’ with a working link to https://github.com/shimoverse/openvoiceflow, even if it stays private or merely connects through a documented interface. If it is a Covered Work and you distribute it or let others use it over a network, publish its complete corresponding source under the same license and rebrand where required. Commercial or organizational use requires separate written permission or a separate written license even when the source is published."),
     ],
     "body": """
-        <p>If your question is not here, the <a href="troubleshooting.html">troubleshooting guide</a> covers specific symptoms, and <a href="privacy-architecture.html">privacy architecture</a> answers data questions in far more depth. Anything still unanswered: <a href="mailto:shimoverse@gmail.com">shimoverse@gmail.com</a>.</p>
+        <p>If your question is not here, the <a href="troubleshooting.html">troubleshooting guide</a> covers specific symptoms, and <a href="privacy-architecture.html">privacy architecture</a> answers data questions in far more depth. Anything still unanswered: <a href="mailto:contact@openvoiceflow.com">contact@openvoiceflow.com</a>.</p>
 """,
 }

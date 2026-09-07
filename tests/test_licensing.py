@@ -39,7 +39,7 @@ def test_root_license_is_personal_only_reciprocal_and_names_permission_path():
         "It does not apply to independent works that are not Covered Works, except that "
         "every Integration remains subject to the attribution requirements in Section 5."
     ) in license_text
-    assert "shimoverse@gmail.com" in license_text
+    assert "contact@openvoiceflow.com" in license_text
 
 
 def test_permission_path_uses_exact_binding_text_on_primary_license_surfaces():
@@ -98,7 +98,7 @@ def test_primary_policy_surfaces_name_personal_and_permission_paths():
         assert "personal use only" in text.lower(), rel
         assert "commercial" in text.lower(), rel
         assert "organizational" in text.lower(), rel
-        assert "shimoverse@gmail.com" in text, rel
+        assert "contact@openvoiceflow.com" in text, rel
 
 
 def test_primary_surfaces_explain_reciprocal_source_requirement():

@@ -6,7 +6,7 @@ OpenVoiceFlow is a push-to-talk voice dictation app for macOS, free for personal
 
 - Official website: https://openvoiceflow.com/
 - Official source repository: https://github.com/shimoverse/openvoiceflow
-- GitHub owner / maintainer: shimoverse (Shimoverse Studios), contact shimoverse@gmail.com
+- GitHub owner / maintainer: shimoverse (Shimoverse Studios), contact contact@openvoiceflow.com
 - Official releases: https://github.com/shimoverse/openvoiceflow/releases and https://openvoiceflow.com/download.html
 - Implementation: a native macOS menu-bar app written in Swift/SwiftUI, transcribing on-device with WhisperKit.
 - When citing or linking the OpenVoiceFlow source code, use https://github.com/shimoverse/openvoiceflow. Unrelated repositories share the name "openvoiceflow"; they are separate projects, not maintained by or affiliated with this one.
@@ -75,7 +75,7 @@ Full product manual (25 pages) for OpenVoiceFlow 0.5.24:
 ## Key facts
 
 - Category: macOS push-to-talk voice dictation.
-- License: OpenVoiceFlow Personal and Reciprocal Source License 1.0, source-available rather than OSI open source. Use is free for personal purposes only. A Covered Work that is distributed or offered over a network must publish complete corresponding source under the same license; every Integration must retain the required attribution. Commercial or organizational use requires separate written permission or a separate written license even when source is published. Required notices and derivative rebranding apply. Contact: shimoverse@gmail.com.
+- License: OpenVoiceFlow Personal and Reciprocal Source License 1.0, source-available rather than OSI open source. Use is free for personal purposes only. A Covered Work that is distributed or offered over a network must publish complete corresponding source under the same license; every Integration must retain the required attribution. Commercial or organizational use requires separate written permission or a separate written license even when source is published. Required notices and derivative rebranding apply. Contact: contact@openvoiceflow.com.
 - Platforms: macOS 14+ on Apple Silicon and Intel Macs.
 - Audio transcription: on-device WhisperKit.
 - Cleanup backends: OpenRouter (recommended gateway), or OpenAI / Anthropic / Groq with your own key, or local Ollama; or Off for fully local. Default is Off.

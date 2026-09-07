@@ -8,7 +8,7 @@ Privacy behavior and licensing are separate. The current project is
 source-available for personal use only under the
 [OpenVoiceFlow Personal and Reciprocal Source License 1.0](LICENSE). Commercial or organizational use, including selling or bundling the
 software, requires separate written permission or a separate written license from
-Shimoverse Studios; contact **shimoverse@gmail.com**. Distributed derivatives and modified
+Shimoverse Studios; contact **contact@openvoiceflow.com**. Distributed derivatives and modified
 network versions must publish complete corresponding source under the same
 license. See [LICENSING.md](LICENSING.md).
 
