@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
 import {
+  createCampaignRecipientToken,
   createOwnerExclusionSignature,
   normalizeWebsiteEvent,
   readEdgeLocation,
@@ -14,6 +16,7 @@ import { createAnalyticsRetentionHandler } from "../cron/analytics-retention.js"
 
 const EVENT_ID = "00000000-0000-4000-8000-000000000001";
 const SESSION_ID = "00000000-0000-4000-8000-000000000002";
+const CAMPAIGN_SECRET = "test-only-campaign-secret-at-least-32-bytes";
 
 function responseRecorder() {
   return {
@@ -61,6 +64,115 @@ test("website events keep only allow-listed metadata and strip query strings", (
   );
   assert.throws(() => normalizeWebsiteEvent(pageView({ eventName: "raw_click" })), /eventName is invalid/);
   assert.throws(() => normalizeWebsiteEvent(pageView({ sessionId: "person@example.com" })), /sessionId must be a UUID/);
+});
+
+test("website events accept only server-verifiable anonymous campaign attribution pairs", () => {
+  const recipientToken = createCampaignRecipientToken(
+    "creator_outreach_2026_09",
+    CAMPAIGN_SECRET,
+    Buffer.alloc(16, 7)
+  );
+  const attributed = normalizeWebsiteEvent(pageView({
+    campaignId: "creator_outreach_2026_09",
+    recipientToken,
+  }), { campaignAttributionSecret: CAMPAIGN_SECRET });
+  assert.equal(attributed.campaignId, "creator_outreach_2026_09");
+  assert.equal(attributed.recipientToken, recipientToken);
+
+  assert.throws(
+    () => normalizeWebsiteEvent(pageView({ recipientToken })),
+    /campaign attribution must include both fields/
+  );
+  assert.throws(
+    () => normalizeWebsiteEvent(pageView({ campaignId: "creator_outreach_2026_09" })),
+    /campaign attribution must include both fields/
+  );
+  assert.throws(
+    () => normalizeWebsiteEvent(pageView({
+      campaignId: "Creator Outreach / September",
+      recipientToken,
+    }), { campaignAttributionSecret: CAMPAIGN_SECRET }),
+    /campaignId is invalid/
+  );
+  assert.throws(
+    () => normalizeWebsiteEvent(pageView({
+      campaignId: "creator_outreach_2026_09",
+      recipientToken: "YWxpY2VAZXhhbXBsZS5jb20",
+    }), { campaignAttributionSecret: CAMPAIGN_SECRET }),
+    /recipientToken is invalid/
+  );
+  assert.throws(
+    () => normalizeWebsiteEvent(pageView({
+      campaignId: "creator_outreach_2026_09",
+      recipientToken: createCampaignRecipientToken("different_campaign", CAMPAIGN_SECRET, Buffer.alloc(16, 7)),
+    }), { campaignAttributionSecret: CAMPAIGN_SECRET }),
+    /recipientToken is invalid/
+  );
+});
+
+test("event endpoint rejects unissued campaign attribution before database access", async () => {
+  let databaseCalls = 0;
+  const handler = createWebsiteEventHandler({
+    async ensureSchema() { databaseCalls += 1; },
+    async insertWebsiteEvent() { databaseCalls += 1; },
+  }, { campaignAttributionSecret: CAMPAIGN_SECRET });
+  const response = await call(handler, {
+    method: "POST",
+    body: pageView({
+      campaignId: "creator_outreach_2026_09",
+      recipientToken: "YWxpY2VAZXhhbXBsZS5jb20",
+    }),
+    headers: {
+      origin: "https://openvoiceflow.com",
+      "sec-fetch-site": "same-origin",
+      "user-agent": "Mozilla/5.0 Safari/605.1.15",
+    },
+  });
+  assert.equal(response.statusCode, 400);
+  assert.equal(databaseCalls, 0);
+});
+
+test("event endpoint fails closed for attributed events when the campaign secret is absent", async () => {
+  let databaseCalls = 0;
+  const recipientToken = createCampaignRecipientToken(
+    "creator_outreach_2026_09",
+    CAMPAIGN_SECRET,
+    Buffer.alloc(16, 7)
+  );
+  const handler = createWebsiteEventHandler({
+    async ensureSchema() { databaseCalls += 1; },
+    async insertWebsiteEvent() { databaseCalls += 1; },
+  }, { campaignAttributionSecret: undefined });
+  const response = await call(handler, {
+    method: "POST",
+    body: pageView({
+      campaignId: "creator_outreach_2026_09",
+      recipientToken,
+    }),
+    headers: {
+      origin: "https://openvoiceflow.com",
+      "sec-fetch-site": "same-origin",
+      "user-agent": "Mozilla/5.0 Safari/605.1.15",
+    },
+  });
+  assert.equal(response.statusCode, 400);
+  assert.equal(databaseCalls, 0);
+});
+
+test("privacy disclosure explains anonymous outreach attribution", () => {
+  const privacy = readFileSync(new URL("../../docs/privacy.html", import.meta.url), "utf8");
+  assert.match(privacy, /opaque campaign and recipient tokens/i);
+  assert.match(privacy, /never contain.*name.*email address/i);
+});
+
+test("canonical database schema preserves campaign attribution as an all-or-nothing pair", () => {
+  const schema = readFileSync(new URL("../../db/schema.sql", import.meta.url), "utf8");
+  assert.match(schema, /campaign_id\s+TEXT/);
+  assert.match(schema, /recipient_token\s+TEXT/);
+  assert.match(
+    schema,
+    /CHECK\s*\(\s*\(campaign_id IS NULL AND recipient_token IS NULL\)\s*OR\s*\(campaign_id IS NOT NULL AND recipient_token IS NOT NULL\)\s*\)/i
+  );
 });
 
 test("click events require safe targets and never retain arbitrary link text", () => {

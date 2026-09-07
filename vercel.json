@@ -195,5 +195,16 @@
       "destination": "/downloads/OpenVoiceFlow-0.5.24.dmg",
       "permanent": true
     }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        }
+      ]
+    }
   ]
 }

@@ -329,22 +329,48 @@
     return 'other';
   }
 
+  function campaignAttribution() {
+    const params = new URLSearchParams(window.location.search || '');
+    const campaignId = String(params.get('utm_campaign') || '').trim().toLowerCase();
+    const recipientToken = String(params.get('ovf_r') || '').trim();
+    if (!/^[a-z0-9][a-z0-9_-]{2,63}$/.test(campaignId)) return {};
+    if (!/^v1\.[A-Za-z0-9_-]{22}\.[A-Za-z0-9_-]{22}$/.test(recipientToken)) return {};
+    return { campaignId, recipientToken };
+  }
+
+  function stripCampaignAttributionFromUrl() {
+    const params = new URLSearchParams(window.location.search || '');
+    if (!params.has('utm_campaign') && !params.has('ovf_r')) return;
+    params.delete('utm_campaign');
+    params.delete('ovf_r');
+    const query = params.toString();
+    const cleanUrl = `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash || ''}`;
+    window.history.replaceState(window.history.state, '', cleanUrl);
+  }
+
   function currentVisit() {
     const now = Date.now();
+    const source = classifyAcquisitionSource();
+    const attribution = campaignAttribution();
+    stripCampaignAttributionFromUrl();
     try {
       const existing = JSON.parse(window.sessionStorage.getItem(sessionKey) || 'null');
       if (existing && /^[0-9a-f-]{36}$/i.test(existing.id || '')
           && Number.isFinite(existing.lastSeen)
           && now - existing.lastSeen < sessionTimeoutMs) {
         existing.lastSeen = now;
+        if (attribution.campaignId) {
+          existing.campaignId = attribution.campaignId;
+          existing.recipientToken = attribution.recipientToken;
+        }
         window.sessionStorage.setItem(sessionKey, JSON.stringify(existing));
         return existing;
       }
-      const visit = { id: uuid(), source: classifyAcquisitionSource(), lastSeen: now };
+      const visit = { id: uuid(), source, lastSeen: now, ...attribution };
       window.sessionStorage.setItem(sessionKey, JSON.stringify(visit));
       return visit;
     } catch {
-      return { id: uuid(), source: classifyAcquisitionSource(), lastSeen: now };
+      return { id: uuid(), source, lastSeen: now, ...attribution };
     }
   }
 
@@ -355,14 +381,19 @@
   function sendFirstParty(name, data) {
     if (privacyOptedOut()) return;
     const visit = currentVisit();
-    const payload = JSON.stringify({
+    const event = {
       eventId: uuid(),
       sessionId: visit.id,
       eventName: name,
       path: pathname(),
       target: firstPartyTarget(data),
       acquisitionSource: visit.source,
-    });
+    };
+    if (visit.campaignId && visit.recipientToken) {
+      event.campaignId = visit.campaignId;
+      event.recipientToken = visit.recipientToken;
+    }
+    const payload = JSON.stringify(event);
     const blob = new Blob([payload], { type: 'application/json' });
     if (typeof navigator.sendBeacon === 'function' && navigator.sendBeacon(endpoint, blob)) return;
     fetch(endpoint, {
@@ -377,6 +408,11 @@
   function track(name, data = {}) {
     sendFirstParty(name, data);
     if (!privacyOptedOut() && typeof window.va === 'function') window.va('event', { name, data });
+  }
+
+  if (privacyOptedOut()) {
+    stripCampaignAttributionFromUrl();
+    return;
   }
 
   track('page_view');

@@ -41,6 +41,12 @@ CREATE TABLE IF NOT EXISTS website_events (
     country            TEXT,
     region             TEXT,
     city               TEXT,
+    campaign_id        TEXT,
+    recipient_token    TEXT,
+    CONSTRAINT website_events_campaign_pair_check CHECK (
+        (campaign_id IS NULL AND recipient_token IS NULL)
+        OR (campaign_id IS NOT NULL AND recipient_token IS NOT NULL)
+    ),
     created_at         TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -50,3 +56,6 @@ CREATE INDEX IF NOT EXISTS website_events_session_created_idx
     ON website_events (session_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS website_events_name_created_idx
     ON website_events (event_name, created_at DESC);
+CREATE INDEX IF NOT EXISTS website_events_campaign_created_idx
+    ON website_events (campaign_id, created_at DESC)
+    WHERE campaign_id IS NOT NULL;

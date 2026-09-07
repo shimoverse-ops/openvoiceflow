@@ -67,13 +67,29 @@ def test_public_privacy_copy_matches_collected_fields_and_retention() -> None:
         assert "raw click coordinates" in content
         assert "persistent cross-visit browser" in content
         assert "Global Privacy Control" in content
+        assert "opaque campaign and recipient tokens" in content
+        assert "name or email address" in content
+
+
+def test_outreach_tokens_are_removed_from_visible_urls_and_cross_origin_referrers() -> None:
+    site = read("docs/site.js")
+    vercel = read("vercel.json")
+
+    assert "params.delete('utm_campaign')" in site
+    assert "params.delete('ovf_r')" in site
+    assert "window.history.replaceState" in site
+    assert '"key": "Referrer-Policy"' in vercel
+    assert '"value": "same-origin"' in vercel
 
 
 def test_schema_has_coarse_location_but_no_ip_or_raw_click_fields() -> None:
     schema = read("db/schema.sql").lower()
     website_schema = schema.split("create table if not exists website_events", 1)[1]
 
-    for field in ("session_id", "event_name", "path", "target", "country", "region", "city"):
+    for field in (
+        "session_id", "event_name", "path", "target", "country", "region", "city",
+        "campaign_id", "recipient_token",
+    ):
         assert field in website_schema
     for forbidden in ("ip_address", "ip_hash", "click_x", "click_y", "query_string", "form_value"):
         assert forbidden not in website_schema

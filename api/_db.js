@@ -76,6 +76,12 @@ export async function ensureSchema() {
           country            TEXT,
           region             TEXT,
           city               TEXT,
+          campaign_id        TEXT,
+          recipient_token    TEXT,
+          CONSTRAINT website_events_campaign_pair_check CHECK (
+            (campaign_id IS NULL AND recipient_token IS NULL)
+            OR (campaign_id IS NOT NULL AND recipient_token IS NOT NULL)
+          ),
           created_at         TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
@@ -90,6 +96,34 @@ export async function ensureSchema() {
       await query`
         CREATE INDEX IF NOT EXISTS website_events_name_created_idx
         ON website_events (event_name, created_at DESC)
+      `;
+      await query`
+        ALTER TABLE website_events
+        ADD COLUMN IF NOT EXISTS campaign_id TEXT,
+        ADD COLUMN IF NOT EXISTS recipient_token TEXT
+      `;
+      // Earlier campaign-attribution builds briefly allowed one-sided rows.
+      // Clear those unusable values before enforcing the pair invariant.
+      await query`
+        UPDATE website_events
+        SET campaign_id = NULL, recipient_token = NULL
+        WHERE (campaign_id IS NULL) <> (recipient_token IS NULL)
+      `;
+      await query`
+        DO $$
+        BEGIN
+          ALTER TABLE website_events
+          ADD CONSTRAINT website_events_campaign_pair_check CHECK (
+            (campaign_id IS NULL AND recipient_token IS NULL)
+            OR (campaign_id IS NOT NULL AND recipient_token IS NOT NULL)
+          );
+        EXCEPTION WHEN duplicate_object THEN NULL;
+        END $$
+      `;
+      await query`
+        CREATE INDEX IF NOT EXISTS website_events_campaign_created_idx
+        ON website_events (campaign_id, created_at DESC)
+        WHERE campaign_id IS NOT NULL
       `;
     })();
   }
@@ -293,11 +327,12 @@ export async function insertWebsiteEvent(event) {
   await query`
     INSERT INTO website_events (
       event_id, session_id, event_name, path, target, acquisition_source,
-      country, region, city, created_at
+      country, region, city, campaign_id, recipient_token, created_at
     ) VALUES (
       ${event.eventId}, ${event.sessionId}, ${event.eventName}, ${event.path},
       ${event.target}, ${event.acquisitionSource}, ${event.location.country},
-      ${event.location.region}, ${event.location.city}, now()
+      ${event.location.region}, ${event.location.city}, ${event.campaignId ?? null},
+      ${event.recipientToken ?? null}, now()
     )
     ON CONFLICT (event_id) DO NOTHING
   `;
@@ -316,7 +351,7 @@ export async function deleteExpiredWebsiteEvents(retainedDays = 90) {
 function normalizeReportRows(rows) {
   const numericFields = new Set([
     "sessions", "pageviews", "clicks", "downloads", "events", "pages_per_session",
-    "bounce_rate", "reporting_installations", "total_items",
+    "bounce_rate", "reporting_installations", "total_items", "visitors", "downloaders",
   ]);
   return rows.map((row) => Object.fromEntries(Object.entries(row).map(([key, value]) => {
     if (typeof value === "bigint") return [key, Number(value)];
@@ -335,6 +370,7 @@ export async function readAnalyticsReport(days = 30) {
     websiteLocations,
     websiteSources,
     websiteDaily,
+    emailCampaigns,
     appLastSync,
     installStats,
   ] = await Promise.all([
@@ -411,6 +447,18 @@ export async function readAnalyticsReport(days = 30) {
       WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')
       GROUP BY created_at::date ORDER BY day
     `,
+    query`
+      SELECT campaign_id,
+             COUNT(DISTINCT recipient_token) FILTER (WHERE event_name = 'page_view')::int AS visitors,
+             COUNT(DISTINCT recipient_token) FILTER (WHERE event_name = 'download_click')::int AS downloaders,
+             COUNT(*)::int AS events,
+             MAX(created_at)::text AS last_event_at
+      FROM website_events
+      WHERE campaign_id IS NOT NULL
+        AND recipient_token IS NOT NULL
+        AND created_at >= NOW() - (${days} * INTERVAL '1 day')
+      GROUP BY campaign_id ORDER BY visitors DESC, events DESC
+    `,
     query`SELECT MAX(last_seen)::text AS last_synced_at FROM devices`,
     readInstallStats({ activeDays: days, recentDays: 7, limit: 100 }),
   ]);
@@ -424,6 +472,7 @@ export async function readAnalyticsReport(days = 30) {
       locations: normalizeReportRows(websiteLocations),
       sources: normalizeReportRows(websiteSources),
       daily: normalizeReportRows(websiteDaily),
+      email_campaigns: normalizeReportRows(emailCampaigns),
     },
     app: {
       summary: {
