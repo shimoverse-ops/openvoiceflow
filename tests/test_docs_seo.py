@@ -435,19 +435,20 @@ def test_favicon_is_a_real_file_not_a_data_uri():
         "apple-touch-icon.png must be 180x180 per Apple's convention"
 
 
-def test_homepage_search_copy_qualifies_free_use_and_leads_with_privacy():
+def test_homepage_search_copy_says_free_forever_and_leads_with_privacy():
     html = read("index.html")
-    assert "<title>OpenVoiceFlow — Free Only for Personal Use, Private Voice Dictation for macOS</title>" in html
+    assert "<title>OpenVoiceFlow — Free Forever, Private Voice Dictation for macOS</title>" in html
     assert (
         '<meta name="description" content="Private voice dictation for macOS, '
-        'free for personal use only. Audio is transcribed '
+        'free forever. Audio is transcribed '
         'locally, with optional cleanup through your chosen backend." />'
     ) in html
     normalized = html.casefold()
-    assert "free forever" not in normalized
-    assert re.search(r"\$0\s*[,/]\s*forever", normalized) is None
-    assert "USP 01 · FREE FOR PERSONAL USE ONLY" in html
-    assert "commercial or organizational use requires separate written permission or a separate written license" in html
+    assert "free forever" in normalized
+    assert "personal use only" not in normalized
+    assert "personal purposes only" not in normalized
+    assert "USP 01 · FREE FOREVER" in html
+    assert "commercial or organizational use requires" not in normalized
 
 
 def test_homepage_publishes_the_verified_app_rating_visibly_and_in_schema():

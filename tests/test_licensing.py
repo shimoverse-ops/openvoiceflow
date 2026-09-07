@@ -166,7 +166,7 @@ def test_current_product_copy_uses_personal_use_only_scope():
         ROOT / "voiceflow" / "__init__.py",
         ROOT / "voiceflow" / "__main__.py",
         ROOT / "voiceflow" / "onboarding.py",
-        *DOCS.glob("*.html"),
+        *(page for page in DOCS.glob("*.html") if page.name != "index.html"),
         *(DOCS / "blog").glob("*.html"),
         *(DOCS / "docs").glob("*.html"),
     ]
@@ -205,16 +205,14 @@ def test_package_and_cli_metadata_qualify_free_use():
     assert "— Free voice dictation" not in cli
 
 
-def test_homepage_and_faq_state_the_use_and_credit_boundaries():
+def test_homepage_uses_free_forever_message_while_faq_preserves_license_boundaries():
     home = read(DOCS / "index.html")
     faq = read(DOCS / "docs" / "faq.html")
-    assert "FREE FOR PERSONAL USE ONLY" in home
-    assert (
-        "commercial or organizational use requires separate written permission or a separate written license"
-        in home.casefold()
-    )
-    assert "Every integration, derivative, fork, or modified version must visibly credit OpenVoiceFlow" in home
-    assert "Covered Work that is distributed or offered over a network" in home
+    assert "FREE FOREVER" in home
+    assert "personal use only" not in home.casefold()
+    assert "personal purposes only" not in home.casefold()
+    assert "commercial or organizational use requires" not in home.casefold()
+    assert "The project license sets the terms for reuse and redistribution" in home
     assert "OpenVoiceFlow Personal and Reciprocal Source License 1.0" in faq
     assert (
         "Workplace or other organizational use requires separate written permission or a separate written license"
