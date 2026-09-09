@@ -64,7 +64,7 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md). The short version: pull requests 
 
 ## Privacy and security
 
-The one-page version: audio on-device always; text to a cloud only if you enable cleanup; keys in the Keychain; anonymous aggregate usage sharing on by default, one switch to turn off, never dictation text. Full statements: [PRIVACY.md](PRIVACY.md) · [SECURITY.md](SECURITY.md) · [threat model](docs/THREAT_MODEL.md). To report a vulnerability, see [SECURITY.md](SECURITY.md).
+The one-page version: audio on-device always; text to a cloud only if you enable cleanup; keys in the Keychain; anonymous aggregate usage sharing on by default, one switch to turn off, never dictation text. Full statements: [PRIVACY.md](PRIVACY.md) · [SECURITY.md](SECURITY.md) · [threat model](THREAT_MODEL.md). To report a vulnerability, see [SECURITY.md](SECURITY.md).
 
 ## License
 
@@ -85,5 +85,5 @@ logo; derivative distributions and integrations must rebrand where applicable
 and state **"Based on OpenVoiceFlow by Shimoverse Studios"** with a working link
 to the [original source code](https://github.com/shimoverse/openvoiceflow).
 See [LICENSING.md](LICENSING.md), [TRADEMARKS.md](TRADEMARKS.md),
-[docs/legal/LEGACY_MIT_PORTIONS.md](docs/legal/LEGACY_MIT_PORTIONS.md), and
-[docs/legal/THIRD_PARTY_NOTICES.md](docs/legal/THIRD_PARTY_NOTICES.md).
+[legal/LEGACY_MIT_PORTIONS.md](legal/LEGACY_MIT_PORTIONS.md), and
+[legal/THIRD_PARTY_NOTICES.md](legal/THIRD_PARTY_NOTICES.md).

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -8,10 +9,13 @@ from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets"
-DOC_ASSETS = ROOT / "docs" / "assets"
+# The website lives in the private openvoiceflow-web repo; point OVF_WEB_ROOT at
+# a checkout of it to refresh the site's copy of the icon too.
+WEB_ROOT = Path(os.environ["OVF_WEB_ROOT"]) if os.environ.get("OVF_WEB_ROOT") else None
+DOC_ASSETS = (WEB_ROOT / "docs" / "assets") if WEB_ROOT else None
 ICONSET = ASSETS / "OpenVoiceFlow.iconset"
 PNG_1024 = ASSETS / "openvoiceflow-icon-1024.png"
-PNG_512 = DOC_ASSETS / "openvoiceflow-icon-512.png"
+PNG_512 = (DOC_ASSETS / "openvoiceflow-icon-512.png") if DOC_ASSETS else None
 ICNS = ASSETS / "OpenVoiceFlow.icns"
 
 
@@ -153,10 +157,13 @@ def write_iconset(source: Image.Image) -> None:
 
 def main() -> None:
     ASSETS.mkdir(parents=True, exist_ok=True)
-    DOC_ASSETS.mkdir(parents=True, exist_ok=True)
     icon = draw_icon()
     icon.save(PNG_1024)
-    icon.resize((512, 512), Image.Resampling.LANCZOS).save(PNG_512)
+    if DOC_ASSETS is not None:
+        DOC_ASSETS.mkdir(parents=True, exist_ok=True)
+        icon.resize((512, 512), Image.Resampling.LANCZOS).save(PNG_512)
+    else:
+        print("OVF_WEB_ROOT unset — skipping the website's 512px icon copy")
     write_iconset(icon)
     subprocess.run(["iconutil", "-c", "icns", str(ICONSET), "-o", str(ICNS)], check=True)
     shutil.rmtree(ICONSET)
