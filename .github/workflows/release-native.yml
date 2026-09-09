@@ -64,8 +64,11 @@ jobs:
           if [[ "$PLIST_BUILD" != "$PROJ_BUILD" ]]; then
             echo "::error::Info.plist CFBundleVersion ($PLIST_BUILD) != project.yml CURRENT_PROJECT_VERSION ($PROJ_BUILD)"; exit 1
           fi
-          if [[ -f docs/appcast.xml ]]; then
-            LAST_BUILD="$(grep -oE 'sparkle:version>[0-9]+' docs/appcast.xml | grep -oE '[0-9]+' | sort -n | tail -1 || echo 0)"
+          # The appcast lives in the private site repo and is served from
+          # openvoiceflow.com, so compare against the feed users actually get.
+          PUBLISHED_APPCAST="$(curl -fsSL --max-time 30 https://openvoiceflow.com/appcast.xml || true)"
+          if [[ -n "$PUBLISHED_APPCAST" ]]; then
+            LAST_BUILD="$(printf '%s' "$PUBLISHED_APPCAST" | grep -oE 'sparkle:version>[0-9]+' | grep -oE '[0-9]+' | sort -n | tail -1 || echo 0)"
             LAST_BUILD="${LAST_BUILD:-0}"
             if [[ "$PLIST_BUILD" -le "$LAST_BUILD" ]]; then
               echo "::error::CFBundleVersion ($PLIST_BUILD) must exceed the last published appcast build ($LAST_BUILD), or Sparkle won't offer the update."; exit 1

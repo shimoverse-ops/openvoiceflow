@@ -25,26 +25,32 @@ The release workflow's classify step hard-fails on any mismatch.
    *and the DMG*, notarizes, staples, generates the signed appcast, and
    attaches everything to a GitHub Release. Requires the Apple signing
    secrets and `SPARKLE_ED_PRIVATE_KEY`; fails loudly without them.
-4. **Publish** — copy the Release's DMG + `appcast.xml` into
-   `docs/downloads/` + `docs/appcast.xml`, sweep every version reference
-   (`vercel.json`, `docs/*.html`, `site.js`, `llms.txt`, the tests), verify
-   `pytest tests/test_docs_distribution.py`, PR, merge. **This merge is the
+4. **Publish** — in the private site repo
+   ([shimoverse/openvoiceflow-web](https://github.com/shimoverse/openvoiceflow-web)),
+   copy the Release's DMG + `appcast.xml` into `docs/downloads/` +
+   `docs/appcast.xml`, sweep every version reference (`vercel.json`,
+   `docs/*.html`, `site.js`, `llms.txt`, the tests), verify
+   `pytest tests/test_docs_distribution.py`, PR, merge. **That merge is the
    moment users start updating** — the app polls the website's appcast, not
    GitHub.
 
-   The same PR must add the CHANGELOG entry and regenerate the release pages
-   with `python3 scripts/build_releases.py`. That writes `docs/releases.html`
-   (what Sparkle's **Version History** button opens) and
-   `docs/release-notes/<version>.html` (what its update sheet loads), and the
-   appcast published in this PR links to both by URL — ship the appcast
-   without them and every updating user gets a 404 where the notes should be.
-   `test_appcast_release_notes_links_point_at_pages_that_exist` fails the PR
-   if they are missing.
+   The CHANGELOG entry lands here, in this repo. The release pages are
+   regenerated in the site repo with `python3 scripts/build_releases.py`,
+   which reads this repo's `CHANGELOG.md` (checked out as `app-src/`) and
+   writes `docs/releases.html` (what Sparkle's **Version History** button
+   opens) and `docs/release-notes/<version>.html` (what its update sheet
+   loads). The appcast links to both by URL — ship the appcast without them
+   and every updating user gets a 404 where the notes should be.
+   `test_appcast_release_notes_links_point_at_pages_that_exist` fails the
+   site PR if they are missing.
 5. **Verify live**: the site serves the new appcast build number, the DMG
    sha256 matches the notarized artifact byte-for-byte, and
    `https://openvoiceflow.com/release-notes/<version>.html` resolves.
-6. Prune the previous version's DMG from `docs/downloads/` and add its
-   redirect in `vercel.json`.
+6. In the site repo, prune the previous version's DMG from `docs/downloads/`
+   and add its redirect in `vercel.json`.
+
+Steps 4 and 6 are the only ones that touch the website; everything else stays
+in this repo.
 
 Never regenerate the Sparkle keypair — every shipped app pins the public key,
 and a new pair permanently breaks updates for every existing install.

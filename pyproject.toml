@@ -10,7 +10,7 @@ version = "0.3.6"
 description = "Private, local voice dictation for macOS — free for personal use only"
 readme = "README.md"
 license = "LicenseRef-OpenVoiceFlow-Personal-Reciprocal-1.0"
-license-files = ["LICENSE", "docs/legal/LEGACY_MIT_PORTIONS.md"]
+license-files = ["LICENSE", "legal/LEGACY_MIT_PORTIONS.md"]
 authors = [{name = "Shimoverse Studios"}]
 requires-python = ">=3.9"
 keywords = ["voice", "dictation", "speech-to-text", "whisper", "macos", "openvoiceflow"]
@@ -71,7 +71,3 @@ ignore = []
 # Wrapping a paragraph at 120 columns would put line breaks inside sentences
 # and inside tags, making the content harder to edit and diff for no gain —
 # the output is HTML, where line length means nothing.
-"scripts/docs_content.py" = ["E501"]
-"scripts/build_docs.py" = ["E501"]  # page chrome (nav, analytics tags) verbatim
-"scripts/build_releases.py" = ["E501"]  # releases.html chrome (nav, analytics tags) verbatim
-"scripts/analytics_dashboard.py" = ["E501"]  # self-contained private dashboard HTML/CSS template

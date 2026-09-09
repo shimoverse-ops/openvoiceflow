@@ -59,18 +59,17 @@ one of the most valuable first contributions.
   `project.yml`/`Info.plist` versions alone unless you're cutting a release
   (all four fields must move together; CI enforces it at release time).
 
-## Working on the website (`docs/`)
+## Working on the website
 
-The site is static HTML/CSS/JS served by Vercel from `docs/`. It has real
-tests:
+The website, docs site, SEO files and the analytics/leaderboard API are **not
+in this repo** — they live in the private
+[shimoverse/openvoiceflow-web](https://github.com/shimoverse/openvoiceflow-web)
+repo that Vercel deploys. Site changes, download/appcast publishing and the
+release pages all happen there; see [RELEASE.md](RELEASE.md).
 
-```bash
-python3 -m pytest tests/test_docs_distribution.py -q
-```
-
-They pin download filenames, checksums, appcast integrity, and the
-Gatekeeper-warning cards. If your change breaks one, read the test — each one
-documents the support question or invariant it protects.
+Its tests (download filenames, checksums, appcast integrity, Gatekeeper cards,
+and the licensing copy contract) run against a shallow clone of this repo, so a
+change here that breaks a site promise fails there.
 
 ## Maintainer analytics dashboard
 
@@ -81,7 +80,7 @@ install and usage counters can be combined into a private local dashboard:
 gh auth status
 vercel whoami
 export OVF_ANALYTICS_STATS_TOKEN=…        # matches ANALYTICS_STATS_TOKEN on the deployment
-python3 scripts/analytics_dashboard.py --open
+python3 scripts/analytics_dashboard.py --open   # in the openvoiceflow-web repo
 ```
 
 `OVF_ANALYTICS_STATS_TOKEN` authenticates against `api/analytics/stats.js`, the

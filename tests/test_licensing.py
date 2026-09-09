@@ -1,9 +1,23 @@
 """Contracts that keep the source-available licensing change coherent."""
+import os
 import re
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
-DOCS = ROOT / "docs"
+
+# The website lives in the private openvoiceflow-web repo. Licensing copy has to
+# stay coherent across both halves, so the site assertions run whenever that repo
+# is checked out alongside this one (CI there sets OVF_WEB_ROOT) and skip here,
+# where only the app half exists.
+WEB_ROOT = Path(os.environ["OVF_WEB_ROOT"]) if os.environ.get("OVF_WEB_ROOT") else ROOT
+DOCS = WEB_ROOT / "docs"
+SITE_AVAILABLE = DOCS.is_dir()
+requires_site = pytest.mark.skipif(
+    not SITE_AVAILABLE,
+    reason="site content lives in shimoverse/openvoiceflow-web; set OVF_WEB_ROOT to include it",
+)
 
 
 def read(path: Path) -> str:
@@ -44,27 +58,34 @@ def test_root_license_is_personal_only_reciprocal_and_names_permission_path():
 
 def test_permission_path_uses_exact_binding_text_on_primary_license_surfaces():
     binding = "separate written permission or a separate written license"
-    for rel in [
-        "LICENSE",
-        "LICENSING.md",
-        "README.md",
-        "PRIVACY.md",
-        "SECURITY.md",
-        "SUPPORT.md",
-        "TRADEMARKS.md",
-        "CHANGELOG.md",
-        "docs/COMPLIANCE.md",
-        "docs/legal/DPA-template.md",
-        "docs/llms.txt",
-        "scripts/docs_content.py",
-        "docs/docs/faq.html",
-        "native/Info.plist",
-    ]:
-        assert binding in one_line(read(ROOT / rel)), rel
+    surfaces = [
+        ROOT / rel
+        for rel in [
+            "LICENSE",
+            "LICENSING.md",
+            "README.md",
+            "PRIVACY.md",
+            "SECURITY.md",
+            "SUPPORT.md",
+            "TRADEMARKS.md",
+            "CHANGELOG.md",
+            "COMPLIANCE.md",
+            "legal/DPA-template.md",
+            "native/Info.plist",
+        ]
+    ]
+    if SITE_AVAILABLE:
+        surfaces += [
+            DOCS / "llms.txt",
+            WEB_ROOT / "scripts" / "docs_content.py",
+            DOCS / "docs" / "faq.html",
+        ]
+    for surface in surfaces:
+        assert binding in one_line(read(surface)), surface
 
 
 def test_dpa_template_does_not_imply_personal_license_authorizes_organizations():
-    template = one_line(read(DOCS / "legal" / "DPA-template.md"))
+    template = one_line(read(ROOT / "legal" / "DPA-template.md"))
     assert (
         "the public personal-use-only license does not authorize organizational use"
         in template
@@ -117,7 +138,7 @@ def test_primary_surfaces_explain_reciprocal_source_requirement():
 
 
 def test_compliance_copy_matches_native_analytics_posture():
-    compliance = one_line(read(DOCS / "COMPLIANCE.md")).casefold()
+    compliance = one_line(read(ROOT / "COMPLIANCE.md")).casefold()
     for stale_claim in [
         "no vendor-side service exists",
         "we hold no personal data on a server",
@@ -131,6 +152,7 @@ def test_compliance_copy_matches_native_analytics_posture():
     assert "anonymous usage sharing is enabled" in compliance
 
 
+@requires_site
 def test_current_public_pages_do_not_claim_mit_or_open_source():
     current_pages = [
         DOCS / "index.html",
@@ -160,16 +182,19 @@ def test_current_product_copy_uses_personal_use_only_scope():
         ROOT / "SUPPORT.md",
         ROOT / "TRADEMARKS.md",
         ROOT / "pyproject.toml",
-        DOCS / "COMPLIANCE.md",
-        DOCS / "llms.txt",
-        ROOT / "scripts" / "docs_content.py",
+        ROOT / "COMPLIANCE.md",
         ROOT / "voiceflow" / "__init__.py",
         ROOT / "voiceflow" / "__main__.py",
         ROOT / "voiceflow" / "onboarding.py",
-        *(page for page in DOCS.glob("*.html") if page.name != "index.html"),
-        *(DOCS / "blog").glob("*.html"),
-        *(DOCS / "docs").glob("*.html"),
     ]
+    if SITE_AVAILABLE:
+        current_copy += [
+            DOCS / "llms.txt",
+            WEB_ROOT / "scripts" / "docs_content.py",
+            *(page for page in DOCS.glob("*.html") if page.name != "index.html"),
+            *(DOCS / "blog").glob("*.html"),
+            *(DOCS / "docs").glob("*.html"),
+        ]
     forbidden_phrases = [
         "personal and noncommercial use",
         "personal and other noncommercial use",
@@ -205,6 +230,7 @@ def test_package_and_cli_metadata_qualify_free_use():
     assert "— Free voice dictation" not in cli
 
 
+@requires_site
 def test_homepage_uses_free_forever_message_while_faq_preserves_license_boundaries():
     home = read(DOCS / "index.html")
     faq = read(DOCS / "docs" / "faq.html")

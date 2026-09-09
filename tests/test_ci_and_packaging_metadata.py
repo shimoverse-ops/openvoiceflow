@@ -21,7 +21,7 @@ def test_pyproject_packages_current_and_legacy_license_files_without_osi_classif
     pyproject = read(ROOT / "pyproject.toml")
 
     assert 'license = "LicenseRef-OpenVoiceFlow-Personal-Reciprocal-1.0"' in pyproject
-    assert 'license-files = ["LICENSE", "docs/legal/LEGACY_MIT_PORTIONS.md"]' in pyproject
+    assert 'license-files = ["LICENSE", "legal/LEGACY_MIT_PORTIONS.md"]' in pyproject
     assert 'license = {file = "LICENSE"}' not in pyproject
     assert 'license = "MIT"' not in pyproject
     assert "License :: OSI Approved :: MIT License" not in pyproject

@@ -8,9 +8,12 @@ wins — and fixing this file is part of the change.
 - **`native/`** — the shipping macOS app (Swift/SwiftUI, v0.5.x). This is
   where product work happens. The Xcode project is generated from
   `native/project.yml`; edit the yml, never the `.xcodeproj`.
-- **`docs/`** — the public website, served by Vercel from `main`. It has real
-  tests (`tests/test_docs_distribution.py`) that pin download filenames,
-  checksums, and appcast integrity. Internal working docs must not live here.
+- **The website is not in this repo.** The marketing site, docs site, SEO
+  surface and the analytics/leaderboard API live in the private
+  [shimoverse/openvoiceflow-web](https://github.com/shimoverse/openvoiceflow-web)
+  repo, which Vercel deploys. Site claims must still be true of the shipped
+  app; the cross-repo contract tests there check the app half against a clone
+  of this repo.
 - **`voiceflow/` + `install.sh` + `build-dmg.sh`** — the legacy Python app
   (≤ 0.3.6, EOL). Only fallback-critical fixes. Its conventions (secure
   file writes via `voiceflow/_secure_io.py`, `from __future__ import
