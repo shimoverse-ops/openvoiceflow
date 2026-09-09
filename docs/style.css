@@ -339,22 +339,6 @@ img, canvas { max-width: 100%; }
   color: var(--ink-2);
 }
 
-.hero-rating {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12.5px;
-  color: var(--ink-2);
-}
-
-.hero-rating strong { color: var(--ink); }
-
-.hero-rating-stars {
-  color: var(--acc);
-  letter-spacing: 1.5px;
-  line-height: 1;
-}
-
 /* Hero live demo: typed line + capsule waveform */
 .hero-demo {
   width: 640px;

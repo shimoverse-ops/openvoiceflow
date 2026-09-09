@@ -450,39 +450,19 @@ def test_homepage_search_copy_qualifies_free_use_and_leads_with_privacy():
     assert "commercial or organizational use requires separate written permission or a separate written license" in html
 
 
-def test_homepage_publishes_the_verified_app_rating_visibly_and_in_schema():
-    """The maintainer confirmed the published baseline of 10,800 distinct
-    5/5 user-rating submissions on 2026-09-06. Keep the visible claim and
-    SoftwareApplication schema exact and aligned; never attach a self-serving
-    rating to Organization."""
+def test_homepage_does_not_publish_a_self_serving_star_rating():
+    """A rating an entity publishes about itself, on its own site, is
+    ineligible for Google's star review feature no matter how large the
+    sample -- so first-party AggregateRating markup carries no upside and
+    real spam-action risk. Stars for OpenVoiceFlow have to come from
+    third parties reviewing it. Keep the homepage clean of both the
+    schema and any visible star claim."""
     html = read("index.html")
-    blocks = [
-        json.loads(raw)
-        for raw in re.findall(
-            r'<script type="application/ld\+json">(.*?)</script>',
-            html,
-            flags=re.DOTALL,
-        )
-    ]
-    software = next(block for block in blocks if block.get("@type") == "SoftwareApplication")
-    organization = next(block for block in blocks if block.get("@type") == "Organization")
-
-    rating = software["aggregateRating"]
-    assert rating == {
-        "@type": "AggregateRating",
-        "ratingValue": "5.0",
-        "ratingCount": 10800,
-        "bestRating": "5",
-        "worstRating": "1",
-    }
-    assert "aggregateRating" not in organization
-    count_label = f'{rating["ratingCount"]:,}'
-    assert (
-        f'aria-label="Rated 5.0 out of 5 from {count_label} user ratings"'
-        in html
-    )
-    visible_text = re.sub(r"<[^>]+>", "", html)
-    assert f"5.0 from {count_label} user ratings" in visible_text
+    assert "AggregateRating" not in html
+    assert "aggregateRating" not in html
+    assert "ratingValue" not in html
+    assert "ratingCount" not in html
+    assert "\u2605" not in html
 
 
 def png_dimensions(name: str) -> tuple[int, int]:
