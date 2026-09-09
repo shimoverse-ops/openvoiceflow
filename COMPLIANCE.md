@@ -1,6 +1,6 @@
 # Compliance posture
 
-> Sibling docs: [`PRIVACY.md`](../PRIVACY.md) · [`SECURITY.md`](../SECURITY.md) · [`THREAT_MODEL.md`](THREAT_MODEL.md) · [`legal/DPA-template.md`](legal/DPA-template.md)
+> Sibling docs: [`PRIVACY.md`](PRIVACY.md) · [`SECURITY.md`](SECURITY.md) · [`THREAT_MODEL.md`](THREAT_MODEL.md) · [`legal/DPA-template.md`](legal/DPA-template.md)
 
 ## TL;DR
 
@@ -82,7 +82,7 @@ OpenVoiceFlow can work for low-stakes BYOK-tolerant teams. It is **not** a manag
 - **Decide whether the LLM-backend data flow is acceptable** under your DLP, data-residency, and acceptable-use policies. Different employees may pick different backends; the deployment is only as restrictive as the locked configuration.
 - **Consider Ollama-only deployments** to keep transcripts on-device. This eliminates the cloud LLM as a sub-processor entirely.
 - **Pre-stage `whisper-cpp` and the model file** via your MDM (Jamf, Mosyle) or a `brew bundle` so the bootstrap doesn't pull from external networks at first launch on a managed Mac.
-- **Ship a managed config** by writing `~/.openvoiceflow/config.json` during provisioning. For lock-down, pin: `update_check: false`, `log_transcripts: false`, `auto_learn: false`, `llm_backend: "ollama"`. (See [`PRIVACY.md`](../PRIVACY.md) for the full config-key list.)
+- **Ship a managed config** by writing `~/.openvoiceflow/config.json` during provisioning. For lock-down, pin: `update_check: false`, `log_transcripts: false`, `auto_learn: false`, `llm_backend: "ollama"`. (See [`PRIVACY.md`](PRIVACY.md) for the full config-key list.)
 - **Note that the current v0.3.6 hosted DMGs are Developer ID signed, Apple-notarized, and stapled.** MDM-aware orgs may still want to wrap the install differently (re-sign with an internal Developer ID, ship as a signed `.pkg`, or build from source in-house).
 - **There is no enterprise key-management story.** Each employee's API keys land in their own `~/.openvoiceflow/config.json` (mode 600). No central rotation, no SSO, no SCIM.
 
@@ -110,13 +110,13 @@ We do not centrally retain audio, dictated text, profile content, dictionary ent
 
 ## Changes
 
-This document is versioned with the code. Material changes are surfaced under the relevant release in [`CHANGELOG.md`](../CHANGELOG.md). The sibling [`PRIVACY.md`](../PRIVACY.md) carries the matching privacy-side commitments.
+This document is versioned with the code. Material changes are surfaced under the relevant release in [`CHANGELOG.md`](CHANGELOG.md). The sibling [`PRIVACY.md`](PRIVACY.md) carries the matching privacy-side commitments.
 
 ---
 
 ## Cross-references
 
-- [`PRIVACY.md`](../PRIVACY.md) — what data exists, where it goes, what you can opt out of.
-- [`SECURITY.md`](../SECURITY.md) — supported versions, vulnerability reporting, scope.
+- [`PRIVACY.md`](PRIVACY.md) — what data exists, where it goes, what you can opt out of.
+- [`SECURITY.md`](SECURITY.md) — supported versions, vulnerability reporting, scope.
 - [`THREAT_MODEL.md`](THREAT_MODEL.md) — what we defend against and what we explicitly don't.
 - [`legal/DPA-template.md`](legal/DPA-template.md) — a fill-in-the-blanks template for documenting an OpenVoiceFlow deployment in your own data-flow inventory.

@@ -1,6 +1,6 @@
 # OpenVoiceFlow deployment record (DPA-style template)
 
-> Sibling docs: [`../../PRIVACY.md`](../../PRIVACY.md) · [`../COMPLIANCE.md`](../COMPLIANCE.md) · [`../../SECURITY.md`](../../SECURITY.md)
+> Sibling docs: [`../PRIVACY.md`](../PRIVACY.md) · [`../COMPLIANCE.md`](../COMPLIANCE.md) · [`../SECURITY.md`](../SECURITY.md)
 
 ## Purpose of this template
 
@@ -82,7 +82,7 @@ In v0.3, OpenVoiceFlow ships with the following on each Mac:
 - **Update check is opt-out-able** via `update_check: false`.
 - **Audio never leaves the Mac.** Whisper.cpp processes locally; temp WAV is deleted in the `finally` block of each dictation.
 - **No central server.** There is nothing for the maintainer to compromise that would expose your data.
-- **Public source** is auditable at <https://github.com/shimoverse/openvoiceflow>; see [`../../LICENSING.md`](../../LICENSING.md) for the applicable use rights.
+- **Public source** is auditable at <https://github.com/shimoverse/openvoiceflow>; see [`../LICENSING.md`](../LICENSING.md) for the applicable use rights.
 
 Your organization adds (fill in):
 
@@ -105,5 +105,5 @@ If you change which LLM provider you use, also update or sign a fresh DPA **with
 ## Cross-references
 
 - [`../COMPLIANCE.md`](../COMPLIANCE.md) — full compliance posture (what we are, what we are not, GDPR/HIPAA notes).
-- [`../../PRIVACY.md`](../../PRIVACY.md) — what data exists, where it goes, what you can opt out of.
-- [`../../SECURITY.md`](../../SECURITY.md) — supported versions and vulnerability reporting.
+- [`../PRIVACY.md`](../PRIVACY.md) — what data exists, where it goes, what you can opt out of.
+- [`../SECURITY.md`](../SECURITY.md) — supported versions and vulnerability reporting.

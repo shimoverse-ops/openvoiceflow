@@ -206,9 +206,10 @@ for the copy-paste version):
    (they are, since the Python DMGs ship signed).
 3. **Push the tag** `native-v0.4.0` (a `native-v0.4.0-rc1` first is wise). Tag
    pushes are blocked from the Linux agent — this is yours.
-4. The pipeline publishes the notarized DMG + appcast to the Release. **Merge
-   the staged website PR** (`docs/` already prepped for 0.4.0) once the DMG is
-   downloadable, or drop the DMG into `docs/downloads/` per that PR.
+4. The pipeline publishes the notarized DMG + appcast to the Release. Then, in
+   the private `shimoverse/openvoiceflow-web` repo, drop the DMG into
+   `docs/downloads/` and the appcast into `docs/appcast.xml` and merge — that
+   merge is what starts updates. See RELEASE.md.
 
 CI note: `ci.yml` compiles the *Python* app only — the native Swift is not in
 CI, so a `swift build` (or the archive step above) on your Mac is what

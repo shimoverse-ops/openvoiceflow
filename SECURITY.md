@@ -100,7 +100,7 @@ No bug bounty. We can't pay; the project earns $0.
 
 - The native macOS app — everything under `native/` (the shipped `OpenVoiceFlow.app`).
 - The Sparkle update feed and release pipeline (`.github/workflows/release-native.yml`, `native/scripts/`).
-- The website and its download/appcast serving (`docs/`, `vercel.json`).
+- The website and its download/appcast serving (the private `shimoverse/openvoiceflow-web` repo).
 - The GitHub Actions workflows under `.github/workflows/`.
 - The legacy Python package (`voiceflow/`, `install.sh`, `build-dmg.sh`) is EOL: reports are
   welcome for awareness, but fixes ship only if the macOS 12–13 fallback is affected.
@@ -134,7 +134,7 @@ If you're not sure, send it anyway and we'll route it.
 ## Threat model
 
 A short pointer, not a full document. The full version lives at
-[`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md).
+[`THREAT_MODEL.md`](THREAT_MODEL.md).
 
 OpenVoiceFlow holds three strong privileges on the user's Mac:
 
@@ -194,5 +194,5 @@ GitHub Security Advisory on the repo.
 - The repo lives at `github.com/shimoverse/openvoiceflow` today and may move to a
   personal account before public release. URLs in this file will be updated if so.
 - This document is part of the v0.3 readiness bundle. Pair reading:
-  [`PRIVACY.md`](PRIVACY.md), [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md),
+  [`PRIVACY.md`](PRIVACY.md), [`THREAT_MODEL.md`](THREAT_MODEL.md),
   [`COMPLIANCE.md`](COMPLIANCE.md).

@@ -41,9 +41,9 @@ FEED_URL="${OVF_APPCAST_URL:-https://openvoiceflow.com/appcast.xml}"
 # the item: releaseNotesLink fills the WebView in the update sheet, and
 # fullReleaseNotesLink is what the "Version History" button opens — including
 # on the "You're up to date!" alert, which is the only place a current user
-# ever sees it. Both must be real pages; scripts/build_releases.py generates
-# them from CHANGELOG.md, so the changelog entry has to land before this
-# appcast goes live (RELEASE.md).
+# ever sees it. Both must be real pages; build_releases.py in the private site
+# repo generates them from this repo's CHANGELOG.md, so the changelog entry has
+# to land before this appcast goes live (RELEASE.md).
 SITE_BASE="${OVF_SITE_BASE:-https://openvoiceflow.com}"
 SPARKLE_VERSION="${SPARKLE_VERSION:-2.9.4}"
 

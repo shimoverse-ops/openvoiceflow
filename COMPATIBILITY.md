@@ -2,7 +2,7 @@
 
 This page lists what we test on, what we expect to work, and what we don't support. OpenVoiceFlow is an OSS project with no dedicated QA team, so "tested" means "exercised by maintainers on a real machine"; "expected to work" means "no known reason it wouldn't, but we haven't run it ourselves."
 
-Source of truth for the version constraints: [`pyproject.toml`](../pyproject.toml).
+Source of truth for the version constraints: [`pyproject.toml`](pyproject.toml).
 
 ---
 

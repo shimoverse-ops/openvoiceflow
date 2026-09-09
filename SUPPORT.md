@@ -31,7 +31,7 @@ Use GitHub Discussions: <https://github.com/shimoverse/openvoiceflow/discussions
 
 ## Privacy or compliance question?
 
-See [PRIVACY.md](PRIVACY.md) and [docs/COMPLIANCE.md](docs/COMPLIANCE.md). For questions not covered there, open a Discussion.
+See [PRIVACY.md](PRIVACY.md) and [COMPLIANCE.md](COMPLIANCE.md). For questions not covered there, open a Discussion.
 
 ## Want to contribute?
 
