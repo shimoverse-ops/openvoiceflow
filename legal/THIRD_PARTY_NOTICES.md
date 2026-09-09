@@ -8,11 +8,11 @@ over a network must publish corresponding source under the same license, while
 every Integration must retain the required attribution. Commercial or
 organizational use requires separate written permission or a separate written
 license. See
-[`LICENSE`](../../LICENSE) and [`LICENSING.md`](../../LICENSING.md). Third-party
+[`LICENSE`](../LICENSE) and [`LICENSING.md`](../LICENSING.md). Third-party
 components remain governed by their own licenses below.
 
 Repository: <https://github.com/shimoverse/openvoiceflow>
-Sources of truth for runtime dependencies: [`pyproject.toml`](../../pyproject.toml), [`Package.swift`](../../native/Package.swift), and [`package.json`](../../package.json).
+Sources of truth for runtime dependencies: [`pyproject.toml`](../pyproject.toml) and [`Package.swift`](../native/Package.swift). (The website's npm dependencies are not distributed with the app and live in the private site repo.)
 
 ---
 
@@ -94,7 +94,7 @@ The leaderboard API deployed with the website uses the following server-side dep
 
 ## 7. Bundled docs, fonts, and assets
 
-The native app bundles small app-identification marks for cases where macOS cannot resolve an installed app icon. Simple Icons assets are CC0 1.0; the SVG Logos assets used here are CC0 1.0; the Microsoft marks sourced from theSVG Color are MIT; Superhuman and Panic fallbacks are vendor-provided public identification marks. File-by-file sources are recorded in [`native/Resources/BrandIcons/README.md`](../../native/Resources/BrandIcons/README.md). Brand names and marks remain the property of their respective owners and are used nominatively; their presence does not imply endorsement.
+The native app bundles small app-identification marks for cases where macOS cannot resolve an installed app icon. Simple Icons assets are CC0 1.0; the SVG Logos assets used here are CC0 1.0; the Microsoft marks sourced from theSVG Color are MIT; Superhuman and Panic fallbacks are vendor-provided public identification marks. File-by-file sources are recorded in [`native/Resources/BrandIcons/README.md`](../native/Resources/BrandIcons/README.md). Brand names and marks remain the property of their respective owners and are used nominatively; their presence does not imply endorsement.
 
 The overlay HUD draws using macOS system fonts (San Francisco), which carry no separate licensing obligation for an app running on macOS.
 
@@ -135,7 +135,7 @@ The product and company names shown in OpenVoiceFlow, including Apple, Claude, D
 
 This file is regenerated each release. Pull requests that touch `pyproject.toml`, `native/Package.swift`, or `package.json` (adding, removing, or upgrading a runtime dependency) **must** update this file in the same PR.
 
-**Follow-up flagged for the maintainer:** add this rule to the [`CONTRIBUTING.md`](../../CONTRIBUTING.md) PR checklist so the obligation is enforced at review time rather than relying on memory.
+**Follow-up flagged for the maintainer:** add this rule to the [`CONTRIBUTING.md`](../CONTRIBUTING.md) PR checklist so the obligation is enforced at review time rather than relying on memory.
 
 Last reviewed against:
 

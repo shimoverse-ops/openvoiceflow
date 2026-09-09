@@ -150,7 +150,7 @@ Threats we **do not** try to defend against, because either the threat is the us
 
 - **`SECURITY.md`** (repo root) — vulnerability disclosure: where to report, supported versions, response SLA.
 - **`PRIVACY.md`** (planned for v0.3 wave 3) — full data-flow diagram, sub-processor list, retention, opt-outs.
-- **This document (`docs/THREAT_MODEL.md`)** — the page you are reading.
+- **This document (`THREAT_MODEL.md`)** — the page you are reading.
 
 ### Strong-privilege source files (read these to verify the mitigations above)
 

@@ -66,7 +66,7 @@ A historical third-party contribution included in the current tree was accepted
 when the project used MIT terms. Rights in that contributor's material remain
 available under MIT; the current reciprocal license governs Shimoverse Studios'
 new and modified material. The provenance and preserved MIT notice are in
-[docs/legal/LEGACY_MIT_PORTIONS.md](docs/legal/LEGACY_MIT_PORTIONS.md). This
+[legal/LEGACY_MIT_PORTIONS.md](legal/LEGACY_MIT_PORTIONS.md). This
 means the reciprocal condition cannot be imposed retroactively on that
 contributor's pre-existing copyright. It does apply to new contributions made
 under the current contribution terms.
@@ -81,7 +81,7 @@ and separate commercial and organizational licenses.
 ## Third-party software and brand
 
 Third-party components are governed by their own licenses, listed in
-[docs/legal/THIRD_PARTY_NOTICES.md](docs/legal/THIRD_PARTY_NOTICES.md). The
+[legal/THIRD_PARTY_NOTICES.md](legal/THIRD_PARTY_NOTICES.md). The
 OpenVoiceFlow name and logo are governed separately by
 [TRADEMARKS.md](TRADEMARKS.md); derivatives must rebrand and state **"Based on OpenVoiceFlow by Shimoverse
 Studios"** with a working link to the

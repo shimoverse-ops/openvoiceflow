@@ -3,14 +3,14 @@
 > **This document describes the legacy Python app (≤ 0.3.6), which is
 > end-of-life.** The shipping app is native Swift under `native/` — for its
 > architecture, start with the module map in
-> [`native/README.md`](../native/README.md): HotkeyEngine (CGEvent tap) →
+> [`native/README.md`](native/README.md): HotkeyEngine (CGEvent tap) →
 > AudioCapture → Transcriber (WhisperKit) → CleanupProvider (optional) →
 > Paster, orchestrated by AppController and surfaced through HUDController,
 > DashboardView, and OnboardingView.
 
 
 
-> Audience: humans contributing code. For an AI-coding-agent contributor's view, see [`AGENTS.md`](../AGENTS.md) at the repo root.
+> Audience: humans contributing code. For an AI-coding-agent contributor's view, see [`AGENTS.md`](AGENTS.md) at the repo root.
 
 ## 1. Elevator pitch
 
@@ -289,7 +289,7 @@ Version lives in two places — `pyproject.toml` (`[project] version`) and `voic
 
 ## See also
 
-- [`README.md`](../README.md) — user-facing overview and CLI cheat sheet.
-- [`PRIVACY.md`](../PRIVACY.md) — privacy posture in plain English.
-- [`docs/THREAT_MODEL.md`](THREAT_MODEL.md) — what we defend against and what we don't.
-- [`AGENTS.md`](../AGENTS.md) — contributor guide for AI coding agents.
+- [`README.md`](README.md) — user-facing overview and CLI cheat sheet.
+- [`PRIVACY.md`](PRIVACY.md) — privacy posture in plain English.
+- [`THREAT_MODEL.md`](THREAT_MODEL.md) — what we defend against and what we don't.
+- [`AGENTS.md`](AGENTS.md) — contributor guide for AI coding agents.
